@@ -21,6 +21,8 @@ int main()
        	 	{
         	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
         	}	
+		SDL_Delay(300);
+
 	}
 
 	x=0;
@@ -35,10 +37,14 @@ int main()
         	{
         		fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
        	 	}
+		SDL_Delay(300);
 	}
-	SDL_Delay(8000);
+	SDL_Delay(2000);
 	for (int i=0;i<10;i++)
+	{
 		SDL_DestroyWindow(tab[i]);
+		SDL_Delay(300);
+	}
 	free(tab);
 	SDL_Quit();
 }
