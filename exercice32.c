@@ -54,4 +54,3 @@ int main(int argc, char **argv) {
   SDL_Quit();
   return 0;
  }
- (on ne sait pas encore arrêter un programme suite à un évènement…
