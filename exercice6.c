@@ -42,6 +42,28 @@ void draw(SDL_Renderer *renderer, int width,int height, int taille)
     rectangle.x = 0;                                                    // x haut gauche du rectangle
     rectangle.y = 0;                                                    // y haut gauche du rectangle
     rectangle.w = width;                                                  // sa largeur (w = width)
+    rectangle.h = height;                                                  // sa hauteur (h = height)
+
+    SDL_RenderFillRect(renderer, &rectangle);
+
+    SDL_SetRenderDrawColor(renderer, 26, 168, 43, 255);
+    SDL_RenderDrawLine(renderer,
+                          width/2, 0,                                       // x,y du point de la première extrémité
+                          width/2, height);                                  // x,y seconde extrémité
+    SDL_RenderDrawLine(renderer,
+                          0, height/2,                                       // x,y du point de la première extrémité
+                          width, height/2);
+}
+
+void draw2(SDL_Renderer *renderer, int width,int height, int taille)
+{
+    SDL_Rect rectangle; 
+    SDL_SetRenderDrawColor(renderer,                                
+                              0, 0, 120,                               // mode Red, Green, Blue (tous dans 0..255)
+                              255);                                   // 0 = transparent ; 255 = opaque
+    rectangle.x = 0;                                                    // x haut gauche du rectangle
+    rectangle.y = 0;                                                    // y haut gauche du rectangle
+    rectangle.w = width;                                                  // sa largeur (w = width)
     rectangle.h = width;                                                  // sa hauteur (h = height)
 
     SDL_RenderFillRect(renderer, &rectangle);
@@ -60,8 +82,6 @@ void draw(SDL_Renderer *renderer, int width,int height, int taille)
 
 
 
-
-
 int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
@@ -71,23 +91,27 @@ int main(int argc, char **argv) {
 
     SDL_DisplayMode screen;
 
+    SDL_Event event;
 
-    
-    int width=1400,height=700,taille=10;
-
+    int continuer = 1;
 
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
     SDL_Log("Error : SDL initialisation - %s\n", SDL_GetError());      // l'initialisation de la SDL a échoué 
     exit(EXIT_FAILURE);
   }
-  /* Création de la fenêtre de gauche */
-  window = SDL_CreateWindow(
-      "Fenêtre à gauche",                    // codage en utf8, donc accents possibles
-      0, 0,                                  // coin haut gauche en haut gauche de l'écran
-      width  , height,                              // largeur = 300  , hauteur = 400
-      SDL_WINDOW_RESIZABLE);                 // redimensionnable
 
 
+  SDL_GetCurrentDisplayMode(0, &screen);
+  printf("Résolution écran\n\tw : %d\n\th : %d\n", screen.w,
+              screen.h);
+
+  int width=screen.w,height=screen.h,taille=10;
+
+  window = SDL_CreateWindow("Premier dessin",
+                            SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED, screen.w ,
+                            screen.h ,
+                            SDL_WINDOW_OPENGL);
   if (window == NULL) end_sdl(0, "ERROR WINDOW CREATION", window, renderer);
 
   /* Création du renderer */
@@ -95,11 +119,29 @@ int main(int argc, char **argv) {
            window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (renderer == NULL) end_sdl(0, "ERROR RENDERER CREATION", window, renderer);
 
+
 /*********************************************************************************************************************/
   /*                                     On dessine dans le renderer                                                   */
   draw(renderer,width,height,taille);                                                     // appel de la fonction qui crée l'image  
-  SDL_RenderPresent(renderer);                                        // affichage
-  SDL_Delay(5000);                                                    // Pause exprimée en ms
+  SDL_RenderPresent(renderer);                                        // affichage                                                  // Pause exprimée en ms
+  while (continuer)
+  {
+    SDL_PollEvent(&event);
+    switch(event.type)
+    {
+      case SDL_QUIT:
+        continuer=0;
+
+        break;
+    }
+      draw2(renderer,width,height,taille);
+      SDL_RenderPresent(renderer);
+      SDL_Delay(100);
+      draw(renderer,width,height,taille);
+      SDL_RenderPresent(renderer);
+      SDL_Delay(100);
+
+  }
 
   /*********************************************************************************************************************/
   /* on referme proprement la SDL */
