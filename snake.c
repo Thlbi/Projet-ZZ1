@@ -1,4 +1,5 @@
 /***14 juin 2021 snake.c***/
+/*** compile avec gcc snake.c -o prog -Wall -Wextra -lSDL2 -lm****/
 #include <SDL2/SDL.h>
 #include <math.h>
 #include <stdio.h>
@@ -27,38 +28,33 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
   }                                                               
 }  
 
-void dessin1(SDL_Renderer* renderer)
+void dessin(SDL_Renderer* renderer,int frame)
 {
 	SDL_Rect rectangle;
-  	SDL_SetRenderDrawColor(renderer,50, 50, 0,255);    
+	int x=140;
 	for (int i=0; i<5;i++)
 	{
-  		rectangle.x = 140+20*pow(-1,i);        
+		if (4-frame>=i)
+		{
+			x=140 +  20*i; //*pow(-1,i);        
+			printf("%d\n",x);
+		}
+
+
+  		SDL_SetRenderDrawColor(renderer,50*i, 50, 0,255);   
+  		rectangle.x =x;
   		rectangle.y = 90*i;         
-  		rectangle.w = 50;        
+  		rectangle.w = 20;        
   		rectangle.h = 80;         
 	
   		SDL_RenderDrawRect(renderer, &rectangle);
+		SDL_RenderPresent(renderer);
+		//SDL_Delay(10*i+10);
 	}
   	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
-void dessin2(SDL_Renderer* renderer)
-{
-	SDL_Rect rectangle;
 
-  	SDL_SetRenderDrawColor(renderer,50, 50, 0,255);   
-  	for (int i=0; i<5;i++)
-	{
-  		rectangle.x = 140-20*pow(-1,i);        
-  		rectangle.y = 90*i;         
-  		rectangle.w = 50;        
-  		rectangle.h = 80;         
-	
-  		SDL_RenderDrawRect(renderer, &rectangle);
-	} 
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-}
 int main ()
 {
 
@@ -117,14 +113,13 @@ int main ()
             		}
             		break;
         	}
-		dessin1(renderer);
-		SDL_RenderPresent(renderer);
-		SDL_Delay(200);
-  		SDL_RenderClear(renderer);
-		dessin2(renderer);
-		SDL_RenderPresent(renderer);
-		SDL_Delay(200);
-  		SDL_RenderClear(renderer);
+		for (int i=0;i<5;i++)
+		{
+
+			dessin(renderer,i);
+			SDL_Delay(200);
+  			SDL_RenderClear(renderer);
+		}
     	}
 	end_sdl(1, "Normal ending", window, renderer);
 }
