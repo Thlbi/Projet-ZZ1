@@ -3,63 +3,42 @@
 #include <stdio.h>
 #include <string.h>
 
-void afficherEcran(SDL_Renderer *renderer,int width,int height,int taille){
-	SDL_Rect rect;
-
-	int iW,iH,i;
-	
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-	SDL_RenderClear(renderer);
-	/*for (i=0;i<width;i++)
-	{
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
-		rect.x=i;
-		rect.y=i;
-		rect.w=1;
-		rect.h=taille;
-		
-		SDL_RenderFillRect(renderer,&rect);
-		
-		rect.x=width-i;
-		SDL_RenderFillRect(renderer,&rect);
-	}*/
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
-	SDL_RenderDrawLine(renderer, 0,0,width,height);
-	SDL_RenderDrawLine(renderer,width,0,0,height);
-
-	/* afficher à l'ecran */
-	
-	SDL_RenderPresent(renderer);
-}
-
 
 int main()
 {
-	SDL_Window *window;
-	int width=700, height=700,taille=10;
+	SDL_Window** tab =malloc (10*(sizeof(SDL_Window *)));
+	int width=1920/5, height=1080/5;
+	int x=0;
+	int y=0;
 
-	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            width, height,
-            SDL_WINDOW_RESIZABLE);
+	for (int i=0;i<5;i++)
+	{
+		tab[i] = SDL_CreateWindow("window", x,y,width, height,SDL_WINDOW_RESIZABLE);
+		x+=width;
+		y+=height;
 
-        if (window == 0)
-        {
-        fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-        }
-
-
-	SDL_Renderer * renderer;
-	renderer= SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
-
-	if (renderer == 0) {
-     	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+        	if (tab[i] == 0)
+       	 	{
+        	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+        	}	
 	}
 
-	afficherEcran(renderer,width,height,taille);
-	SDL_Delay(5000);
-	int running=1;
-	SDL_Event
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+	x=0;
+	y=800;
+	for (int i=5;i<10;i++)
+	{
+		tab[i] = SDL_CreateWindow("window", x,y,width, height,SDL_WINDOW_RESIZABLE);
+		x+=width;
+		y-=height;
+	
+	        if (tab[i] == 0)
+        	{
+        		fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+       	 	}
+	}
+	SDL_Delay(8000);
+	for (int i=0;i<10;i++)
+		SDL_DestroyWindow(tab[i]);
+	free(tab);
 	SDL_Quit();
 }
