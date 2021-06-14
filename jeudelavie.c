@@ -14,7 +14,7 @@ void afficherEcran(SDL_Renderer *renderer,int tab1[30][50]){
 	
 	for (i=0;i<30;i++){
 		for (j=0;j<50;j++){
-			if (tab1[i][j]==1){
+			if (tab1[i][j]==0){
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 			}
 			else{
@@ -36,6 +36,7 @@ void vivre(int tab1[30][50],int tab2[30][50])
 	int i,j,vivre;
 	for (i=0;i<30;i++){
 		for (j=0;j<50;j++){
+			vivre=0;
 			if (tab1[i][j]==0){
 				tab2[i][j]=0;
 			}
@@ -48,7 +49,8 @@ void vivre(int tab1[30][50],int tab2[30][50])
 				vivre+=tab1[(i-1)%30][(j+1)%50];
 				vivre+=tab1[(i+1)%30][(j-1)%50];
 				vivre+=tab1[(i+1)%30][(j+1)%50];
-				if ((vivre<2) ||(vivre>3)){
+				printf("%d\n",vivre);
+				if ((vivre>1) && (vivre<4)){
 					tab2[i][j]=0;
 				}
 				else{
@@ -83,8 +85,11 @@ int main()
 	SDL_Window *window;
 	int tab1[30][50];
 	int tab2[30][50];
+	int i,j;
 
 	init_tab(tab1);
+	
+	vivre(tab1,tab2);
 
 	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
             width, height,
@@ -121,6 +126,12 @@ int main()
 							printf("appui sur la croix\n");
 							break;
 						default:
+							for (i=0;i<30;i++){
+								for (j=0;j<50;j++){
+									tab1[i][j]=tab2[i][j];
+								}
+							}
+				
 							afficherEcran(renderer,tab1);
 							vivre(tab1,tab2);
 					}
