@@ -61,13 +61,15 @@ int main ()
    	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
    }
 
+if (TTF_Init() < 0) end_sdl(0, "Couldn't initialize SDL TTF", window, renderer);
+
 TTF_Font* font = NULL;                    
-font = TTF_OpenFont("./fonts/Pacifico.ttf", 65);      
+font = TTF_OpenFont("angelina.ttf", 65);      
 if (font == NULL) end_sdl(0, "Can't load font", window, renderer);
 
 TTF_SetFontStyle(font, TTF_STYLE_ITALIC | TTF_STYLE_BOLD);   
 
-SDL_Color color = {20, 0, 40, 255};                         
+SDL_Color color = {200, 0, 40, 255};                         
 SDL_Surface* text_surface = NULL;                          
 text_surface = TTF_RenderText_Blended(font, "Hello World !", color);
 if (text_surface == NULL) end_sdl(0, "Can't create text surface", window, renderer);
@@ -77,7 +79,7 @@ text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 if (text_texture == NULL) end_sdl(0, "Can't create texture from surface", window, renderer);
 SDL_FreeSurface(text_surface);                                     
 
-SDL_Rect pos = {0, 0, 0, 0};                                      
+SDL_Rect pos = {10,10, 0, 0};                                      
 SDL_QueryTexture(text_texture, NULL, NULL, &pos.w, &pos.h);      
 SDL_RenderCopy(renderer, text_texture, NULL, &pos);             
 SDL_DestroyTexture(text_texture);                              
