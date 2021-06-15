@@ -14,10 +14,12 @@ void afficherEcran(SDL_Renderer *renderer,int tab1[30][50]){
 	
 	for (i=0;i<30;i++){
 		for (j=0;j<50;j++){
-			if (tab1[i][j]==0){
+			if (tab1[i][j]==1){
+				//cellule vivante donc couleur noire
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 			}
 			else{
+				//cellule morte, couleur blanche
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			}
 			rect.x=i*10;
@@ -37,24 +39,26 @@ void vivre(int tab1[30][50],int tab2[30][50])
 	for (i=0;i<30;i++){
 		for (j=0;j<50;j++){
 			vivre=0;
-			if (tab1[i][j]==0){
-				tab2[i][j]=0;
+			vivre+=tab1[(i-1)%30][j];
+			vivre+=tab1[(i+1)%30][j];
+			vivre+=tab1[i][(j-1)%50];
+			vivre+=tab1[i][(j+1)%50];
+			vivre+=tab1[(i-1)%30][(j-1)%50];
+			vivre+=tab1[(i-1)%30][(j+1)%50];
+			vivre+=tab1[(i+1)%30][(j-1)%50];
+			vivre+=tab1[(i+1)%30][(j+1)%50];
+			if ((tab1[i][j]==0)&&(vivre==3)){
+				//la cellule devient vivante
+				tab2[i][j]=1;
 			}
 			else{
-				vivre+=tab1[(i-1)%30][j];
-				vivre+=tab1[(i+1)%30][j];
-				vivre+=tab1[i][(j-1)%50];
-				vivre+=tab1[i][(j+1)%50];
-				vivre+=tab1[(i-1)%30][(j-1)%50];
-				vivre+=tab1[(i-1)%30][(j+1)%50];
-				vivre+=tab1[(i+1)%30][(j-1)%50];
-				vivre+=tab1[(i+1)%30][(j+1)%50];
-				printf("%d\n",vivre);
-				if ((vivre>1) && (vivre<4)){
-					tab2[i][j]=0;
+				if ((vivre==2) || (vivre==3)){
+					//cellule reste en vie
+					tab2[i][j]=1;
 				}
 				else{
-					tab2[i][j]=1;
+					//la cellule meurt
+					tab2[i][j]=0;
 				}
 			}
 		}
@@ -73,7 +77,7 @@ void init_tab(int tab1[30][50]){
 
 	for (i=0;i<30;i++){
 		for (j=0;j<50;j++){
-			aleat=(int)(((float)rand()/(float)RAND_MAX)*2);
+			aleat=(int)(((float)rand()/(float)RAND_MAX)*1.5);
 			tab1[i][j]=aleat;
 		}
 	}
@@ -81,7 +85,7 @@ void init_tab(int tab1[30][50]){
 
 int main()
 {
-	int width=1500, height=1500;
+	int width=30*10, height=50*10;
 	SDL_Window *window;
 	int tab1[30][50];
 	int tab2[30][50];
@@ -113,7 +117,9 @@ int main()
 	int running=1;
 	SDL_Event event;
 	while (running) {
-
+		SDL_Delay(150);
+		afficherEcran(renderer,tab1);
+		vivre(tab1,tab2);
 		while (SDL_PollEvent(&event))
 		{
 			switch(event.type)
@@ -131,9 +137,7 @@ int main()
 									tab1[i][j]=tab2[i][j];
 								}
 							}
-				
 							afficherEcran(renderer,tab1);
-							vivre(tab1,tab2);
 					}
 				    break;
 				case SDL_QUIT :
@@ -141,7 +145,7 @@ int main()
 					running = 0;
 			}
 		}
-		SDL_Delay(1000); 
+		SDL_Delay(1); 
 	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
