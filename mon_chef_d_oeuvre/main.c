@@ -38,10 +38,10 @@ int main ()
             return EXIT_FAILURE;
       }
    SDL_Window *window;
-      int width = 100;
-      int height =300;
-      int largeur = 100/5;
-      int longueur =300/5;
+      int width = 300;
+      int height =900;
+      int largeur = width/5;
+      int longueur =height/5;
 		int ** grille;
 		grille=init_grille(largeur,longueur);
 
@@ -95,6 +95,7 @@ int main ()
 								case SDLK_SPACE:
 								case SDLK_p:
 									pause=1-pause;
+									printf("pause\n");
 									break;
 								case SDLK_LEFT:
 								case SDLK_q:
@@ -120,9 +121,22 @@ int main ()
       	}
 		if (!pause)
 		{
+			printf("%d\n",pos);
 			position_vaisseau(grille, &posvaisseau,longueur,largeur,pos);
-			afficherEcran(grille, window, renderer);
+			printf("%d\n",posvaisseau);
+			afficherEcran(grille, window, renderer,posvaisseau);
+			SDL_RenderPresent(renderer);
+			SDL_RenderClear(renderer);
 			pos=0;
+			for (int j=0;j<longueur;j++)
+	{
+		for (int i=0;i<largeur;i++)
+		{
+			printf("%d ",grille[i][j]);
+		}
+        printf("\n");
+	}
+
 		}
 		SDL_Delay(15);
 		

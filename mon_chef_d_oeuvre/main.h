@@ -5,6 +5,7 @@
 
 #include<SDL2/SDL.h>
 #include "grille.h"
+#include "affichage.h"
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);
 int main();

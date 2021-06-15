@@ -36,10 +36,12 @@ void liberer(int **grille,int x)
 
 void position_vaisseau(int **grille,int *pos_vaisseau,int longeur,int largeur,int commande) //gère le deplacement du vaisseau ne fonction de la commande -1 ou +1
 {
-    if (((*pos_vaisseau+commande)>0)&&((*pos_vaisseau+commande)<largeur))
+	 largeur-=15;
+    if (((*pos_vaisseau+commande)>=0)&&((*pos_vaisseau+commande)<=largeur-1))
     {
         grille[*pos_vaisseau][longeur-1]=0;
-        grille[*pos_vaisseau+commande][longeur-1]=1;
+        *pos_vaisseau=*pos_vaisseau+commande;
+        grille[*pos_vaisseau][longeur-1]=1;
     }
 
 }
@@ -57,7 +59,7 @@ void vaisseau_gauche(int **grille,int *pos_vaisseau,int longeur) //gère le depl
 }
 void vaisseau_droite(int **grille,int *pos_vaisseau,int longeur,int largeur)
 {
-    if ((*pos_vaisseau+1)<largeur)
+    if ((*pos_vaisseau-1)<largeur)
     {
         grille[longeur-1][*pos_vaisseau]=0;
         *pos_vaisseau=*pos_vaisseau-1;
@@ -81,4 +83,16 @@ int init_tab(int** tab,int x,int y) //place le vaisseau
     tab[x/2][y-1]=1;
 	 return x/2;	
 }
+
+/*int colisition(int ** grille,int position)
+{
+	int coli=0;
+	for (int i=0; i<15; i++)
+	{
+	if grille[position+i][19]==2
+		coli==1;
+	}
+	return coli;
+}*/
+
 
