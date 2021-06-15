@@ -41,7 +41,7 @@ void dessin(SDL_Renderer* renderer,int frame)
 		}
 
 
-  		SDL_SetRenderDrawColor(renderer,50*i, 50, 0,255);   
+  		SDL_SetRenderDrawColor(renderer,30*i, 50, 0,255);   
   		rectangle.x =x;
   		rectangle.y = 90*i;         
   		rectangle.w = 20;        
@@ -49,7 +49,7 @@ void dessin(SDL_Renderer* renderer,int frame)
 	
   		SDL_RenderDrawRect(renderer, &rectangle);
 		SDL_RenderPresent(renderer);
-		//SDL_Delay(10*i+10);
+		SDL_Delay(10);
 	}
   	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
@@ -65,7 +65,7 @@ int main ()
     	}
 	SDL_Window *window;
     	int width = 900;
-    	int height = 600;
+    	int height = 680;
     	int taille = 0;
 
 	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -113,7 +113,7 @@ int main ()
             		}
             		break;
         	}
-		for (int i=0;i<5;i++)
+		for (int i=0;i<6;i++)
 		{
 
 			dessin(renderer,i);
