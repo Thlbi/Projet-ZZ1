@@ -19,5 +19,6 @@ void vaisseau_gauche(int **grille,int *pos_vaisseau,int longeur);
 void vaisseau_droite(int **grille,int *pos_vaisseau,int longeur,int largeur);
 int init_tab(int** tab,int x,int y);
 void position_vaisseau(int **grille,int *pos_vaisseau,int longeur,int largeur,int commande);
+int  gestion_meteorites(int **tab,int largeur,int hauteur);
 
 #endif
