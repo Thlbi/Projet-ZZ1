@@ -1,3 +1,7 @@
+/*Jeu_de_la_vie.c*/
+/*15 juin 2021*/
+/*gcc jeu_de_la_vie.c -o prog -Wall -Wextra -lSDL2 -lm -g*/
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -54,27 +58,31 @@ void liberer(int **grille,int x)
 		free(grille[i]);
 	free(grille);
 }
+
+int modulo(int a, int b)
+{
+	if (a>=0 && a<b)
+		return a;
+	if (a>=b)
+		return modulo(a-b,b);
+	if (a<=0)
+		return modulo(a+b,b);
+}
 int * survie(int ** tab, int x, int y,int pos_x,int pos_y)
 {
-	int pmoinsunx;
-	int pmoinsuny;
 	int * survie=malloc(9*sizeof(int));
-	if (pos_x==0) pmoinsunx=x-1;
-	else pmoinsunx=pos_x -1;
-	if (pos_y==0) pmoinsuny=y-1;
-	else pmoinsuny=pos_y -1;
 
 	if (survie==NULL)
 		printf("Erreur d'allocation du int* survie\n");
-	survie[0]=tab[(pos_x+1)%x][(pos_y+1)%y];
-	survie[1]=tab[(pos_x+1)%x][(pos_y)%y];
-	survie[2]=tab[(pos_x+1)%x][(pmoinsuny)%y];
-	survie[3]=tab[(pos_x)%x][(pos_y+1)%y];
-	survie[4]=tab[(pos_x)%x][(pmoinsuny)%y];
-	survie[5]=tab[(pmoinsunx)%x][(pos_y+1)%y];
-	survie[6]=tab[(pmoinsunx)%x][(pmoinsuny)%y];
-	survie[7]=tab[(pmoinsunx)%x][(pos_y)%y];
-	survie[8]=tab[(pos_x)%x][(pos_y)%y];
+	survie[0]=tab[modulo((pos_x+1),x)][modulo((pos_y+1),y)];
+	survie[1]=tab[modulo((pos_x+1),x)][modulo((pos_y),y)];
+	survie[2]=tab[modulo((pos_x+1),x)][modulo((pos_y-1),y)];
+	survie[3]=tab[modulo((pos_x),x)][modulo((pos_y+1),y)];
+	survie[4]=tab[modulo((pos_x),x)][modulo((pos_y-1),y)];
+	survie[5]=tab[modulo((pos_x-1),x)][modulo((pos_y+1),y)];
+	survie[6]=tab[modulo((pos_x-1),x)][modulo((pos_y-1),y)];
+	survie[7]=tab[modulo((pos_x-1),x)][modulo((pos_y),y)];
+	survie[8]=tab[modulo((pos_x),x)][modulo((pos_y),y)];
 	
 	return survie;
 }
@@ -117,7 +125,7 @@ void init_tab(int** tab,int x,int y)
 	{
 		for (j=0;j<y;j++)
 		{
-			aleat=(int)(((float)rand()/(float)RAND_MAX)*1.99999);
+			aleat=(int)(((float)rand()/(float)RAND_MAX)*2);
 			tab[i][j]=aleat;
 		}
 	}
@@ -178,7 +186,7 @@ int main ()
          fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
          /* on peut aussi utiliser SDL_Log() */
       }
-      SDL_SetWindowTitle(window, "snake");
+      SDL_SetWindowTitle(window, "Jeu_de_la_vie");
       SDL_Renderer *renderer;
 
    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
@@ -215,7 +223,7 @@ int main ()
       	}
 		t_tplusun(tab1,width/10,height/10,tab2);
 		afficherEcran(renderer,tab2,width/10,height/10);
-		SDL_Delay(200);
+		SDL_Delay(150);
 		for (int i=0;i<width/10;i++)
 		{
 			for (int j=0;j<height/10;j++)
