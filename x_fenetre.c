@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
-#include<stlib.h>
+#include<stdlib.h>
 
 int minimum(int a, int b)
 {
