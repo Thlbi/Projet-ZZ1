@@ -17,7 +17,7 @@ int** init_grille(int x,int y);
 void liberer(int **grille,int x);
 void vaisseau_gauche(int **grille,int *pos_vaisseau,int longeur);
 void vaisseau_droite(int **grille,int *pos_vaisseau,int longeur,int largeur);
-void init_tab(int** tab,int x,int y);
+int init_tab(int** tab,int x,int y);
 void position_vaisseau(int **grille,int *pos_vaisseau,int longeur,int largeur,int commande);
 
 #endif

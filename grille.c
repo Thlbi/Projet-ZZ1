@@ -66,7 +66,7 @@ void vaisseau_droite(int **grille,int *pos_vaisseau,int longeur,int largeur)
     }
 
 }
-void init_tab(int** tab,int x,int y) //place le vaisseau 
+int init_tab(int** tab,int x,int y) //place le vaisseau 
 {
 	int i =0;
     int j =0;
@@ -80,6 +80,8 @@ void init_tab(int** tab,int x,int y) //place le vaisseau
     printf("%d\n",x/2);
     printf("%d\n",y-1);
     tab[x/2][y-1]=1;
+
+    return x/2;
 }
 
 
@@ -93,7 +95,7 @@ int main(){
     int **tab =init_grille(largeur,longeur);
     int i;
     int j;  
-    init_tab(tab,largeur,longeur);
+    pos_vaisseau=init_tab(tab,largeur,longeur);
 
     for (j=0;j<longeur;j++)
 	{
@@ -114,5 +116,5 @@ int main(){
         printf("\n");
 	}    
 
-
+    liberer()
 }
