@@ -40,8 +40,7 @@ SDL_Texture* load_texture_from_image(char  *  file_image_name, SDL_Window *windo
     if (my_texture == NULL) end_sdl(0, "Echec de la transformation de la surface en texture", window, renderer,my_texture,bg_texture);
 
     return my_texture;
-  }
-
+}
 
 void play_with_texture_vaisseau(SDL_Texture* my_texture,SDL_Window* window,SDL_Renderer* renderer,int pos_x) 
 {
@@ -65,10 +64,7 @@ void play_with_texture_vaisseau(SDL_Texture* my_texture,SDL_Window* window,SDL_R
      SDL_RenderCopy(renderer, my_texture,     // Préparation de l'affichage  
                     &source,
                     &destination);            
-     SDL_RenderPresent(renderer);             
-     SDL_Delay(1000);                         
 
-     SDL_RenderClear(renderer);               // Effacer la fenêtre
 }
 
 
@@ -92,11 +88,45 @@ void background(SDL_Texture *my_texture, SDL_Window *window,
   SDL_RenderCopy(renderer, my_texture,
                  &source,
                  &destination);                 // Création de l'élément à afficher
-  SDL_RenderPresent(renderer);                  // Affichage
-  SDL_Delay(1);	
 
 }
 
+
+void play_with_meteore(SDL_Texture * texture_meteore,SDL_Window * window,SDL_Renderer * renderer,int position_x,int position_y)
+{
+
+SDL_Rect
+    source = {0},                             // Rectangle définissant la zone de la texture à récupérer
+    window_dimensions = {0},                  // Rectangle définissant la fenêtre, on  n'utilisera que largeur et hauteur
+    destination = {0},                        // Rectangle définissant où la zone_source doit être déposée dans le renderer
+    state = {0};
+
+  SDL_GetWindowSize(window,                   // Récupération des dimensions de la fenêtre
+                    &window_dimensions.w,
+                    &window_dimensions.h);
+  SDL_QueryTexture(texture_meteore, NULL, NULL,    // Récupération des dimensions de l'image
+                   &source.w, &source.h);
+
+  float zoom = 0.708;                             // zoom, car ces images sont un peu petites
+  int offset_x = source.w / 5.9,                // La largeur d'une vignette de l'image
+      offset_y = source.h / 5.9;                // La hauteur d'une vignette de l'image
+
+  state.x = 55;
+  state.y = 55;
+  state.w = offset_x;
+  state.h = offset_y;
+
+  /* construction des différents rectangles autour de chacune des vignettes de la planche */
+
+  destination.w = offset_x * zoom;            // Largeur du sprite à l'écran
+  destination.h = offset_y * zoom;            // Hauteur du sprite à l'écran
+  destination.x = position_x; // Position en x pour l'affichage du sprite
+  destination.y = position_y;  // Position en y pour l'affichage du sprite
+  SDL_RenderCopy(renderer,                  // Préparation de l'affichage
+                   texture_meteore,&state,&destination);
+    SDL_RenderPresent(renderer);              // Affichage
+    SDL_Delay(2000);            // Pause en ms
+}
 
 
 
@@ -108,6 +138,7 @@ int main(int argc, char **argv) {
     SDL_Renderer* renderer = NULL;
     SDL_Texture* my_texture = NULL;
     SDL_Texture* bg_texture = NULL;
+    SDL_Texture* texture_meteore = NULL;
 
     SDL_DisplayMode screen;
 
@@ -140,9 +171,13 @@ int main(int argc, char **argv) {
   bg_texture = load_texture_from_image("redfighter0005.png",window,renderer);
   if (bg_texture == NULL) end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer,my_texture,bg_texture);
 
+  texture_meteore = load_texture_from_image("buttons.png",window,renderer);
+  if (texture_meteore == NULL) end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer,my_texture,bg_texture);
+  
   //play_with_texture_1(my_texture,window,renderer);
   background(my_texture,window,renderer);
   play_with_texture_vaisseau(bg_texture,window,renderer,1000);
+  play_with_meteore(texture_meteore,window,renderer,15*5,3*5);
   //play_with_texture_3(bg_texture,window,renderer);
   //play_with_texture_4(bg_texture,window,renderer);
   //play_with_texture_5(my_texture,bg_texture,window,renderer);
