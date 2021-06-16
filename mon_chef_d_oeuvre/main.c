@@ -170,7 +170,7 @@ int main ()
 			coli=gestion_meteorites(grille,largeur,longueur,posvaisseau,creation_met, met,regen);
 			background(bg_texture,window,renderer);
 			play_with_texture_vaisseau(image,window,renderer,5*posvaisseau);
-			for (int j=efface; j<regen; j++)
+			for (int j=efface; j<regen+1; j++)
 			{
 				for (int i=0; i<NB_MET;i++)
 				{
