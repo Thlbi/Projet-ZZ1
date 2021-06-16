@@ -38,7 +38,7 @@ int main ()
             return EXIT_FAILURE;
       }
    SDL_Window *window;
-      int width = 600;
+      int width = 900;
       int height =900;
       int largeur = width/5;
       int longueur =height/5;
@@ -127,7 +127,7 @@ int main ()
 								case SDLK_SPACE:
 								case SDLK_p:
 									pause=1-pause;
-									printf("pause\n");
+								//	printf("pause\n");
 									break;
 								case SDLK_LEFT:
 								case SDLK_q:
@@ -187,10 +187,10 @@ int main ()
 			SDL_RenderClear(renderer);
 			pos=0;
 			image=texture_vaisseau;
-			printf("gen :%d\n", gen);
+/*			printf("gen :%d\n", gen);
 			printf("regen :%d\n", regen);
 			printf("efface :%d\n", efface);
-			
+*/			
 	/*		for (int j=0;j<longueur;j++)
 	{
 		for (int i=0;i<largeur;i++)
@@ -204,17 +204,32 @@ int main ()
 	  }
 		if (coli)
 		{
-			printf("mort\n");
+			SDL_RenderClear(renderer);
+			affichage_texte(0, window, renderer);
+			SDL_RenderPresent(renderer);
+		//	printf("mort\n");
 			running=0;
+			SDL_Delay(1000);
 		}
 		if (efface==12)
 		{
-			printf("victoire bravo\n");
+			SDL_RenderClear(renderer);
+			affichage_texte(1, window, renderer);
+			SDL_RenderPresent(renderer);
+		//	printf("victoire bravo\n");
 			running=0;
+			SDL_Delay(1000);
 		}	
 		SDL_Delay(5);
 		}
+	SDL_DestroyTexture(texture_meteore);
+	SDL_DestroyTexture(texture_vaisseau);
+	SDL_DestroyTexture(texture_vaisseau2);
+	SDL_DestroyTexture(texture_vaisseau3);
+	IMG_Quit();
+	TTF_Quit();
    end_sdl(1, "Normal ending", window, renderer);
+	liberer(grille,largeur);
 }
                                      
 

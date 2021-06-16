@@ -105,8 +105,8 @@ int  gestion_meteorites(int **tab,int largeur,int hauteur,int pos_vaisseau,int g
     {
         if (tab[i][j-(19+15)]==2)
 		  {
-				printf("dans le if\n");
-            for(k=pos_vaisseau;k<15+pos_vaisseau;k++)
+			//	printf("dans le if\n");
+            for(k=pos_vaisseau+3;k<15+pos_vaisseau-3;k++)
 				{ 
                 if (i==k)
                     mort=1;
