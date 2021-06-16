@@ -83,52 +83,67 @@ int init_tab(int** tab,int x,int y) //place le vaisseau
 }
 
 
-int  gestion_meteorites(int **tab,int largeur,int hauteur,int pos_vaisseau,int generation,int  met[][NB_MET],int regen){ //renvoie 1 si on meurt 0 sinon et déplace  toutes les météorites
+int  gestion_meteorites(int **tab,int largeur,int hauteur,int pos_vaisseau,int generation,int  met[][NB_MET],int regen)
+{ //renvoie 1 si on meurt 0 sinon et déplace  toutes les météorites
     int i;
     int j=hauteur-1;
     int mort=0;
     int k;
-	 
-    for(i=0;i<largeur;i++){
-        if (tab[i][j]==2){
+	
+/*Suppresion de meteroitew derniere ligne*/ 
+    for(i=0;i<largeur;i++)
+	 {
+        if (tab[i][j]==2)
+		  {
             tab[i][j]=0;
         }
     }
-    j=j-1;
+
+/*Gestion de la mort*/
     i=0;
-    while ((i<largeur)&&(mort==0)){
-        if (tab[i][j]==2){
-        //    printf("ok\n");
-            for(k=pos_vaisseau;k<19;k++){ //19 correspond a la taille du vaisseau en pixel (largeur)
-                if (i==k){
+    while ((i<largeur)&&(mort==0))
+    {
+        if (tab[i][j-(19+15)]==2)
+		  {
+				printf("dans le if\n");
+            for(k=pos_vaisseau;k<15+pos_vaisseau;k++)
+				{ 
+                if (i==k)
                     mort=1;
-                }
             }
             tab[i][j+1]=2;
             tab[i][j]=0;   
         }
         i=i+1;
     }
-    if (mort==0){
-        for(i=0;i<largeur;i++){
-            for(j=hauteur-3;j>=0;j--){
-                if (tab[i][j]==2){
+
+
+/*Decalage meteorite*/
+    if (mort==0)
+	 {
+        for(i=0;i<largeur;i++)
+		  {
+            for(j=hauteur-2;j>=0;j--)
+				{
+                if (tab[i][j]==2)
+					 {
                     tab[i][j+1]=2;
                     tab[i][j]=0;
                 }
             }
         }
-        if (generation==1){   
-            for (i=0;i<NB_MET;i++){
 
-                k=rand()%29;
-                //printf("%d\n",k);
+		/*Generation metorite*/
+        if (generation==1)
+		  {   
+            for (i=0;i<NB_MET;i++)
+				{
+                k=rand()%(largeur-LARGEUR_MET);
 					 met[regen][i]=k;
-                for (j=k;j<(k+LARGEUR_MET);j++){   
-                    if (k<largeur){
+
+                for (j=k;j<(k+LARGEUR_MET);j++)
+					 {   
                         tab[j][0]=2;
-          //          printf("ok\n");
-                    }
                 }
                 
             }

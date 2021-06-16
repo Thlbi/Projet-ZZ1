@@ -57,9 +57,9 @@ SDL_Rect
   SDL_QueryTexture(texture_meteore, NULL, NULL,    // Récupération des dimensions de l'image
                    &source.w, &source.h);
 
-  float zoom = 0.5;                             // zoom, car ces images sont un peu petites
-  int offset_x = source.w / 5,                // La largeur d'une vignette de l'image
-      offset_y = source.h / 5;                // La hauteur d'une vignette de l'image
+  float zoom = 0.708;                             // zoom, car ces images sont un peu petites
+  int offset_x = source.w / 5.9,                // La largeur d'une vignette de l'image
+      offset_y = source.h / 5.9;                // La hauteur d'une vignette de l'image
 
   state.x = 50;
   state.y = 50;

@@ -87,14 +87,17 @@ int main ()
    SDL_Event event;
    int running=1;
 	int pause=1;
-	int posvaisseau;
+	int posvaisseau=0;
 	posvaisseau=init_tab(grille,largeur,longueur);
 	int pos=0;
 	int gen=1;
 	int regen=0;
 	int coli=0;
-	int met[longueur/14][NB_MET];
-	int met2[longueur/14][NB_MET];
+	int met[longueur/HAUTEUR_MET][NB_MET];
+	int efface=0;
+	int creation_met=0;
+	srand(time(0));
+
       while (running)
       {
          while (SDL_PollEvent(&event))
@@ -152,50 +155,43 @@ int main ()
       	}
 		if (!pause)
 		{
-			printf("%d\n",pos);
+			//printf("%d\n",pos);
 			position_vaisseau(grille, &posvaisseau,longueur,largeur,pos);
-			printf("%d\n",posvaisseau);
+			//printf("%d\n",posvaisseau);
 			gen+=1;
-			if (gen==15)
+			creation_met+=1;
+			if (gen==HAUTEUR_MET)
 			{
+				if (regen!=11)
+					creation_met=0;
 				gen=0;
 				regen+=1;
 			}
-			coli=gestion_meteorites(grille,largeur,longueur,posvaisseau,gen, met,regen);
+			coli=gestion_meteorites(grille,largeur,longueur,posvaisseau,creation_met, met,regen);
 			background(bg_texture,window,renderer);
 			play_with_texture_vaisseau(image,window,renderer,5*posvaisseau);
-			for (int j=0; j<=regen; j++)
+			for (int j=efface; j<regen; j++)
 			{
 				for (int i=0; i<NB_MET;i++)
 				{
-	   			play_with_meteore(texture_meteore,window,renderer,12*5*met[j][i],5*12*(regen-j)+gen+12);
+	   			play_with_meteore(texture_meteore,window,renderer, PIXEL*met[j][i], PIXEL*HAUTEUR_MET*(regen-j+efface)+PIXEL*gen);
 				}
+				SDL_Delay(5);
 			}
-	/*		if (regen%11==0)
-			{
-				for (int j=0; j<longueur/14; j++)
+				if (regen>11)
 				{
-					for (int i=0; i<NB_MET;i++)
-					{
-						met2[j][i]=met[j][i];
-					}
-				}	
-				for (int j=0; j<longueur/14; j++)
-				{
-					for (int i=0; i<NB_MET;i++)
-					{
-						met2[j][i]=met[j][i];
-					}
-				}
-
-			}*/
-			
+					regen=11;
+					efface+=1;
+				} 
 			SDL_RenderPresent(renderer);
 			SDL_RenderClear(renderer);
 			pos=0;
 			image=texture_vaisseau;
+			printf("gen :%d\n", gen);
+			printf("regen :%d\n", regen);
+			printf("efface :%d\n", efface);
 			
-/*			for (int j=0;j<longueur;j++)
+	/*		for (int j=0;j<longueur;j++)
 	{
 		for (int i=0;i<largeur;i++)
 		{
@@ -204,14 +200,19 @@ int main ()
         printf("\n");
 	}*/
 
-		}
+		
+	  }
 		if (coli)
 		{
 			printf("mort\n");
 			running=0;
 		}
-		SDL_Delay(30);
-		
+		if (efface==12)
+		{
+			printf("victoire bravo\n");
+			running=0;
+		}	
+		SDL_Delay(5);
 		}
    end_sdl(1, "Normal ending", window, renderer);
 }

@@ -13,8 +13,8 @@
 #include<stdlib.h>
 #include<time.h>
 
-#define NB_MET 5
-#define LARGEUR_MET 1
+#define NB_MET 1
+#define LARGEUR_MET 15
 
 int** init_grille(int x,int y);
 void liberer(int **grille,int x);

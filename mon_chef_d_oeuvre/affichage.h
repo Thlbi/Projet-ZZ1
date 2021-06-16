@@ -3,6 +3,9 @@
 
 #include <SDL2/SDL_image.h>
 
+#define HAUTEUR_MET  15
+#define PIXEL 5
+
 void end_sdl2(char ok,char const* msg,SDL_Window* window,SDL_Renderer* renderer);
 
 SDL_Texture* load_texture_from_image(char  *  file_image_name, SDL_Window *window, SDL_Renderer *renderer);
