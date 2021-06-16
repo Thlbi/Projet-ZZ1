@@ -61,9 +61,9 @@ int main()
 
 	TTF_SetFontStyle(font, TTF_STYLE_ITALIC | TTF_STYLE_BOLD);  // en italique, gras
 
-	SDL_Color color = {100, 0, 60, 255};                       // la couleur du texte
+	SDL_Color color = {230, 200, 0, 255};                       // la couleur du texte
 	SDL_Surface* text_surface = NULL;               // la surface  (uniquement transitoire)
-	text_surface = TTF_RenderText_Blended(font, "Hello World !", color); // création du texte dans la surface 
+	text_surface = TTF_RenderText_Blended(font, "Vous avez survecu !", color); // création du texte dans la surface 
 	
 	if (text_surface == NULL) end_sdl(0, "Can't create text surface", window, renderer);
 	
@@ -73,7 +73,7 @@ int main()
 	if (text_texture == NULL) end_sdl(0, "Can't create texture from surface", window, renderer);
 	SDL_FreeSurface(text_surface);             // la texture ne sert plus à rien
 
-	SDL_Rect pos = {0, 0, 0, 0};              // rectangle où le texte va être prositionné
+	SDL_Rect pos = {800, 500, 0, 0};              // rectangle où le texte va être prositionné
 	SDL_QueryTexture(text_texture, NULL, NULL, &pos.w, &pos.h);   // récupération de la taille (w, h) du texte 
 	SDL_RenderCopy(renderer, text_texture, NULL, &pos); // Ecriture du texte dans le renderer   
 	SDL_DestroyTexture(text_texture);    // On n'a plus besoin de la texture avec le texte
