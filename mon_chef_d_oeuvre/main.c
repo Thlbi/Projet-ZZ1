@@ -38,7 +38,7 @@ int main ()
             return EXIT_FAILURE;
       }
    SDL_Window *window;
-      int width = 300;
+      int width = 600;
       int height =900;
       int largeur = width/5;
       int longueur =height/5;
@@ -60,12 +60,41 @@ int main ()
       {
          fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
       }
+  SDL_Texture* texture_vaisseau = NULL;
+  SDL_Texture* texture_vaisseau2 = NULL;
+  SDL_Texture* texture_vaisseau3 = NULL;
+  SDL_Texture* texture_meteore = NULL;
+  SDL_Texture* bg_texture = NULL;
+  SDL_Texture* image = NULL;
+  
+
+  texture_vaisseau = load_texture_from_image("redfighter0005.png",window,renderer);
+  if (texture_vaisseau == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
+  
+  texture_vaisseau2 = load_texture_from_image("redfighter0001.png",window,renderer);
+  if (texture_vaisseau2 == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
+
+  texture_vaisseau3 = load_texture_from_image("redfighter0009.png",window,renderer);
+  if (texture_vaisseau3 == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
+
+  texture_meteore = load_texture_from_image("buttons.png",window,renderer);
+  if (texture_meteore == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
+
+  bg_texture = load_texture_from_image("Nebula Aqua-Pink.png",window,renderer);
+  if (bg_texture == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
+
+
    SDL_Event event;
    int running=1;
 	int pause=1;
 	int posvaisseau;
 	posvaisseau=init_tab(grille,largeur,longueur);
 	int pos=0;
+	int gen=1;
+	int regen=0;
+	int coli=0;
+	int met[longueur/14][NB_MET];
+	int met2[longueur/14][NB_MET];
       while (running)
       {
          while (SDL_PollEvent(&event))
@@ -100,10 +129,12 @@ int main ()
 								case SDLK_LEFT:
 								case SDLK_q:
 									pos=-1;
+									image=texture_vaisseau2;
 									break;
 								case SDLK_RIGHT:
 								case SDLK_d:
 									pos=1;
+									image=texture_vaisseau3;
 									break;
 								default: 
 									break;
@@ -124,21 +155,62 @@ int main ()
 			printf("%d\n",pos);
 			position_vaisseau(grille, &posvaisseau,longueur,largeur,pos);
 			printf("%d\n",posvaisseau);
-			afficherEcran(grille, window, renderer,posvaisseau);
+			gen+=1;
+			if (gen==15)
+			{
+				gen=0;
+				regen+=1;
+			}
+			coli=gestion_meteorites(grille,largeur,longueur,posvaisseau,gen, met,regen);
+			background(bg_texture,window,renderer);
+			play_with_texture_vaisseau(image,window,renderer,5*posvaisseau);
+			for (int j=0; j<=regen; j++)
+			{
+				for (int i=0; i<NB_MET;i++)
+				{
+	   			play_with_meteore(texture_meteore,window,renderer,12*5*met[j][i],5*12*(regen-j)+gen+12);
+				}
+			}
+	/*		if (regen%11==0)
+			{
+				for (int j=0; j<longueur/14; j++)
+				{
+					for (int i=0; i<NB_MET;i++)
+					{
+						met2[j][i]=met[j][i];
+					}
+				}	
+				for (int j=0; j<longueur/14; j++)
+				{
+					for (int i=0; i<NB_MET;i++)
+					{
+						met2[j][i]=met[j][i];
+					}
+				}
+
+			}*/
+			
 			SDL_RenderPresent(renderer);
 			SDL_RenderClear(renderer);
 			pos=0;
-			for (int j=0;j<longueur;j++)
+			image=texture_vaisseau;
+			
+/*			for (int j=0;j<longueur;j++)
 	{
 		for (int i=0;i<largeur;i++)
 		{
 			printf("%d ",grille[i][j]);
 		}
         printf("\n");
-	}
+	}*/
 
 		}
-		SDL_Delay(15);
+		if (coli)
+		{
+			printf("mort\n");
+			running=0;
+		}
+		SDL_Delay(30);
 		
 		}
    end_sdl(1, "Normal ending", window, renderer);
