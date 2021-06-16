@@ -68,19 +68,19 @@ int main ()
   SDL_Texture* image = NULL;
   
 
-  texture_vaisseau = load_texture_from_image("redfighter0005.png",window,renderer);
+  texture_vaisseau = load_texture_from_image("images/redfighter0005.png",window,renderer);
   if (texture_vaisseau == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
   
-  texture_vaisseau2 = load_texture_from_image("redfighter0001.png",window,renderer);
+  texture_vaisseau2 = load_texture_from_image("images/redfighter0001.png",window,renderer);
   if (texture_vaisseau2 == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
 
-  texture_vaisseau3 = load_texture_from_image("redfighter0009.png",window,renderer);
+  texture_vaisseau3 = load_texture_from_image("images/redfighter0009.png",window,renderer);
   if (texture_vaisseau3 == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
 
-  texture_meteore = load_texture_from_image("buttons.png",window,renderer);
+  texture_meteore = load_texture_from_image("images/buttons.png",window,renderer);
   if (texture_meteore == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
 
-  bg_texture = load_texture_from_image("Nebula Aqua-Pink.png",window,renderer);
+  bg_texture = load_texture_from_image("images/Nebula Aqua-Pink.png",window,renderer);
   if (bg_texture == NULL) end_sdl2(0, "Echec du chargement de l'image dans la texture", window, renderer);
 
 

@@ -31,7 +31,7 @@ void affichage_texte(int victoire,SDL_Window *window,SDL_Renderer *renderer)
 	if (TTF_Init() < 0) end_sdl2(0, "Couldn't initialize SDL TTF", window, renderer);
 	
 	TTF_Font* font = NULL;                     // la variable 'police de caractère'
-	font = TTF_OpenFont("Pacifico.ttf", 65); // La police à charger, la taille désirée
+	font = TTF_OpenFont("polices/Pacifico.ttf", 65); // La police à charger, la taille désirée
 	
 	if (font == NULL) end_sdl2(0, "Can't load font", window, renderer);
 	
