@@ -55,16 +55,19 @@ tas_t * percolation_bas_tas_min(tas_t *tas, int indice)
 	int fin=1;
 	while (fin)
 	{
-	printf("dans le while\n");
-		if (2*rang + 1>(tas->taille) && tas->tab[2*rang +1]<tas->tab[2*rang +2] && tas->tab[2*rang +1]<valeur)
+//	printf("dans le while\n");
+		if (2*rang + 1<=(tas->taille) && tas->tab[2*rang +1]<=tas->tab[2*rang +2] && tas->tab[2*rang +1]<valeur)
 		{
+		
+//	printf("dans le 1er if\n");
 			aux=tas->tab[rang];
 			tas->tab[rang]=tas->tab[2*rang +1];
 			rang=2*rang +1;
 			tas->tab[rang]=aux;
 		}
-		else if (2*rang + 2>(tas->taille) && tas->tab[2*rang +2]<tas->tab[2*rang +1] && tas->tab[2*rang +2]<valeur)
+		else if (2*rang + 2<=(tas->taille) && tas->tab[2*rang +2]<tas->tab[2*rang +1] && tas->tab[2*rang +2]<valeur)
 		{
+	printf("dans le 1er if\n");
 			aux=tas->tab[rang];
 			tas->tab[rang]=tas->tab[2*rang +2];
 			rang=2*rang +2;
@@ -91,13 +94,14 @@ tas_t* tri_par_tas(int *t, int n)
 	while(tas->taille>0)
 	{
 	//printf("dans le while ");	
-	printf("%d\n",tas->taille);
+	//printf("%d\n",tas->taille);
 	int aux=tas->tab[0];
 	tas->tab[0]=tas->tab[tas->taille];
 	tas->tab[tas->taille]=aux;
+	affichage(tas);	
 	tas->taille+=-1;
 	percolation_bas_tas_min(tas,0);
-	//affichage(tas);	
+	affichage(tas);	
 	}
 	tas->taille=n-1;
 	return tas;
@@ -122,4 +126,5 @@ int main()
 	printf("%d\n",tas->taille);
 	tas2=tri_par_tas(tableau,10);
 	printf("%d\n",tas2->taille);
+	affichage(tas2);
 }
