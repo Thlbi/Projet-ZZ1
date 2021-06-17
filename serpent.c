@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer) 
 {
@@ -30,25 +31,22 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 
 void dessin(SDL_Renderer* renderer,int frame)
 {
-	SDL_Rect rectangle;
-	int x=140;
-	for (int i=0; i<7;i++)
+	int x=50,y=50,x1,y1,z;
+
+	for (int i=0; i<17;i++)
 	{
-		if (6-frame>=i)
+		if (17-frame>=i)
 		{
-			x=140+30*(i+1); //*pow(-1,i);        
-			printf("%d\n",x);
+			z=rand()%30;
+			x1=(x+z)%1500;      
+			y1=(y+30-z)%800;
 		}
 
-
-  		SDL_SetRenderDrawColor(renderer,30*i, 50, 0,255);   
-  		rectangle.x =x;
-  		rectangle.y = 90*i;         
-  		rectangle.w = 20;        
-  		rectangle.h = 80;         
-	
-  		SDL_RenderDrawRect(renderer, &rectangle);
+  		SDL_SetRenderDrawColor(renderer,30*i, 50, i,255);   
+  		SDL_RenderDrawLine(renderer, x,y,x1,y1);
 		SDL_RenderPresent(renderer);
+		x=x1;
+		y=y1;
 		SDL_Delay(10);
 	}
   	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -56,15 +54,15 @@ void dessin(SDL_Renderer* renderer,int frame)
 
 int main ()
 {
+	srand(time(0));
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
         	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
        	 	return EXIT_FAILURE;
     	}
 	SDL_Window *window;
-    	int width = 900;
-    	int height = 680;
-    	int taille = 0;
+    	int width = 1500;
+    	int height = 800;
 
 	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               width, height,
@@ -74,7 +72,7 @@ int main ()
     	{
         	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
     	}
-    	SDL_SetWindowTitle(window, "snake");
+    	SDL_SetWindowTitle(window, "serpent");
     	SDL_Renderer *renderer;
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -86,7 +84,7 @@ int main ()
 	int running=1;
    	while (running)
     	{
-		for (int i=0;i<8;i++)
+		for (int i=0;i<18;i++)
 		{
 
 			dessin(renderer,i);
