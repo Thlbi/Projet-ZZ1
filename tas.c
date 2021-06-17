@@ -139,10 +139,10 @@ static int compare (void const *a, void const *b)
 
 int main(){
     tas_t *tas=initas(20);
-    float seconds;
-    float seconds2;    
-    float temps1;
-    float temps2;
+    clock_t seconds;
+    clock_t seconds2;    
+    clock_t temps1;
+    clock_t temps2;
     int k;
 
 
@@ -162,16 +162,6 @@ int main(){
     ajouter(53,tas);
     int tab[100000];
     int tab2[100000];
-    int tab3[100000];
-    int tab4[100000];
-    int tab5[100000];
-    int tab6[100000];
-    int tab7[100000];
-    int tab8[100000];
-    int tab9[100000];
-    int tab10[100000];
-    int tab11[100000];
-    int tab12[100000];
 
 
     srand(time(0));
@@ -192,28 +182,20 @@ int main(){
         printf("%d\n",tab[i]);
     }
     */
-    seconds=time(NULL);
+    seconds=clock();
     qsort(tab, 100000 ,sizeof *tab, compare);
-    qsort(tab2, 100000 ,sizeof *tab, compare);
-    qsort(tab3, 100000 ,sizeof *tab, compare);
-    qsort(tab4, 100000 ,sizeof *tab, compare);
-    qsort(tab5, 100000 ,sizeof *tab, compare);
-    qsort(tab6, 100000 ,sizeof *tab, compare);
+
     
-    seconds2=time(NULL);
+    seconds2=clock();
     temps1=seconds2-seconds;
 
-    seconds=time(NULL);
-    triParTas(tab7,100000);
-    triParTas(tab8,100000);
-    triParTas(tab9,100000);
-    triParTas(tab10,100000);
-    triParTas(tab11,100000);
-    triParTas(tab12,100000);
+    seconds=clock();
+    triParTas(tab2,100000);
 
-    seconds2=time(NULL);
+
+    seconds2=clock();
     temps2=seconds2-seconds;
-    printf("%f\n",temps2-temps1);
+    printf("%ld\n",temps2-temps1);
     /*
     for (int i=0;i<100000;++i){
         printf("%d ",tab2[i]);
@@ -221,7 +203,7 @@ int main(){
    
     printf("\n ");
     */
-    printf("tp classic: %f\ntp tas: %f\n",temps1,temps2);
+    printf("tp classic: %ld\ntp tas: %ld\n",temps1,temps2);
 
     liberer_tas(tas);
     return 0;
