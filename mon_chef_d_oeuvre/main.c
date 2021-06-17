@@ -91,7 +91,7 @@ int main ()
 	posvaisseau=init_tab(grille,largeur,longueur);
 	int pos=0;
 	int gen=1;
-	int regen=0;
+	int nb_lignes=0;
 	int coli=0;
 	int met[longueur/HAUTEUR_MET][NB_MET];
 	int efface=0;
@@ -160,35 +160,35 @@ int main ()
 			//printf("%d\n",posvaisseau);
 			gen+=1;
 			creation_met+=1;
+			SDL_RenderClear(renderer);
 			if (gen==HAUTEUR_MET)
 			{
-				if (regen!=11)
+				if (nb_lignes!=11)
 					creation_met=0;
 				gen=0;
-				regen+=1;
+				nb_lignes+=1;
 			}
-			coli=gestion_meteorites(grille,largeur,longueur,posvaisseau,creation_met, met,regen);
+			coli=gestion_meteorites(grille,largeur,longueur,posvaisseau,creation_met, met,nb_lignes);
 			background(bg_texture,window,renderer);
 			play_with_texture_vaisseau(image,window,renderer,5*posvaisseau);
-			for (int j=efface; j<regen; j++)
+			for (int j=efface; j<nb_lignes+1; j++)
 			{
 				for (int i=0; i<NB_MET;i++)
 				{
-	   			play_with_meteore(texture_meteore,window,renderer, PIXEL*met[j][i], PIXEL*HAUTEUR_MET*(regen-j+efface)+PIXEL*gen);
+	   			play_with_meteore(texture_meteore,window,renderer, PIXEL*met[j][i], PIXEL*HAUTEUR_MET*(nb_lignes-j+efface)+PIXEL*gen);
 				}
-				SDL_Delay(5);
 			}
-				if (regen>11)
+			SDL_Delay(5);
+				if (nb_lignes>11)
 				{
-					regen=11;
+					nb_lignes=11;
 					efface+=1;
 				} 
 			SDL_RenderPresent(renderer);
-			SDL_RenderClear(renderer);
 			pos=0;
 			image=texture_vaisseau;
 /*			printf("gen :%d\n", gen);
-			printf("regen :%d\n", regen);
+			printf("nb_lignes :%d\n", nb_lignes);
 			printf("efface :%d\n", efface);
 */			
 	/*		for (int j=0;j<longueur;j++)
@@ -232,5 +232,4 @@ int main ()
 	liberer(grille,largeur);
 }
                                      
-
 
