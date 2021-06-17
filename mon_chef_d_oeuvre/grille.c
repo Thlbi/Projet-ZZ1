@@ -89,6 +89,7 @@ int  gestion_meteorites(int **tab,int largeur,int hauteur,int pos_vaisseau,int g
     int j=hauteur-1;
     int mort=0;
     int k;
+	 int hit;
 	
 /*Suppresion de meteroitew derniere ligne*/ 
     for(i=0;i<largeur;i++)
@@ -99,21 +100,25 @@ int  gestion_meteorites(int **tab,int largeur,int hauteur,int pos_vaisseau,int g
         }
     }
 
-/*Gestion de la mort*/
+/*Gestion de la mort/hitbox*/
     i=0;
     while ((i<largeur)&&(mort==0))
     {
-        if (tab[i][j-(19+15)]==2)
+	 for (int k=0;k<20;k++)
+	 {
+      if (tab[i][j-(k+15)]==2)
 		  {
-			//	printf("dans le if\n");
-            for(k=pos_vaisseau+3;k<15+pos_vaisseau-3;k++)
+			if (k>9)
+				hit=5;
+			else
+				hit=1;
+            for(int m=pos_vaisseau+hit;m<15+pos_vaisseau-hit;m++)
 				{ 
-                if (i==k)
+                if (i==m)
                     mort=1;
             }
-            tab[i][j+1]=2;
-            tab[i][j]=0;   
         }
+		}
         i=i+1;
     }
 

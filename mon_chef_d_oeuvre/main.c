@@ -38,7 +38,7 @@ int main ()
             return EXIT_FAILURE;
       }
    SDL_Window *window;
-      int width = 900;
+      int width = 800;
       int height =900;
       int largeur = width/5;
       int longueur =height/5;
@@ -127,7 +127,7 @@ int main ()
 								case SDLK_SPACE:
 								case SDLK_p:
 									pause=1-pause;
-								//	printf("pause\n");
+									printf("pause\n");
 									break;
 								case SDLK_LEFT:
 								case SDLK_q:
@@ -178,7 +178,7 @@ int main ()
 	   			play_with_meteore(texture_meteore,window,renderer, PIXEL*met[j][i], PIXEL*HAUTEUR_MET*(nb_lignes-j+efface)+PIXEL*gen);
 				}
 			}
-			SDL_Delay(5);
+			SDL_Delay(50);
 				if (nb_lignes>11)
 				{
 					nb_lignes=11;
@@ -187,10 +187,11 @@ int main ()
 			SDL_RenderPresent(renderer);
 			pos=0;
 			image=texture_vaisseau;
-/*			printf("gen :%d\n", gen);
+			printf("gen :%d\n", gen);
 			printf("nb_lignes :%d\n", nb_lignes);
 			printf("efface :%d\n", efface);
-*/			
+			printf("coli :%d\n", coli);
+			
 	/*		for (int j=0;j<longueur;j++)
 	{
 		for (int i=0;i<largeur;i++)
