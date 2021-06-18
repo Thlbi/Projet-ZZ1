@@ -36,14 +36,20 @@ void fusion(int indice1, int indice2, partition_t * part)
 	}
 }
 
-void lister_classe_naif(partition_t * part, int etiquette, int n)
+int lister_classe_naif(partition_t * part, int etiquette, int n, int * tab)
 {
+	int j=0;
 	for (int i=0; i<n; i++)
 		if (recuperer_classe(i,part)==etiquette)
-			printf("%d ",i);
+		{
+			tab[j]=i;
+			j+=1;
+		}
+	return j;
 }
 
-void lister_partition(partition_t * part,int n, int * nbclasse,int * tab)
+
+int lister_partition(partition_t * part,int n,int * tab)
 {
 	int j=0;
 	for (int i=0; i<n; i++)
@@ -54,7 +60,7 @@ void lister_partition(partition_t * part,int n, int * nbclasse,int * tab)
 			j+=1;
 		}
 	}
-	*nbclasse=j;
+	return j;
 }
 
 void graph(partition_t * part, int n)
@@ -87,8 +93,6 @@ void remplir_mat(int n,int **mat){
     srand(time(0));
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            printf("ok i:%d\n",i);
-            printf("ok j:%d\n",j);
             mat[i][j]=rand()%8;
 
         }
@@ -118,23 +122,34 @@ void graph2(int **mat, int n)
 	fclose(fichier);
 }
 
-void graph3(partition_t * part, int n)
+void graph3(int **mat, int*tab,int nbel)
 {
 	FILE *fichier;
-	fichier=fopen("graph.dot","w");
+	
+	fichier=fopen("graph3.dot","w");
 	if (fichier==NULL)
 		printf("echec de louverture du fichier\n");
 	else 
-		fprintf(fichier,"digraph Nom{\n");
-	for (int i=0; i<n ;i++)
-	{
-		fprintf(fichier,"%d",i);
-		fprintf(fichier,"->");
-		fprintf(fichier,"%d",part[i].parent);
+		fprintf(fichier,"graph Nom{\n");
+	for (int i=0;i<nbel;++i)
+	{	
+		fprintf(fichier,"%d",tab[i]);
 		fprintf(fichier,";");
+		for (int j=0; j<i; j++)
+		{
+			if (mat[tab[i]][tab[j]]==1)
+			{
+				fprintf(fichier,"%d",tab[i]);
+				fprintf(fichier,"--");
+				fprintf(fichier,"%d",tab[j]);
+				fprintf(fichier,";");
+			}
+		}
 	}
 	fprintf(fichier, "}");
 	fclose(fichier);
+	system("dot -Tpng graph3.dot -o graph3.png");
+	system("display graph3.png ");
 }
 
 
@@ -149,14 +164,12 @@ int main ()
 	fusion(2,4,part);
 	graph(part,10);
     */
+	int liste_classe[10];
+	int liste_part[10];
+	int nbpart;
+	int nbel;
     int **mat=init_mat(10);
     remplir_mat(10,mat);
-    for(int i=0;i<10;i++){
-        for(int j=0;j<i;j++){
-            printf("%d ",mat[i][j]);
-        }
-        printf("\n");
-    }
 
     for(int i=0;i<10;i++){
         for(int j=0;j<i;j++){
@@ -169,10 +182,16 @@ int main ()
     graph(part,10);
 
     graph2(mat,10);
-
-    system("dot -Tpng graph.dot -o graph.png");
+	system("dot -Tpng graph.dot -o graph.png");
     system("dot -Tpng graph1.dot -o graph1.png");
 	system("display graph.png &");
 	system("display graph1.png &");
+	nbpart=lister_partition(part,10,liste_part);	
+	for (int i=0;i<nbpart;i++)
+	{
+		nbel=lister_classe_naif(part,liste_part[i],10,liste_classe);
+		graph3(mat,liste_classe,nbel);
+	}
+
     return 0;
 }

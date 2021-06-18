@@ -18,10 +18,11 @@ typedef struct partition
 partition_t * creer(int n);
 int recuperer_classe(int indice, partition_t * part);
 void fusion(int indice1, int indice2, partition_t * part);
-void lister_classe_naif(partition_t * part, int etiquette, int n);
-void lister_partition(partition_t * part,int n,int *,int *);
+int lister_classe_naif(partition_t * part, int etiquette, int n, int * tab);
+int lister_partition(partition_t * part,int n,int * tab);
 void graph(partition_t * part, int);
 void remplir_mat(int n,int **mat);
 void graph2(int **mat, int n);
+void graph3(int **mat, int*tab,int nbel);
 
 #endif
