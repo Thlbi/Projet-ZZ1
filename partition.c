@@ -23,16 +23,20 @@ int recuperer_classe(int indice, partition_t * part)
 
 void fusion(int indice1, int indice2, partition_t * part)
 {
+	
 	int c1=recuperer_classe(indice1, part);
 	int c2=recuperer_classe(indice2, part);
-	if (part[c1].taille>part[c2].taille)
-		part[c2].parent=c1;
-	else if (part[c1].taille<part[c2].taille)
-		part[c1].parent=c2;
-	else
+	if( c1!=c2)
 	{
-		part[c1].parent=c2;
-		part[c2].taille+=1;
+		if (part[c1].taille>part[c2].taille)
+			part[c2].parent=c1;
+		else if (part[c1].taille<part[c2].taille)
+			part[c1].parent=c2;
+		else
+		{
+			part[c1].parent=c2;
+			part[c2].taille+=1;
+		}
 	}
 }
 
@@ -57,10 +61,10 @@ void lister_partition(partition_t * part,int n, int * nbclasse,int * tab)
 	*nbclasse=j;
 }
 
-void graph(partition_t * part, int n)
+void affiche_part(partition_t * part, int n)
 {
 	FILE *fichier;
-	fichier=fopen("graph.dot","w");
+	fichier=fopen("graph_part.dot","w");
 	if (fichier==NULL)
 		printf("echec de louverture du fichier\n");
 	else 
@@ -74,16 +78,5 @@ void graph(partition_t * part, int n)
 	}
 	fprintf(fichier, "}");
 	fclose(fichier);
-	system("dot -Tpng graph.dot -o graph.png");
-	system("display graph.png");
 }
 
-int main ()
-{
-	partition_t * part=creer(10);
-	fusion(0,1,part);
-	fusion(1,2,part);
-	fusion(3,4,part);
-	fusion(2,4,part);
-	graph(part,10);
-}
