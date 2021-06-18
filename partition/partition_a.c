@@ -72,16 +72,21 @@ void fusion_mat(int ** mat,partition_t * t,int taille){
 	}
 }
 
-
-void lister_classe(partition_t * t,int classe,int taille){
+/*
+ *la fontion nous renvoie la quantité de population dans la classe
+ */
+int lister_classe(partition_t * t,int classe,int taille,int *tab){
 	int x;
+	int j=0;
 
 	for (int i=0;i<taille;i++){
 		x=recuperer_classe(t,i,taille);
 		if (x==classe){
-			printf("%d \n",t[i].val);
+			tab[j]=i; //tableau contenant les indices de la classe
+			j=j+1;
 		}
 	}
+	return j; //le cardinal de notre classe
 }
 
 
@@ -114,40 +119,45 @@ int graph_mat(int ** mat,int taille){
 	fprintf(fichier,"}");
 	fclose(fichier);
 	int erreur=system("dot -Tpng graph.dot -o graph.png");
+	system("display graph.png ");
 
 	return erreur;
 }
 
 
-void graph_connexes(int ** mat,int taille){
+/*
+ *permet de renvoyer les différentes parties connexes
+ */
+void graph_connexes(partition_t *t,int taille){
 	
 	FILE *fichier;
-	char chaine[20];
+	int tab[taille];
+	int j;
 	
 	for (int i=0;i<taille;i++){
-        	sprintf(chaine,"%d.dot",i);
-		fichier = fopen(chaine,"w");
-        	if (fichier==NULL){
-                	printf("erreur d'ouverture du fichier");
-                	exit(EXIT_FAILURE);
-        	}
-		fprintf(fichier,"graph Nom");
-		fprintf(fichier,"%d",i);
-		fprintf(fichier,"{\n");
-
-		for (int j=i;j<taille;j++){
-			if ((mat[i][j]==1)||(i==j)){
-				fprintf(fichier,"%d",i);
-				fprintf(fichier,"--");
-				fprintf(fichier,"%d",j);
-				fprintf(fichier,";\n");
+		if (t[i].par==i){
+			fichier = fopen("graph.dot","w");
+        		if (fichier==NULL){
+      	        	  	printf("erreur d'ouverture du fichier");
+	        	       	exit(EXIT_FAILURE);
+        		}
+			fprintf(fichier,"graph Nom");
+			fprintf(fichier,"%d",i);
+			fprintf(fichier,"{\n");
+			j=lister_classe(t,i,taille,tab);
+			for (int k=0;k<j;k++){
+					fprintf(fichier,"%d",i);
+					fprintf(fichier,"--");
+					fprintf(fichier,"%d",tab[k]);
+					fprintf(fichier,";\n");
 			}
-		}
 		fprintf(fichier,"}\n");
 		fclose(fichier);
+		system("dot -Tpng graph.dot -o graph.png");
+		system("display graph.png ");
+		}
 	}
 }
-
 
 
 int graph(partition_t *t,int taille){
@@ -168,7 +178,8 @@ int graph(partition_t *t,int taille){
 	fprintf(fichier,"}");
 	fclose(fichier);
 	int erreur=system("dot -Tpng graph.dot -o graph.png");
-
+	system("display graph.png ");
+	
 	return erreur;
 
 }
@@ -212,6 +223,13 @@ void lister_partition(partition_t * t,int taille){
 	}
 }
 
+void liberer(int ** mat,int taille){
+	for (int i=0;i<taille;i++){
+		free(mat[i]);
+	}
+	free(mat);
+}
+
 
 int main(){
 	srand(time(0));
@@ -227,13 +245,15 @@ int main(){
 	lister_partition(t,taille);
 	*/
 
-	//fusion_mat(mat,t,taille);
+	fusion_mat(mat,t,taille);
 	//erreur=graph_mat(mat,taille);
 	//erreur=graph(t,taille);
-	graph_connexes(mat,taille);	
+	graph_connexes(t,taille);	
 
 	if (erreur)
 		printf("erreur\n");
+
+	liberer(mat,taille);
 
 	return 0;
 }
