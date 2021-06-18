@@ -74,16 +74,105 @@ void graph(partition_t * part, int n)
 	}
 	fprintf(fichier, "}");
 	fclose(fichier);
-	system("dot -Tpng graph.dot -o graph.png");
-	system("display graph.png");
 }
+int **init_mat(int n){
+    int **mat=malloc(n*sizeof(int*));
+    for (int i=0;i<n;i++){
+        mat[i]=malloc(n*sizeof(int));
+    }
+    return mat;
+}
+
+void remplir_mat(int n,int **mat){
+    srand(time(0));
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            printf("ok i:%d\n",i);
+            printf("ok j:%d\n",j);
+            mat[i][j]=rand()%8;
+
+        }
+    }
+
+}
+void graph2(int **mat, int n)
+{
+	FILE *fichier;
+	fichier=fopen("graph1.dot","w");
+	if (fichier==NULL)
+		printf("echec de louverture du fichier\n");
+	else 
+		fprintf(fichier,"graph Nom{\n");
+	for (int i=0; i<n ;i++){
+        for (int j=0; j<i ;j++)
+	    {   
+            if (mat[i][j]==1){
+		        fprintf(fichier,"%d",i);
+		        fprintf(fichier,"--");
+		        fprintf(fichier,"%d",j);
+		        fprintf(fichier,";");
+            }
+	    }
+    }
+	fprintf(fichier, "}");
+	fclose(fichier);
+}
+
+void graph3(partition_t * part, int n)
+{
+	FILE *fichier;
+	fichier=fopen("graph.dot","w");
+	if (fichier==NULL)
+		printf("echec de louverture du fichier\n");
+	else 
+		fprintf(fichier,"digraph Nom{\n");
+	for (int i=0; i<n ;i++)
+	{
+		fprintf(fichier,"%d",i);
+		fprintf(fichier,"->");
+		fprintf(fichier,"%d",part[i].parent);
+		fprintf(fichier,";");
+	}
+	fprintf(fichier, "}");
+	fclose(fichier);
+}
+
 
 int main ()
 {
+    
 	partition_t * part=creer(10);
+    /*
 	fusion(0,1,part);
 	fusion(1,2,part);
 	fusion(3,4,part);
 	fusion(2,4,part);
 	graph(part,10);
+    */
+    int **mat=init_mat(10);
+    remplir_mat(10,mat);
+    for(int i=0;i<10;i++){
+        for(int j=0;j<i;j++){
+            printf("%d ",mat[i][j]);
+        }
+        printf("\n");
+    }
+
+    for(int i=0;i<10;i++){
+        for(int j=0;j<i;j++){
+            if (mat[i][j]==1){
+                fusion(i,j,part);
+            }
+        }
+    }
+
+    graph(part,10);
+
+    graph2(mat,10);
+
+    system("dot -Tpng graph.dot -o graph.png");
+    system("dot -Tpng graph1.dot -o graph1.png");
+	system("display graph.png &");
+	system("display graph1.png &");
+    return 0;
 }
