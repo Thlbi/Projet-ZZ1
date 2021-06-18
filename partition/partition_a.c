@@ -72,6 +72,15 @@ void fusion_mat(int ** mat,partition_t * t,int taille){
 	}
 }
 
+void fusion_couple(couple_t * c,partition_t *t,int taille){
+	aretes_t *cour=c->suiv;
+	
+	while (cour!=NULL){
+		fusion(t,cour->coord1,cour->coord2,taille);
+		cour=cour->suiv;
+	}
+}
+
 /*
  *la fontion nous renvoie la quantité de population dans la classe
  */
@@ -185,6 +194,34 @@ int graph(partition_t *t,int taille){
 }
 
 
+int graph_couple(couple_t *c){
+	
+	aretes_t *cour=c->suiv;
+
+	FILE *fichier;
+        fichier = fopen("graph.dot","w");
+        if (fichier==NULL){
+                printf("erreur d'ouverture du fichier");
+                exit(EXIT_FAILURE);
+        }
+	fprintf(fichier,"graph Nom{\n");
+	while (cour!=NULL){
+		fprintf(fichier,"%d",cour->coord1);
+		fprintf(fichier,"--");
+		fprintf(fichier,"%d",cour->coord2);
+		fprintf(fichier,";\n");
+		cour=cour->suiv;
+	}
+	fprintf(fichier,"}");
+	fclose(fichier);
+	int erreur=system("dot -Tpng graph.dot -o graph.png");
+	system("display graph.png ");
+	
+	return erreur;
+
+}
+
+
 int ** creer_mat(int nb_noeuds){
 	int ** mat=(int **)malloc(nb_noeuds*sizeof(int *));
 	
@@ -230,6 +267,34 @@ void liberer(int ** mat,int taille){
 	free(mat);
 }
 
+couple_t * init_couple(){
+	couple_t *c=malloc(sizeof(couple_t));
+
+	if (c==NULL){
+		printf("erreur couple");
+		exit(EXIT_FAILURE);
+	}
+	return c;
+}
+
+void generer_couple(couple_t *c,int taille){
+		int x;	
+
+		c->nb_noeud=taille;
+		for (int i=0;i<taille;i++){
+			for (int j=i+1;j<taille;j++){
+				x=rand()%6;
+				if (x==1){
+					aretes_t *nouv=malloc(sizeof(aretes_t));
+					nouv->coord1=i;
+					nouv->coord2=j;
+					nouv->suiv=c->suiv;
+					c->suiv=nouv;
+				}
+			}
+		}
+}
+
 
 int main(){
 	srand(time(0));
@@ -238,17 +303,22 @@ int main(){
 	int ** mat=creer_mat(taille);
 	generation_mat(mat,taille);
 	int erreur=0;
+	couple_t *c=init_couple();
+	generer_couple(c,taille);
 
 	/*
 	fusion(t,6,5,taille);
 	lister_classe(t,3,taille);
 	lister_partition(t,taille);
 	*/
+	fusion_couple(c,t,taille);
 
-	fusion_mat(mat,t,taille);
-	//erreur=graph_mat(mat,taille);
-	//erreur=graph(t,taille);
-	graph_connexes(t,taille);	
+	//fusion_mat(mat,t,taille);
+	//erreur=graph_mat(mat,taille); //afficher à partir de la matrice
+	//erreur=graph(t,taille);  //afficher à partir de la partition
+	//graph_connexes(t,taille);	//afficher les graphes connexes
+	//graph_couple(c);
+	graph_connexes(t,taille);	//afficher les graphes connexes
 
 	if (erreur)
 		printf("erreur\n");
