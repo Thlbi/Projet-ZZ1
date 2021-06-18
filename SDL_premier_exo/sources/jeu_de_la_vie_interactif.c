@@ -98,7 +98,7 @@ int vie_mort(int * survie)
 		vie=0;
 	else if (total==3)
 		vie=1;
-	else if (total==2 && survie[9]==1)
+	else if (total==2 && survie[8]==1)
 		vie=1;
 	free(survie);
 	return vie;
