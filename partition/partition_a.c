@@ -4,6 +4,7 @@
 #include "partition_a.h"
 #include <graphviz/gvc.h>
 #include <graphviz/cgraph.h>
+#include <time.h>
 
 partition_t * creer(int taille){
 	partition_t  *t;
@@ -62,6 +63,16 @@ void fusion(partition_t * t ,int x,int y,int taille){
 }
 
 
+void fusion_mat(int ** mat,partition_t * t,int taille){
+	for (int i=0;i<taille;i++){
+		for (int j=i+1;j<taille;j++){
+			if (mat[i][j]==1)
+				fusion(t,i,j,taille);
+		}
+	}
+}
+
+
 void lister_classe(partition_t * t,int classe,int taille){
 	int x;
 
@@ -72,6 +83,72 @@ void lister_classe(partition_t * t,int classe,int taille){
 		}
 	}
 }
+
+
+/*
+ *afficher le graph à partir de la matrice d'adjacence
+ */
+int graph_mat(int ** mat,int taille){
+	
+	FILE *fichier;
+        fichier = fopen("graph.dot","w");
+        if (fichier==NULL){
+                printf("erreur d'ouverture du fichier");
+                exit(EXIT_FAILURE);
+        }
+	fprintf(fichier,"graph Nom{\n");
+	for (int i=0;i<taille;i++){
+		for (int j=i;j<taille;j++){
+			if (mat[i][j]==1){
+				fprintf(fichier,"%d",i);
+				fprintf(fichier,"--");
+				fprintf(fichier,"%d",j);
+				fprintf(fichier,";\n");
+			}
+			if (i==j){
+				fprintf(fichier,"%d",i);
+				fprintf(fichier,";\n");
+			}
+		}
+	}
+	fprintf(fichier,"}");
+	fclose(fichier);
+	int erreur=system("dot -Tpng graph.dot -o graph.png");
+
+	return erreur;
+}
+
+
+void graph_connexes(int ** mat,int taille){
+	
+	FILE *fichier;
+	char chaine[20];
+	
+	for (int i=0;i<taille;i++){
+        	sprintf(chaine,"%d.dot",i);
+		fichier = fopen(chaine,"w");
+        	if (fichier==NULL){
+                	printf("erreur d'ouverture du fichier");
+                	exit(EXIT_FAILURE);
+        	}
+		fprintf(fichier,"graph Nom");
+		fprintf(fichier,"%d",i);
+		fprintf(fichier,"{\n");
+
+		for (int j=i;j<taille;j++){
+			if ((mat[i][j]==1)||(i==j)){
+				fprintf(fichier,"%d",i);
+				fprintf(fichier,"--");
+				fprintf(fichier,"%d",j);
+				fprintf(fichier,";\n");
+			}
+		}
+		fprintf(fichier,"}\n");
+		fclose(fichier);
+	}
+}
+
+
 
 int graph(partition_t *t,int taille){
 	
@@ -96,49 +173,37 @@ int graph(partition_t *t,int taille){
 
 }
 
-/*
-void graph(partition_t *t,int taille){
-	Agraph_t *graphe;
-	Agnode_t 
 
-	File *fichier;
-	fichier = fopen("demo.dot","w");
-	if (fichier==NULL){
-		printf("erreur d'ouverture du fichier");
+int ** creer_mat(int nb_noeuds){
+	int ** mat=(int **)malloc(nb_noeuds*sizeof(int *));
+	
+	if (mat==NULL){
+		printf("erreur matrice");
 		exit(EXIT_FAILURE);
 	}
-
-	GVC_t *graph_context;
-	graph_context=gvContext();
-	if (graph_context==NULL){
-		printf("erreur contexte")	
-		exit(EXIT_FAILURE);
+	for (int i=0;i<nb_noeuds;i++){
+		mat[i]=(int*)malloc(nb_noeuds*sizeof(int));
+		if (mat[i]==NULL){
+			printf("erreur matrice");
+			exit(EXIT_FAILURE);
+		}
 	}
-	graphe= agopen("Graphe",Agdirected,0);
-
-	noeud_1=agnode(graphe,"1",1);
-	noeud_2=agnode(graphe,"2",1);
-	noeud_3=agnode(graphe,"3",1);
-	noeud_4=agnode(graphe,"4",1);
-	ar_1=agedge(graphe,noeud_1,noeud_2,NULL,1);
-	ar_2=agedge(graphe,noeud_1,noeud_4,NULL,1);
-	ar_3=agedge(graphe,noeud_2,noeud_4,NULL,1);
-	ar_4=agedge(graphe,noeud_3,noeud_2,NULL,1);
-	ar_5=agedge(graphe,noeud_3,noeud_4,NULL,1);
-
-	agwrite(graphe,graphe.png);
-	gvLayout(graph_context,mon_graphe,"dot");
-	gvRender(graph_context,mon_graphe,"dot",fichier);
-
-	system("dot -Tpng demo.dot -o graph.png");
-	if (sys!=0){
-		printf("erreur sys");
-	}
-	gvFreeLayout(graph_context,graphe);
-	agclose(graphe);
-	fclose(fichier);
+	
+	return mat;
 }
-*/
+
+
+void generation_mat(int **mat,int taille){
+	for (int i=0;i<taille;i++){
+		for (int j=0;j<taille;j++){
+			if (j>i)
+				mat[i][j]=rand()%8;
+			else
+				mat[i][j]=0;
+		}
+	}
+}
+
 
 void lister_partition(partition_t * t,int taille){
 	for (int i=0;i<taille;i++){
@@ -149,18 +214,26 @@ void lister_partition(partition_t * t,int taille){
 
 
 int main(){
+	srand(time(0));
 	int taille=10;
 	partition_t * t=creer(taille);
-	
-	printf("%d \n",recuperer_classe(t,5,taille));
+	int ** mat=creer_mat(taille);
+	generation_mat(mat,taille);
+	int erreur=0;
+
+	/*
 	fusion(t,6,5,taille);
-	printf("%d \n",recuperer_classe(t,5,taille));
 	lister_classe(t,3,taille);
 	lister_partition(t,taille);
-	int erreur=graph(t,taille);
+	*/
 
-	if (erreur=0)
-		printf("erreur");
+	//fusion_mat(mat,t,taille);
+	//erreur=graph_mat(mat,taille);
+	//erreur=graph(t,taille);
+	graph_connexes(mat,taille);	
+
+	if (erreur)
+		printf("erreur\n");
 
 	return 0;
 }
