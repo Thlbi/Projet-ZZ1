@@ -17,8 +17,8 @@ typedef struct partition
 partition_t * creer(int n);
 int recuperer_classe(int indice, partition_t * part);
 void fusion(int indice1, int indice2, partition_t * part);
-void lister_classe_naif(partition_t * part, int etiquette, int n);
-void lister_partition(partition_t * part,int n,int *,int *);
+int lister_classe_naif(partition_t * part, int etiquette, int n,int *);
+int  lister_partition(partition_t * part,int n,int *);
 void affiche_part(partition_t * part, int);
 
 #endif

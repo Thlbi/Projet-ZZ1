@@ -15,5 +15,7 @@ void affiche_graph(int ** mat, int n);
 
 void partition_connexe(partition_t *,int **,int);
 
+void affiche_graph2(int ** mat, int *,int n);
+
 int main();
 #endif

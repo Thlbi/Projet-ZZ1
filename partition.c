@@ -40,14 +40,19 @@ void fusion(int indice1, int indice2, partition_t * part)
 	}
 }
 
-void lister_classe_naif(partition_t * part, int etiquette, int n)
+int lister_classe_naif(partition_t * part, int etiquette, int n, int * tab)
 {
+	int j=0;
 	for (int i=0; i<n; i++)
 		if (recuperer_classe(i,part)==etiquette)
-			printf("%d ",i);
+		{
+			tab[j]=i;
+			j+=1;
+		}
+	return j;
 }
 
-void lister_partition(partition_t * part,int n, int * nbclasse,int * tab)
+int lister_partition(partition_t * part,int n,int * tab)
 {
 	int j=0;
 	for (int i=0; i<n; i++)
@@ -58,7 +63,7 @@ void lister_partition(partition_t * part,int n, int * nbclasse,int * tab)
 			j+=1;
 		}
 	}
-	*nbclasse=j;
+	return j;
 }
 
 void affiche_part(partition_t * part, int n)
