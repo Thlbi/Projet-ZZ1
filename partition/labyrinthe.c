@@ -8,7 +8,7 @@ couple_t * ordonner_Fisher(couple_t *c){
         aretes_t **prec;
 	aretes_t **prec_ordre=&c_ordre->suiv;
 	int nb_aretes=0;
-	int iter=0,iter2;
+	int iter;
 	int random;
 
         c_ordre->nb_noeud=c->nb_noeud;
@@ -18,22 +18,21 @@ couple_t * ordonner_Fisher(couple_t *c){
                 nb_aretes+=1;
 		cour=cour->suiv;
 	}
-	while (iter!=nb_aretes){
-		iter+=1;
-		iter2=0;
+	while (nb_aretes!=0){
+		iter=0;
+		printf("%d",nb_aretes);
 		random=rand()%nb_aretes;
+		nb_aretes-=1;
 		cour=c->suiv;
 		prec=&c->suiv;
 
-                while (iter2!=random){
-                        iter2+=1;
+                while (iter!=random){
+                        iter+=1;
 			cour=cour->suiv;
 			prec=&(*prec)->suiv;
 		}
                 *prec=cour->suiv;
-		if (cour!=NULL)
-			free(cour);
-		*prec_ordre=allouer(cour->coord1,cour->coord2,cour->poids);
+		*prec_ordre=cour;
 		(*prec_ordre)->suiv=NULL;
 		prec_ordre=&(*prec_ordre)->suiv;
         }
