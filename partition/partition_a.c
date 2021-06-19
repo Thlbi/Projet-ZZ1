@@ -400,19 +400,28 @@ void ordonner_aretes(couple_t *c){
 	aretes_t *cour_ordre;
 	aretes_t *t;
 
+	c_ordre->nb_noeud=c->nb_noeud;
+	c_ordre->suiv=NULL;
+
 	while(cour!=NULL){
 		prec=c_ordre->suiv;
 		cour_ordre=c_ordre->suiv;
 		t=cour;
 		cour=cour->suiv;
-		printf("couc");
 
-		while ((cour_ordre!=NULL)){
+		while ((cour_ordre!=NULL) && (cour_ordre->poids < t->poids)){
 			prec=cour_ordre;
 			cour_ordre=cour_ordre->suiv;
 		}
-		//t->suiv=prec;
-		//prec->suiv=t;
+		if (prec==NULL){
+			prec=allouer(t->coord1,t->coord2,t->poids);
+			prec->suiv=NULL;
+		}
+		else{
+		t->suiv=prec->suiv;
+		prec->suiv=allouer(t->coord1,t->coord2,t->poids);
+		prec->suiv=t->suiv;
+		}
 	}
 }
 
