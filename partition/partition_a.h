@@ -14,6 +14,8 @@ typedef struct couple{
 	aretes_t *suiv;
 } couple_t;
 
+#define POIDS 20
+
 partition_t * creer(int taille);
 int recuperer_classe(partition_t * t,int nombre,int taille);
 void fusion(partition_t * t,int x,int y,int taille);

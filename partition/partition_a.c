@@ -209,7 +209,9 @@ int graph_couple(couple_t *c){
 		fprintf(fichier,"%d",cour->coord1);
 		fprintf(fichier,"--");
 		fprintf(fichier,"%d",cour->coord2);
-		fprintf(fichier,";\n");
+		fprintf(fichier,"[label=");
+		fprintf(fichier,"%d",cour->poids);
+		fprintf(fichier,"];\n");
 		cour=cour->suiv;
 	}
 	fprintf(fichier,"}");
@@ -288,6 +290,7 @@ void generer_couple(couple_t *c,int taille){
 					aretes_t *nouv=malloc(sizeof(aretes_t));
 					nouv->coord1=i;
 					nouv->coord2=j;
+					nouv->poids=rand()%POIDS;
 					nouv->suiv=c->suiv;
 					c->suiv=nouv;
 				}
@@ -317,8 +320,8 @@ int main(){
 	//erreur=graph_mat(mat,taille); //afficher à partir de la matrice
 	//erreur=graph(t,taille);  //afficher à partir de la partition
 	//graph_connexes(t,taille);	//afficher les graphes connexes
-	//graph_couple(c);
-	graph_connexes(t,taille);	//afficher les graphes connexes
+	graph_couple(c);
+	//graph_connexes(t,taille);	//afficher les graphes connexes
 
 	if (erreur)
 		printf("erreur\n");
