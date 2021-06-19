@@ -394,10 +394,25 @@ void afficher_poids(couple_t *c){
 
 
 void ordonner_aretes(couple_t *c){
+	couple_t *c_ordre=malloc(sizeof(couple_t));
 	aretes_t *cour=c->suiv;
+	aretes_t *prec;
+	aretes_t *cour_ordre;
+	aretes_t *t;
 
 	while(cour!=NULL){
+		prec=c_ordre->suiv;
+		cour_ordre=c_ordre->suiv;
+		t=cour;
 		cour=cour->suiv;
+		printf("couc");
+
+		while ((cour_ordre!=NULL)){
+			prec=cour_ordre;
+			cour_ordre=cour_ordre->suiv;
+		}
+		//t->suiv=prec;
+		//prec->suiv=t;
 	}
 }
 
