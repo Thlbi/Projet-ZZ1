@@ -5,6 +5,7 @@
 #include <graphviz/gvc.h>
 #include <graphviz/cgraph.h>
 #include <time.h>
+#include "labyrinthe.h"
 
 /*
  *cree une partition
@@ -463,6 +464,8 @@ void kruskal(int taille){
 	graph_kruskal(A);
 }
 
+
+
 int main(){
 	srand(time(0));
 	int taille=10;
@@ -485,7 +488,8 @@ int main(){
 	//graph_connexes(t,taille);	//afficher les graphes connexes
 	//graph_couple(c);
 	//graph_connexes(t,taille);	//afficher les graphes connexes
-	kruskal(taille);
+	//kruskal(taille);
+	labyrinthe_arbo(taille);
 
 	/*if (erreur)
 		printf("erreur\n");
