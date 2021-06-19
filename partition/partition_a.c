@@ -6,6 +6,9 @@
 #include <graphviz/cgraph.h>
 #include <time.h>
 
+/*
+ *cree une partition
+ */
 partition_t * creer(int taille){
 	partition_t  *t;
 	int i;
@@ -25,6 +28,9 @@ partition_t * creer(int taille){
 }
 
 
+/*
+ *recupere la classe d'un identifiant
+ */
 int recuperer_classe(partition_t * t,int nombre,int taille){
 	int i=0;
 	int val=-1;
@@ -44,6 +50,9 @@ int recuperer_classe(partition_t * t,int nombre,int taille){
 }
 
 
+/*
+ *fusionne les classes à partir de deux identifiants
+ */
 void fusion(partition_t * t ,int x,int y,int taille){
 	int classe1=recuperer_classe(t,x,taille);
 	int classe2=recuperer_classe(t,y,taille);
@@ -62,7 +71,9 @@ void fusion(partition_t * t ,int x,int y,int taille){
 	}
 }
 
-
+/*
+ *fusionne les classes à partir des valeurs de la matrice d'adjacence
+ */
 void fusion_mat(int ** mat,partition_t * t,int taille){
 	for (int i=0;i<taille;i++){
 		for (int j=i+1;j<taille;j++){
@@ -72,6 +83,10 @@ void fusion_mat(int ** mat,partition_t * t,int taille){
 	}
 }
 
+
+/*
+ *fusionne les classes à partir de ce que l'on sait des aretes dans le couple
+ */
 void fusion_couple(couple_t * c,partition_t *t,int taille){
 	aretes_t *cour=c->suiv;
 	
@@ -169,6 +184,9 @@ void graph_connexes(partition_t *t,int taille){
 }
 
 
+/*
+ *affiche un graphe à partir d'une partition
+ */
 int graph(partition_t *t,int taille){
 	
 	FILE *fichier;
@@ -194,6 +212,9 @@ int graph(partition_t *t,int taille){
 }
 
 
+/*
+ *affiche un graph à partir d'un couple
+ */
 int graph_couple(couple_t *c){
 	
 	aretes_t *cour=c->suiv;
@@ -224,6 +245,9 @@ int graph_couple(couple_t *c){
 }
 
 
+/*
+ *alloue une matrice
+ */
 int ** creer_mat(int nb_noeuds){
 	int ** mat=(int **)malloc(nb_noeuds*sizeof(int *));
 	
@@ -243,18 +267,24 @@ int ** creer_mat(int nb_noeuds){
 }
 
 
+/*
+ *genere aleatoirement les valeurs de la matrice creuse
+ */
 void generation_mat(int **mat,int taille){
 	for (int i=0;i<taille;i++){
 		for (int j=0;j<taille;j++){
 			if (j>i)
 				mat[i][j]=rand()%8;
 			else
+		
 				mat[i][j]=0;
 		}
 	}
 }
 
-
+/*
+ *renvoie les différentes classes qui composent la partition
+ */
 void lister_partition(partition_t * t,int taille){
 	for (int i=0;i<taille;i++){
 		if (t[i].par==i)
@@ -262,6 +292,9 @@ void lister_partition(partition_t * t,int taille){
 	}
 }
 
+/*
+ *libre la matrice
+ */
 void liberer(int ** mat,int taille){
 	for (int i=0;i<taille;i++){
 		free(mat[i]);
@@ -269,6 +302,9 @@ void liberer(int ** mat,int taille){
 	free(mat);
 }
 
+/*
+ *initialise un couple
+ */
 couple_t * init_couple(){
 	couple_t *c=malloc(sizeof(couple_t));
 
@@ -279,6 +315,9 @@ couple_t * init_couple(){
 	return c;
 }
 
+/*
+ *genere aleatoirement les aretes à placer dans le couple
+ */
 void generer_couple(couple_t *c,int taille){
 		int x;	
 
@@ -299,34 +338,101 @@ void generer_couple(couple_t *c,int taille){
 }
 
 
+/*
+ *alloue des aretes
+ */
+aretes_t * allouer(int coord1,int coord2,int poids){
+	aretes_t *nouv=(aretes_t *)malloc(sizeof(aretes_t));
+	if (nouv!=NULL){
+		nouv->coord1=coord1;
+		nouv->coord2=coord2;
+		nouv->poids=poids;
+	}
+	return nouv;
+}
+
+
+/*
+ *Cet algorithme sert à ordonner les aretes par ponderation croissante
+ */
+
+void afficher_poids(couple_t *c){
+	aretes_t *cour=c->suiv;
+	
+	while (cour!=NULL){
+		printf("%d\n", cour->poids);
+		cour=cour->suiv;
+	}
+}	
+
+
+couple_t * ordonner_aretes(couple_t *c){
+	couple_t *cour=c->suiv;
+
+	while(cour!=NULL){
+		
+
+}
+
+
+void kruskal(int taille){
+	partition_t *t=creer(taille);
+	couple_t *c=init_couple();
+	aretes_t *cour;
+	aretes_t *A=NULL;
+	aretes_t *nouv;
+	int classe1,classe2;
+
+	generer_couple(c,taille);
+	graph_couple(c);
+	c=ordonner_aretes(c);
+	cour=c->suiv;
+
+
+	while (cour!=NULL){
+		classe1=recuperer_classe(t,cour->coord1,taille);
+		classe2=recuperer_classe(t,cour->coord2,taille);
+
+		if (classe1!=classe2){
+			fusion(t,cour->coord1,cour->coord2,taille);
+			nouv=allouer(cour->coord1,cour->coord2,cour->poids);
+			nouv->suiv=A;
+			A=nouv;
+		}
+		cour=cour->suiv;
+	}
+
+}
+
 int main(){
 	srand(time(0));
 	int taille=10;
-	partition_t * t=creer(taille);
-	int ** mat=creer_mat(taille);
-	generation_mat(mat,taille);
-	int erreur=0;
-	couple_t *c=init_couple();
-	generer_couple(c,taille);
-
+	//partition_t * t=creer(taille);
+	//int ** mat=creer_mat(taille);
+	//generation_mat(mat,taille);
+	//int erreur=0;
+	//couple_t *c=init_couple();
+	//generer_couple(c,taille);
 	/*
 	fusion(t,6,5,taille);
 	lister_classe(t,3,taille);
 	lister_partition(t,taille);
 	*/
-	fusion_couple(c,t,taille);
+	//fusion_couple(c,t,taille);
 
 	//fusion_mat(mat,t,taille);
 	//erreur=graph_mat(mat,taille); //afficher à partir de la matrice
 	//erreur=graph(t,taille);  //afficher à partir de la partition
 	//graph_connexes(t,taille);	//afficher les graphes connexes
-	graph_couple(c);
+	//graph_couple(c);
 	//graph_connexes(t,taille);	//afficher les graphes connexes
+	kruskal(taille);
 
-	if (erreur)
+	/*if (erreur)
 		printf("erreur\n");
 
 	liberer(mat,taille);
+	*/
 
 	return 0;
 }
