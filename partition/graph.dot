@@ -1,6 +1,9 @@
-graph Nom9{
-9--1;
-9--3;
-9--5;
-9--9;
+graph Nom{
+2--5[label=14];
+1--3[label=0];
+6--8[label=4];
+1--8[label=12];
+7--8[label=8];
+0--1[label=12];
+2--6[label=19];
 }
