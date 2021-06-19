@@ -244,6 +244,33 @@ int graph_couple(couple_t *c){
 
 }
 
+void graph_kruskal(aretes_t *A){
+	
+	aretes_t *cour=A;
+
+	FILE *fichier;
+        fichier = fopen("graph.dot","w");
+        if (fichier==NULL){
+                printf("erreur d'ouverture du fichier");
+                exit(EXIT_FAILURE);
+        }
+	fprintf(fichier,"graph Nom{\n");
+	while (cour!=NULL){
+		fprintf(fichier,"%d",cour->coord1);
+		fprintf(fichier,"--");
+		fprintf(fichier,"%d",cour->coord2);
+		fprintf(fichier,"[label=");
+		fprintf(fichier,"%d",cour->poids);
+		fprintf(fichier,"];\n");
+		cour=cour->suiv;
+	}
+	fprintf(fichier,"}");
+	fclose(fichier);
+	int erreur=system("dot -Tpng graph.dot -o graph.png");
+	system("display graph.png ");
+	
+}
+
 
 /*
  *alloue une matrice
@@ -366,12 +393,12 @@ void afficher_poids(couple_t *c){
 }	
 
 
-couple_t * ordonner_aretes(couple_t *c){
-	couple_t *cour=c->suiv;
+void ordonner_aretes(couple_t *c){
+	aretes_t *cour=c->suiv;
 
 	while(cour!=NULL){
-		
-
+		cour=cour->suiv;
+	}
 }
 
 
@@ -385,7 +412,7 @@ void kruskal(int taille){
 
 	generer_couple(c,taille);
 	graph_couple(c);
-	c=ordonner_aretes(c);
+	ordonner_aretes(c);
 	cour=c->suiv;
 
 
@@ -401,7 +428,7 @@ void kruskal(int taille){
 		}
 		cour=cour->suiv;
 	}
-
+	graph_kruskal(A);
 }
 
 int main(){
