@@ -342,6 +342,19 @@ couple_t * init_couple(){
 	return c;
 }
 
+void liberer_couple(couple_t *c){
+	aretes_t *cour=c->suiv;
+	aretes_t *temp;
+
+	while(cour!=NULL){
+		temp=cour;
+		cour=cour->suiv;
+		free(temp);
+	}
+	free (c);	
+}
+
+
 /*
  *genere aleatoirement les aretes à placer dans le couple
  */
@@ -387,16 +400,17 @@ void afficher_poids(couple_t *c){
 	aretes_t *cour=c->suiv;
 	
 	while (cour!=NULL){
-		printf("%d\n", cour->poids);
+		printf("%d ", cour->poids);
 		cour=cour->suiv;
 	}
+	printf("\n");
 }	
 
 
-void ordonner_aretes(couple_t *c){
+couple_t * ordonner_aretes(couple_t *c){
 	couple_t *c_ordre=malloc(sizeof(couple_t));
 	aretes_t *cour=c->suiv;
-	aretes_t *prec;
+	aretes_t **prec;
 	aretes_t *cour_ordre;
 	aretes_t *t;
 
@@ -404,25 +418,19 @@ void ordonner_aretes(couple_t *c){
 	c_ordre->suiv=NULL;
 
 	while(cour!=NULL){
-		prec=c_ordre->suiv;
+		prec=&c_ordre->suiv;
 		cour_ordre=c_ordre->suiv;
-		t=cour;
-		cour=cour->suiv;
 
-		while ((cour_ordre!=NULL) && (cour_ordre->poids < t->poids)){
-			prec=cour_ordre;
+		while ((cour_ordre!=NULL) && (cour_ordre->poids < cour->poids)){
 			cour_ordre=cour_ordre->suiv;
+			prec=&(*prec)->suiv;
 		}
-		if (prec==NULL){
-			prec=allouer(t->coord1,t->coord2,t->poids);
-			prec->suiv=NULL;
-		}
-		else{
-		t->suiv=prec->suiv;
-		prec->suiv=allouer(t->coord1,t->coord2,t->poids);
-		prec->suiv=t->suiv;
-		}
+		t=allouer(cour->coord1,cour->coord2,cour->poids);
+		t->suiv=*prec;
+		*prec=t;
+		cour=cour->suiv;
 	}
+	return (c_ordre);
 }
 
 
@@ -436,7 +444,7 @@ void kruskal(int taille){
 
 	generer_couple(c,taille);
 	graph_couple(c);
-	ordonner_aretes(c);
+	c=ordonner_aretes(c); //pour ordonner par ordre croissant
 	cour=c->suiv;
 
 
