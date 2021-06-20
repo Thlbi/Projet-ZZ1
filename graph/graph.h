@@ -7,15 +7,22 @@
 #include<ctype.h>
 #include<time.h>
 
-typedef struct arrete{
+
+typedef struct arete{
     int sommet1;
     int sommet2;
-    struct arrete *suiv;
-}arrete_t;
+    int poids;
+    struct arete *suiv;
+}arete_t;
 
 typedef struct graph{
     int Nb_Noyau;
-    arrete_t *liste;
+    arete_t *liste;
 }graph_t;
+
+graph_t *  initgraph(int noyau);
+void ajouter_arete(graph_t*graph,int sommet1,int sommet2);
+void afficher_graph(graph_t*graph);
+void generer_couple(graph_t *graph);
 
 #endif
