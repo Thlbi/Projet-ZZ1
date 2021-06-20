@@ -12,6 +12,7 @@ typedef struct aretes
 {
 	int un;
 	int deux;
+	int valuation;
 	struct aretes * suiv;
 }aretes_t;
 
@@ -32,7 +33,7 @@ void partition_connexe(partition_t *,graph_t *);
 
 void affiche_graph2(graph_t *,partition_t *, int, int);
 
-void ajouter_aretes(graph_t *, int, int);
+void ajouter_aretes(graph_t *, int, int, int);
 
 aretes_t * liberer_aretes(aretes_t *);
 

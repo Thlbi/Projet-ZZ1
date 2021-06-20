@@ -14,6 +14,15 @@ int ** creer_mat(int n)
 	return mat;
 }
 
+void libere_mat(int ** mat, int n)
+{
+	for (int i=0; i<n; i++)
+	{
+		free(mat[i]);
+	}
+	free(mat);
+}
+
 void remplir_mat(int ** mat, int n)
 {
 	for (int i=0; i<n ;i++)
@@ -80,7 +89,7 @@ void affiche_graph2(int **mat,int * tab, int n)
 	fprintf(fichier, "}");
 	fclose(fichier);
 	system("dot -Tpng graph_co.dot -o graph_co.png");
-	system("display graph_co.png");
+	system("display graph_co.png ");
 	
 }
 
@@ -129,6 +138,7 @@ int main()
 		printf("\n");
 		affiche_graph2(mat,liste_classe,nbel);
 	}
-
+	libere_mat(mat,10);
+	free(part);
 	return 0;
 }			

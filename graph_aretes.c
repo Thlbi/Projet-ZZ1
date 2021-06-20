@@ -8,13 +8,14 @@ graph_t * creer_graph(int n)
 	return graph;
 }
 
-void ajouter_aretes(graph_t *graph, int un, int deux)
+void ajouter_aretes(graph_t *graph, int un, int deux, int valuation)
 {
 	aretes_t * cours=graph->liste;
 	aretes_t * nouv= malloc(sizeof(aretes_t));
 	nouv->un=un;
 	nouv->deux=deux;
 	nouv->suiv=cours;
+	nouv->valuation=valuation;
 	graph->liste=nouv;
 	
 }
@@ -52,6 +53,7 @@ void affiche_graph_couple(graph_t * graph,int taille)
 		fprintf(fichier,"%d",cours->un);
 		fprintf(fichier,"--");
 		fprintf(fichier,"%d",cours->deux);
+			fprintf(fichier," [label=%d]",cours->valuation);
 		fprintf(fichier,";");
 		cours=cours->suiv;
 	}
@@ -91,6 +93,7 @@ void affiche_graph2(graph_t * graph, partition_t * part, int classe,int taille )
 			fprintf(fichier,"%d",cours->un);
 			fprintf(fichier,"--");
 			fprintf(fichier,"%d",cours->deux);
+			fprintf(fichier," [label=%d]",cours->valuation);
 			fprintf(fichier,";");
 		}
 		cours=cours->suiv;
@@ -131,7 +134,7 @@ int main()
 	}
 */
 	for (int i=0; i<10; i++)
-		ajouter_aretes(graph,1+rand()%9,1+ rand()%9 );
+		ajouter_aretes(graph,1+rand()%9,1+ rand()%9,1 +rand()%20);
 	
 	affiche_graph_couple(graph,noeuds);
   	partition_connexe(part,graph);
