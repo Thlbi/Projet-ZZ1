@@ -6,7 +6,7 @@
 #include<string.h>
 #include<ctype.h>
 #include<time.h>
-
+#include "partition.h"
 
 typedef struct arete{
     int sommet1;
@@ -17,12 +17,13 @@ typedef struct arete{
 
 typedef struct graph{
     int Nb_Noyau;
-    arete_t *liste;
+    arete_t *suiv;
 }graph_t;
 
 graph_t *  initgraph(int noyau);
-void ajouter_arete(graph_t*graph,int sommet1,int sommet2);
+void ajouter_arete(graph_t*graph,int sommet1,int sommet2,int poids);
 void afficher_graph(graph_t*graph);
 void generer_couple(graph_t *graph);
+partition_t * kruskal(graph_t *graph);
 
 #endif

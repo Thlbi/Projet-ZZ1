@@ -63,10 +63,10 @@ int lister_partition(partition_t * part,int n,int * tab)
 	return j;
 }
 
-void graph(partition_t * part, int n)
+void aff_graph(partition_t * part, int n)
 {
 	FILE *fichier;
-	fichier=fopen("graph.dot","w");
+	fichier=fopen("graph4.dot","w");
 	if (fichier==NULL)
 		printf("echec de louverture du fichier\n");
 	else 
@@ -80,6 +80,8 @@ void graph(partition_t * part, int n)
 	}
 	fprintf(fichier, "}");
 	fclose(fichier);
+	system("dot -Tpng graph4.dot -o graph4.png");
+	system("display graph4.png &");
 }
 int **init_mat(int n){
     int **mat=malloc(n*sizeof(int*));
@@ -152,18 +154,17 @@ void graph3(int **mat, int*tab,int nbel)
 	system("display graph3.png ");
 }
 
-
+/*
 int main ()
 {
     
 	partition_t * part=creer(10);
-    /*
 	fusion(0,1,part);
 	fusion(1,2,part);
 	fusion(3,4,part);
 	fusion(2,4,part);
 	graph(part,10);
-    */
+    
 	int liste_classe[10];
 	int liste_part[10];
 	int nbpart;
@@ -195,3 +196,4 @@ int main ()
 
     return 0;
 }
+*/

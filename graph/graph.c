@@ -1,5 +1,7 @@
 #include "graph.h"
-#include "union.h"
+
+
+
 graph_t *  initgraph(int noyau){
     graph_t* graph=malloc(sizeof(graph_t));
     graph->Nb_Noyau=noyau;
@@ -8,20 +10,38 @@ graph_t *  initgraph(int noyau){
 }
 
 
-void ajouter_arete(graph_t*graph,int sommet1,int sommet2){
+void ajouter_arete(graph_t*graph,int sommet1,int sommet2,int poids){
     arete_t *arete_nouv=malloc(sizeof(arete_t));
-    
+    arete_t *cour=graph->suiv;
+    arete_t *prec;
     arete_nouv->sommet1=sommet1;
     arete_nouv->sommet2=sommet2;
-    arete_nouv->suiv=graph->liste;
-    graph->liste=arete_nouv;   
+    arete_nouv->poids=poids;
+    if (cour==NULL){
+        graph->suiv=arete_nouv;
+    }
+
+    else{
+        if(cour->poids>=poids){
+            arete_nouv->suiv=cour;
+            graph->suiv=arete_nouv;
+        }
+        prec=cour;
+        cour=cour->suiv;
+        while((cour!=NULL)&&(cour->poids<poids)){
+            prec=cour;
+            cour=cour->suiv;
+        }
+        prec->suiv=arete_nouv;
+        arete_nouv->suiv=cour;  
+    } 
 }
 
 
 
 void afficher_graph(graph_t*graph){
 	FILE *fichier;
-    arete_t *arete=graph->liste;
+    arete_t *arete=graph->suiv;
 	fichier=fopen("graph.dot","w");
 	if (fichier==NULL)
 		printf("echec de louverture du fichier\n");
@@ -59,27 +79,41 @@ void generer_couple(graph_t *graph){
 			for (int j=i+1;j<taille;j++){
 				x=rand()%3;
 				if (x==1){
-					arete_t *nouv=malloc(sizeof(arete_t));
-					nouv->sommet1=i;
-					nouv->sommet2=j;
-					nouv->poids=rand()%90;
-					nouv->suiv=graph->liste;
-					graph->liste=nouv;
+                    ajouter_arete(graph,i,j,rand()%90);
 				}
 			}
 		}
 }
 
-
-
-void kruskal(graph_t *graph)
+partition_t * kruskal(graph_t *graph){
+    int noyau=graph->Nb_Noyau;
+    partition_t *part=creer(noyau);
+    arete_t *cour=graph->suiv;
+    int sommet1;
+    int sommet2;
+    
+    while(cour!=NULL){
+        sommet1=cour->sommet1;
+        sommet2=cour->sommet2;
+        if(recuperer_classe(sommet1,part)!=recuperer_classe(sommet2,part)){
+            fusion(sommet1,sommet2,part);
+        }
+        cour=cour->suiv;
+    }
+    return part;
+}
 
 int main(){
     graph_t *graph=initgraph(10);
-
+    
     generer_couple(graph);
-   
+    /*
+    printf("%d\n",(graph->suiv)->poids);
+    printf("%d\n",(graph->suiv)->suiv->poids);
+    */
     afficher_graph(graph);
+    partition_t *part=kruskal(graph);
+    aff_graph(part,graph->Nb_Noyau);
 
     return 0;
 }
