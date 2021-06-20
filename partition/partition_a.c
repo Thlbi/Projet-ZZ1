@@ -6,6 +6,10 @@
 #include <graphviz/cgraph.h>
 #include <time.h>
 #include "labyrinthe.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 
 /*
  *cree une partition
@@ -256,6 +260,7 @@ void graph_kruskal(aretes_t *A){
                 exit(EXIT_FAILURE);
         }
 	fprintf(fichier,"graph Nom{\n");
+	
 	while (cour!=NULL){
 		fprintf(fichier,"%d",cour->coord1);
 		fprintf(fichier,"--");
@@ -267,7 +272,7 @@ void graph_kruskal(aretes_t *A){
 	}
 	fprintf(fichier,"}");
 	fclose(fichier);
-	int erreur=system("dot -Tpng graph.dot -o graph.png");
+	system("dot -Tpng graph.dot -o graph.png");
 	system("display graph.png ");
 	
 }
@@ -370,7 +375,7 @@ void generer_couple(couple_t *c,int taille){
 					aretes_t *nouv=malloc(sizeof(aretes_t));
 					nouv->coord1=i;
 					nouv->coord2=j;
-					nouv->poids=rand()%POIDS;
+					nouv->poids=rand()%taille;
 					nouv->suiv=c->suiv;
 					c->suiv=nouv;
 				}
@@ -468,7 +473,7 @@ void kruskal(int taille){
 
 int main(){
 	srand(time(0));
-	int taille=10;
+	//int taille=10;
 	//partition_t * t=creer(taille);
 	//int ** mat=creer_mat(taille);
 	//generation_mat(mat,taille);
@@ -489,7 +494,7 @@ int main(){
 	//graph_couple(c);
 	//graph_connexes(t,taille);	//afficher les graphes connexes
 	//kruskal(taille);
-	labyrinthe_arbo(taille);
+	labyrinthe_arbo();
 
 	/*if (erreur)
 		printf("erreur\n");

@@ -36,17 +36,18 @@ void afficherEcran(SDL_Renderer *renderer,aretes_t *A,partition_t *t){
 	while (A!=NULL){
 		SDL_SetRenderDrawColor(renderer,0,0,0,0);
 		x=A->coord1;
-		y=A->coord2;
 		A=A->suiv;
-		
-		j1=i1%N;
-		i1=(int)i1/N;
-		j2=i2%N;
-		i2=(int)i2/N;
+		y=t[x].par;
+
+		while(y!=x){
+			j1=x%N;
+			i1=(int)x/N;
+			j2=y%N;
+			i2=(int)y/N;
 
 		//if (((i1==i2)&&(j1==j2-1))||((i1==i2)&&(j1==j2+1))||((j1==j2)&&(i1==i2-1))||((j1==j2)&&(i1==i2+1))){
-		SDL_SetRenderDrawColor(renderer,0,0,0,0);
-                      rect.x=i1*10;
+			SDL_SetRenderDrawColor(renderer,0,0,0,0);
+                        rect.x=i1*10;
                         rect.y=j1*10;
                         rect.w=rect.h=100;
                         SDL_RenderFillRect(renderer,&rect);
