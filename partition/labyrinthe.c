@@ -26,17 +26,17 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 /*
  *Affiche le labyrinthe arborescent avec des rectangles 
  */
-void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
+void afficherEcran(SDL_Renderer *renderer,aretes_t *A,partition_t *t){
         SDL_Rect rect;
-	int i1,j1,i2,j2;
+	int i1,j1,i2,j2,x,y;
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
         SDL_RenderClear(renderer);
 
 	while (A!=NULL){
 		SDL_SetRenderDrawColor(renderer,0,0,0,0);
-		i1=A->coord1;
-		i2=A->coord2;
+		x=A->coord1;
+		y=A->coord2;
 		A=A->suiv;
 		
 		j1=i1%N;
@@ -45,11 +45,12 @@ void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
 		i2=(int)i2/N;
 
 		//if (((i1==i2)&&(j1==j2-1))||((i1==i2)&&(j1==j2+1))||((j1==j2)&&(i1==i2-1))||((j1==j2)&&(i1==i2+1))){
+		SDL_SetRenderDrawColor(renderer,0,0,0,0);
                       rect.x=i1*10;
                         rect.y=j1*10;
-                        rect.w=rect.h=10;
+                        rect.w=rect.h=100;
                         SDL_RenderFillRect(renderer,&rect);
-		//	SDL_RenderDrawLine(renderer,i1*10+5,j1*10+5,i2*10+5,j2*10+5);
+			SDL_RenderDrawLine(renderer,i1*10+5,j1*10+5,i2*10+5,j2*10+5);
 		//}
 	}
 
@@ -100,7 +101,7 @@ couple_t * ordonner_Fisher(couple_t *c){
 }
 
 
-void creation_SDL(aretes_t *A){
+void creation_SDL(aretes_t *A,partition_t *t){
    if (SDL_Init(SDL_INIT_VIDEO) == -1){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	   exit(EXIT_FAILURE);
@@ -120,7 +121,7 @@ void creation_SDL(aretes_t *A){
    if (renderer == 0){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
    }
-   afficherEcran(renderer, A);
+   afficherEcran(renderer, A,t);
 }
 
 
@@ -151,6 +152,6 @@ void labyrinthe_arbo(){
                 cour=cour->suiv;
         }
         graph_kruskal(A);
-	creation_SDL(A);
+	creation_SDL(A,t);
 }
 
