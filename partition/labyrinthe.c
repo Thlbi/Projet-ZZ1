@@ -1,7 +1,68 @@
-#include<stdio.h>
-#include"labyrinthe.h"
+#include <stdio.h>
+#include "labyrinthe.h"
 #include <stdlib.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
+
+void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer) {   
+	char msg_formated[255];
+     	int l;
+     	if (!ok) {
+		strncpy(msg_formated, msg, 250);
+      		l = strlen(msg_formated);
+		strcpy(msg_formated + l, " : %s\n");
+      		SDL_Log(msg_formated, SDL_GetError());
+     	}
+     	if (renderer != NULL) SDL_DestroyRenderer(renderer);
+     	if (window != NULL)   SDL_DestroyWindow(window);
+     	SDL_Quit();
+     	if (!ok) {
+		exit(EXIT_FAILURE);
+     	}
+}
+
+/*
+ *Affiche le labyrinthe arborescent avec des rectangles 
+ */
+void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
+        SDL_Rect rect;
+	int i1,j1,i2,j2;
+
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+        SDL_RenderClear(renderer);
+
+	while (A!=NULL){
+		SDL_SetRenderDrawColor(renderer,0,0,0,0);
+		i1=A->coord1;
+		i2=A->coord2;
+		A=A->suiv;
+		
+		j1=i1%N;
+		i1=(int)i1/N;
+		j2=i2%N;
+		i2=(int)i2/N;
+
+		//if (((i1==i2)&&(j1==j2-1))||((i1==i2)&&(j1==j2+1))||((j1==j2)&&(i1==i2-1))||((j1==j2)&&(i1==i2+1))){
+                      rect.x=i1*10;
+                        rect.y=j1*10;
+                        rect.w=rect.h=10;
+                        SDL_RenderFillRect(renderer,&rect);
+		//	SDL_RenderDrawLine(renderer,i1*10+5,j1*10+5,i2*10+5,j2*10+5);
+		//}
+	}
+
+        SDL_RenderPresent(renderer);
+	SDL_Delay(1000);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+        SDL_RenderClear(renderer);
+}
+
+
+/*
+ *permet d'ordonner les aretes selon l'algorithme de Fisher-Yate
+ */
 couple_t * ordonner_Fisher(couple_t *c){
 	couple_t *c_ordre=malloc(sizeof(couple_t));
         aretes_t *cour=c->suiv;
@@ -20,7 +81,6 @@ couple_t * ordonner_Fisher(couple_t *c){
 	}
 	while (nb_aretes!=0){
 		iter=0;
-		printf("%d",nb_aretes);
 		random=rand()%nb_aretes;
 		nb_aretes-=1;
 		cour=c->suiv;
@@ -40,26 +100,50 @@ couple_t * ordonner_Fisher(couple_t *c){
 }
 
 
-void labyrinthe_arbo(int taille){
-	partition_t *t=creer(taille);
+void creation_SDL(aretes_t *A){
+   if (SDL_Init(SDL_INIT_VIDEO) == -1){
+ 	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+	   exit(EXIT_FAILURE);
+   }
+   SDL_Window *window;
+   int width = 1900;
+   int height = 1000;
+   
+   window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height,SDL_WINDOW_RESIZABLE);
+   if (window == 0) {
+ 	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+   }
+   SDL_SetWindowTitle(window, "Labyrinthe");
+   
+   SDL_Renderer *renderer;
+   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+   if (renderer == 0){
+ 	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+   }
+   afficherEcran(renderer, A);
+}
+
+
+void labyrinthe_arbo(){
+	partition_t *t=creer(TAILLE);
         couple_t *c=init_couple();
         aretes_t *cour;
         aretes_t *A=NULL;
         aretes_t *nouv;
         int classe1,classe2;
 
-        generer_couple(c,taille);
+        generer_couple(c,TAILLE);
         graph_couple(c);
         c=ordonner_Fisher(c); //pour ordonner aléatoirement la forêt arborescente
         cour=c->suiv;
 
 
         while (cour!=NULL){
-                classe1=recuperer_classe(t,cour->coord1,taille);
-                classe2=recuperer_classe(t,cour->coord2,taille);
+                classe1=recuperer_classe(t,cour->coord1,TAILLE);
+                classe2=recuperer_classe(t,cour->coord2,TAILLE);
 
                 if (classe1!=classe2){
-			fusion(t,cour->coord1,cour->coord2,taille);
+			fusion(t,cour->coord1,cour->coord2,TAILLE);
                         nouv=allouer(cour->coord1,cour->coord2,cour->poids);
                         nouv->suiv=A;
                         A=nouv;
@@ -67,5 +151,6 @@ void labyrinthe_arbo(int taille){
                 cour=cour->suiv;
         }
         graph_kruskal(A);
+	creation_SDL(A);
 }
 
