@@ -78,24 +78,29 @@ void afficher_graph(graph_t*graph){
 
 void afficher_arete(arete_t *arete){
 	FILE *fichier;
-
+    arete_t *cour=arete;
 	fichier=fopen("graph6.dot","w");
 	if (fichier==NULL)
 		printf("echec de louverture du fichier\n");
 	else 
 		fprintf(fichier,"graph Nom{\n");
-    while(arete->suiv!=NULL)
+    
+    while(cour!=NULL)
     {   
-		fprintf(fichier,"%d",arete->sommet1);
+        //mprintf("sommet1:%d, sommet2:%d\n",cour->sommet1,cour->sommet2);
+    
+		fprintf(fichier,"%d",cour->sommet1);
 		fprintf(fichier,"--");
-		fprintf(fichier,"%d",arete->sommet2);
+		fprintf(fichier,"%d",cour->sommet2);
         fprintf(fichier,"[label=");
-		fprintf(fichier,"%d",arete->poids);
+		fprintf(fichier,"%d",cour->poids);
 		fprintf(fichier,"];\n");
-        arete=arete->suiv;
+        cour=cour->suiv;
 	}
 	fprintf(fichier, "}");
 	fclose(fichier);
+    system("dot -Tpng graph6.dot -o graph6.png");
+	system("display graph6.png ");
     
 }
 
@@ -120,8 +125,10 @@ arete_t * kruskal(graph_t *graph){
     arete_t *nouv;
     partition_t *part=creer(noyau);
     arete_t *cour=graph->suiv;
+
     int sommet1;
     int sommet2;
+    
     
     while(cour!=NULL){
         sommet1=cour->sommet1;
@@ -142,7 +149,6 @@ int main(){
     graph_t *graph=initgraph(10);
     
     generer_couple(graph);
-    /*
     printf("%d\n",(graph->suiv)->poids);
     printf("%d\n",(graph->suiv)->suiv->poids);
     

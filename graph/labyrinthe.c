@@ -1,10 +1,6 @@
 #include"labyrinthe.h"
 
-
-
-
-
-
+//gcc *.c -o prog -Wall -Wextra $(sdl2-config --cflags --libs) -lSDL2_image
 
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer) {   
@@ -25,88 +21,12 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 }
 
 
-
-void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
-	int i1,j1,x,y;
-
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-        SDL_RenderClear(renderer);
-
-	for (int i=0;i<=N;i++){
-		for (int j=0;j<=P;j++){
-            x=tab[i][j];
-            
-            if((x & FLAG_N)!=0){
-
-            }
-            
-
-
-
-
-
-			SDL_SetRenderDrawColor(renderer,0,0,0,0);
-			SDL_RenderDrawLine(renderer,i*100+100,j*100+100,N*100+100,j*100+100);
-			SDL_RenderDrawLine(renderer,i*100+100,j*100+100,i*100+100,P*100+100);
-		}
-	}
-
-	
-	while (A!=NULL){
-		x=A->coord1;
-		y=A->coord2;
-
-		j1=y%P;
-		i1=(int)y/P;
-		SDL_SetRenderDrawColor(renderer,255,255,255,0);
-
-		if (x==y-1){
-			SDL_RenderDrawLine(renderer,(i1+1)*100,(j1+1)*100,(i1+2)*100,(j1+1)*100);
-		}
-		else
-			SDL_RenderDrawLine(renderer,(i1+1)*100,(j1+1)*100,(i1+1)*100,(j1+2)*100);
-		
-		A=A->suiv;
-	}
-
-        SDL_RenderPresent(renderer);
-	SDL_Delay(3000);
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-        SDL_RenderClear(renderer);
-}
-
-
-
-
-void creation_SDL(arete_t *A){
-   if (SDL_Init(SDL_INIT_VIDEO) == -1){
- 	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-	   exit(EXIT_FAILURE);
-   }
-   SDL_Window *window;
-   int width = 1900;
-   int height = 1000;
-   
-   window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height,SDL_WINDOW_RESIZABLE);
-   if (window == 0) {
- 	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-   }
-   SDL_SetWindowTitle(window, "Labyrinthe");
-   
-   SDL_Renderer *renderer;
-   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-   if (renderer == 0){
- 	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-   }
-   afficherEcran(renderer, A);
-}
-
-
-
 int **tableau_aretes(arete_t *A){
     int **tab=malloc(N*sizeof(int *));
+	int x;
+	int y;
     for(int i=0;i<N;i++){
-        tab[j]=malloc(P*sizeof(int ));
+        tab[i]=malloc(P*sizeof(int ));
         for (int j=0;j<P;j++){
             tab[i][j]=0;
         }
@@ -116,20 +36,84 @@ int **tableau_aretes(arete_t *A){
 		x=A->sommet1;
         while((A!=NULL)&&(A->sommet1==x)){
             y=A->sommet2;
+			//printf("s1:%d,s2:%d\n",x,y);
             if(y==x+1){
-                tab[(int)x/P][x%P]+=4;
-                tab[(int)x/P][(x+1)%P]+=8;
+                tab[x/P][x%P]+=4;
+                tab[x/P][(x+1)%P]+=8;
             }
             else{
-                tab[(int)x/P][x%P]+=2;
-                tab[(int)x/P+1][x%P]+=1;
+                tab[x/P][x%P]+=2;
+                tab[x/P+1][x%P]+=1;
             }
         A=A->suiv;
         }
-
+	}
     return tab;
 }
+void liberer(int **tab){
+	for(int i=0;i<N;i++){
+		free(tab[i]);
+	}
+	free(tab);
+}
 
+void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
+	int j=0;
+	int i=0;
+	int x;
+
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+    SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer,0,0,0,0);
+
+	for (i=0;i<N;i++){
+		for (j=0;j<P;j++){
+            x=tab[i][j];
+
+            //cleaprintf("valeur:%d\n",x);
+            if(!(x & FLAG_N)){
+				SDL_RenderDrawLine(renderer,100+j*50,100+i*50,j*50+150,100+i*50); //x1 y1 x2 y2
+            }
+            if((x & FLAG_S)!=2){
+				SDL_RenderDrawLine(renderer,100+j*50,150+i*50,j*50+150,150+i*50);
+            }            
+            if((x & FLAG_E)!=4){
+				SDL_RenderDrawLine(renderer,150+j*50,i*50+100,150+j*50,i*50+150);
+            }
+            if((x & FLAG_O)!=8){
+				SDL_RenderDrawLine(renderer,100+j*50,i*50+100,100+j*50,150+i*50);
+            }
+			printf("\n");
+		}
+	}
+
+    SDL_RenderPresent(renderer);
+	SDL_Delay(1000);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+    SDL_RenderClear(renderer);
+}
+
+
+void creation_SDL(int **tab){
+
+	SDL_DisplayMode screen;
+	SDL_Renderer * renderer;
+	SDL_Window * window;
+   	SDL_GetCurrentDisplayMode(0, &screen);
+
+   	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen.w, screen.h,SDL_WINDOW_RESIZABLE);
+   	if (window == 0) {
+        	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+   	}
+   	SDL_SetWindowTitle(window, "Labyrinthe");
+
+   	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+   	if (renderer == 0){
+        	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+   	}
+   
+   afficherEcranIntelligemment(renderer,tab);
+}
 
 
 
@@ -170,31 +154,39 @@ graph_t * ordonner_Fisher(graph_t *c){
 }
 
 void generer_couple_2(graph_t *graph){
-		int x;	
+		//printf("generer couple\n");
+		int x1;
+		int x2;	
         int taille=graph->Nb_Noyau;
-        srand(time(0));
 		for (int i=0;i<taille;i++){
-			for (int j=0;j<taille;j++){
-				x=rand()%3;
-				if (x==1){
-                    if((abs(i-j)==1)||(abs(i-j)%P)){
-                    ajouter_arete(graph,i,j,1);
-                    }
-				}
+
+			x1=1;//rand()%3
+			x2=1;//rand()%3
+			if ((x1) &&((i+1)/P==i/P)){
+				arete_t *nouv=malloc(sizeof(arete_t));
+                nouv->sommet1=i;
+    			nouv->sommet2=i+1;
+				nouv->poids=1;
+				nouv->suiv=graph->suiv;
+				graph->suiv=nouv;
+				//printf("s1:%d,s2:%d\n",i,i+1);
+
+            }
+			if ( (x2) && (i+P<taille) ){
+				arete_t *nouv=malloc(sizeof(arete_t));
+                nouv->sommet1=i;
+    			nouv->sommet2=i+N;
+				nouv->poids=1;
+				nouv->suiv=graph->suiv;
+				graph->suiv=nouv;
+				//printf("s1:%d,s2:%d\n",i,i+N);
 			}
 		}
-}
+	}
 
 
-int main(){
-    graph_t *grap=initgraph(10);
-    generer_couple_2(graph);
-    ordonner_Fisher(graph);
-    arete_t *A=kruskal(graph);
-    creation_SDL(A);
 
 
-}
 
 
 
