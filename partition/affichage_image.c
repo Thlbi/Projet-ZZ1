@@ -40,127 +40,97 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
   float zoom = 1.5;                             // valeur du zoom pour l'affichage final
   int offset_x = source.w / 14,                // La largeur d'une vignette de l'image 14
       offset_y = source.h / 9.4;                // La hauteur d'une vignette de l'image 9.4 
+ 	state.w = offset_x;
+  	state.h = offset_y;
   
   switch (x){
   	case 6 :
   		state.x = 140;
   		state.y = 15;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   	case 10 :
   		state.x = 265;
   		state.y = 15;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
  
   	case 5 :
-  	state.x = 140;
-  	state.y = 140;
-  	state.w = offset_x;
-  	state.h = offset_y;
+  		state.x = 140;
+  		state.y = 140;
 		break;
   
   	case 9 :
   		state.x = 265;
-  	state.y = 140;
-  	state.w = offset_x;
-  	state.h = offset_y;
+  		state.y = 140;
 		break;
 
   	case 3 :
-  	state.x = 10;
-  	state.y = 0;
-  	state.w = offset_x;
-  	state.h = offset_y;
+  		state.x = 10;
+  		state.y = 0;
 		break;
 
   	case 12 :
   		state.x = 10;
   		state.y = 137;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
 
   	case 15 :
   		state.x = 1160;
   		state.y = 10;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   
   	case 7 :
   		state.x = 525;
   		state.y = 265;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   
   	case 11 :
   		state.x = 645;
   		state.y = 265;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
 
   	case 13 :
   		state.x = 522;
   		state.y = 392;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   
   	case 14 :
   		state.x = 647;
   		state.y = 397;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   
   	case 2 :
   		state.x = 1034;
   		state.y = 266;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   
   	case 1 :
   		state.x = 1161;
   		state.y = 265;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
 
   	case 8 :
   		state.x = 1161;
   		state.y = 393;
-  		state.w = offset_x;
-  		state.h = offset_y;
 		break;
   
   	case 4 :
   		state.x = 1036;
   		state.y = 393;
-  		state.w = offset_x;
-  		state.h = offset_y;
  		break;
 	case 0 :
   		state.x = 0;
   		state.y = 265;
-  		state.w = offset_x;
-  		state.h = offset_y;
  		break;
   }
+
  /* construction des différents rectangles autour de chacune des vignettes de la planche */
 
   destination.w = offset_x * zoom;            // Largeur du sprite à l'écran
   destination.h = offset_y * zoom;            // Hauteur du sprite à l'écran
-  destination.x = 100+coord_colonne*(source.h / 9.4)*zoom; // Position en x pour l'affichage du sprite
-  destination.y = 100+coord_ligne*(source.h / 9.4)*zoom;  // Position en y pour l'affichage du sprite
-  SDL_RenderCopy(renderer,                  // Préparation de l'affichage
-                   my_texture,&state, &destination);
-  SDL_RenderPresent(renderer);              // Affichage
+  destination.x = 10+coord_colonne*(source.h / 9.4)*zoom; // Position en x pour l'affichage du sprite
+  destination.y = 10+coord_ligne*(source.h / 9.4)*zoom;  // Position en y pour l'affichage du sprite
+  SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
+
 }
 
 
@@ -187,7 +157,8 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
                         i1=(noeud%P)+1; //coordonee colonne du noeud
                         j1=((int)noeud/P)+1; // coordonee ligne du noeud
 
-                        affichage_texture(texture,window,renderer,x,i1,j1);
+  			printf("%d ",x);
+  			affichage_texture(texture,window,renderer,x,i1,j1);
 
                         noeud+=1;
                         }
