@@ -57,10 +57,11 @@ void liberer(int **tab){
 	free(tab);
 }
 
-void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
+void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,SDL_DisplayMode *screen){
 	int j=0;
 	int i=0;
 	int x;
+	int Taille_case= 50; 
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
     SDL_RenderClear(renderer);
@@ -72,13 +73,13 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
 
             //cleaprintf("valeur:%d\n",x);
             if(!(x & FLAG_N)){
-				SDL_RenderDrawLine(renderer,100+j*50,100+i*50,j*50+150,100+i*50); //x1 y1 x2 y2
+				SDL_RenderDrawLine(renderer,100+j*Taille_case,100+i*Taille_case,j*Taille_case+150,100+i*Taille_case); //x1 y1 x2 y2 
             }
             if((x & FLAG_S)!=2){
-				SDL_RenderDrawLine(renderer,100+j*50,150+i*50,j*50+150,150+i*50);
+				SDL_RenderDrawLine(renderer,100+j*Taille_case,150+i*Taille_case,j*Taille_case+150,150+i*Taille_case);
             }            
             if((x & FLAG_E)!=4){
-				SDL_RenderDrawLine(renderer,150+j*50,i*50+100,150+j*50,i*50+150);
+				SDL_RenderDrawLine(renderer,150+j*Taille_case,i*Taille_case+100,150+j*Taille_case,i*Taille_case+150);
             }
             if((x & FLAG_O)!=8){
 				SDL_RenderDrawLine(renderer,100+j*50,i*50+100,100+j*50,150+i*50);
@@ -99,6 +100,15 @@ void creation_SDL(int **tab){
 	SDL_DisplayMode screen;
 	SDL_Renderer * renderer;
 	SDL_Window * window;
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    	SDL_Log("Error : SDL initialisation - %s\n", SDL_GetError());       
+    	exit(EXIT_FAILURE);
+  	}
+
+
+
+
    	SDL_GetCurrentDisplayMode(0, &screen);
 
    	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen.w, screen.h,SDL_WINDOW_RESIZABLE);
@@ -112,7 +122,7 @@ void creation_SDL(int **tab){
         	fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
    	}
    
-   afficherEcranIntelligemment(renderer,tab);
+   afficherEcranIntelligemment(renderer,tab,&screen);
 }
 
 
