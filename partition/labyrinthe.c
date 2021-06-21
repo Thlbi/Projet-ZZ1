@@ -27,36 +27,40 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
  *Affiche le labyrinthe arborescent avec des rectangles 
  */
 void afficherEcran(SDL_Renderer *renderer,aretes_t *A,partition_t *t){
-        SDL_Rect rect;
 	int i1,j1,i2,j2,x,y;
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
         SDL_RenderClear(renderer);
 
-	while (A!=NULL){
-		SDL_SetRenderDrawColor(renderer,0,0,0,0);
-		x=A->coord1;
-		A=A->suiv;
-		y=t[x].par;
-
-		while(y!=x){
-			j1=x%N;
-			i1=(int)x/N;
-			j2=y%N;
-			i2=(int)y/N;
-
-		//if (((i1==i2)&&(j1==j2-1))||((i1==i2)&&(j1==j2+1))||((j1==j2)&&(i1==i2-1))||((j1==j2)&&(i1==i2+1))){
+	for (int i=0;i<=N;i++){
+		for (int j=0;j<=P;j++){
 			SDL_SetRenderDrawColor(renderer,0,0,0,0);
-                        rect.x=i1*10;
-                        rect.y=j1*10;
-                        rect.w=rect.h=100;
-                        SDL_RenderFillRect(renderer,&rect);
-			SDL_RenderDrawLine(renderer,i1*10+5,j1*10+5,i2*10+5,j2*10+5);
+			SDL_RenderDrawLine(renderer,i*100+100,j*100+100,N*100+100,j*100+100);
+			SDL_RenderDrawLine(renderer,i*100+100,j*100+100,i*100+100,P*100+100);
+		}
+	}
+
+	
+	while (A!=NULL){
+		x=A->coord1;
+		y=A->coord2;
+		//y=t[x].par;
+
+		//while(y!=x){
+			j1=x%P;
+			i1=(int)x/P;
+			j2=y%P;
+			i2=(int)y/P;
+
+			SDL_RenderDrawLine(renderer,i1*100+100,j1*100+100,i2*100+100,j2*100+100);
+				//x=y;
+				//y=t[x].par;
 		//}
+		A=A->suiv;
 	}
 
         SDL_RenderPresent(renderer);
-	SDL_Delay(1000);
+	SDL_Delay(5000);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
         SDL_RenderClear(renderer);
 }
@@ -134,7 +138,7 @@ void labyrinthe_arbo(){
         aretes_t *nouv;
         int classe1,classe2;
 
-        generer_couple(c,TAILLE);
+        generer_couple_poids1(c,TAILLE);
         graph_couple(c);
         c=ordonner_Fisher(c); //pour ordonner aléatoirement la forêt arborescente
         cour=c->suiv;

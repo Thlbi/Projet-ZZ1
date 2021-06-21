@@ -375,12 +375,34 @@ void generer_couple(couple_t *c,int taille){
 					aretes_t *nouv=malloc(sizeof(aretes_t));
 					nouv->coord1=i;
 					nouv->coord2=j;
-					nouv->poids=rand()%taille;
+					nouv->poids=abs(j/P-i/P)+abs(j%P-i%P);
 					nouv->suiv=c->suiv;
 					c->suiv=nouv;
 				}
 			}
 		}
+}
+
+
+void generer_couple_poids1(couple_t *c,int taille){
+                int x;
+
+                c->nb_noeud=taille;
+                for (int i=0;i<taille;i++){
+                        for (int j=i+1;j<taille;j++){
+                                x=rand()%2;
+                                if (x==1){
+                                        if (abs(j/P-i/P)+abs(j%P-i%P)==1){
+				       		aretes_t *nouv=malloc(sizeof(aretes_t));
+                                        	nouv->coord1=i;
+                                        	nouv->coord2=j;
+                                   	     nouv->poids=abs(j/P-i/P)+abs(j%P-i%P);
+                                        	nouv->suiv=c->suiv;
+                                       	 c->suiv=nouv;
+                                	}
+				}
+                        }
+                }
 }
 
 

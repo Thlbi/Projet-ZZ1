@@ -30,6 +30,7 @@ void generation_mat(int **mat,int taille);
 void liberer(int **mat,int taille);
 couple_t * init_couple();
 void generer_couple(couple_t *c,int taille);
+void generer_couple_poids1(couple_t *c,int taille);
 int graph_couple(couple_t *c);
 void graph_kruskal(aretes_t *A);
 aretes_t * allouer(int coord1,int coord2,int poids);
