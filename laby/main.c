@@ -27,40 +27,40 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 
 void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cell)
 {
-	int i1,j1,x,noeud=0;
+	int x=0;
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
-	SDL_SetRenderDrawColor(renderer,0,0,0,0);
+	SDL_SetRenderDrawColor(renderer,255,0,0,0);
 
-	for (int i=0;i<N;i++)
+		SDL_RenderDrawLine(renderer,0,0,P*taille_cell,0); //mur au nord
+		SDL_RenderDrawLine(renderer,0,N*taille_cell,P*taille_cell,(N)*taille_cell); //mur au sud 
+		SDL_RenderDrawLine(renderer,0,0,0,(N)*taille_cell); //mur à l'ouest
+		SDL_RenderDrawLine(renderer,(P)*taille_cell,0,(P)*taille_cell,(N)*taille_cell); //mur à l'est
+
+	SDL_SetRenderDrawColor(renderer,0,0,0,0);
+	for (int i=0;i<P;i++)
 	{
 	
-		for (int j=0;j<P;j++)
+		for (int j=0;j<N;j++)
 		{
 			x=tab[i][j];
-			i1=(noeud%P)+1;
-			j1=(noeud/P)+1;
-			printf("%d %d \n",noeud,x);
 
-			if (x%2!=1)
-				SDL_RenderDrawLine(renderer,i1*taille_cell+50,j1*taille_cell+50,(i1+1)*taille_cell+50,j1*taille_cell+50); //mur au nord
-			if ((x!=2) && (x!=3) && (x!=6) && (x!=7) && (x!=10) && (x!=11) && (x!=14) && (x!=15))
-				SDL_RenderDrawLine(renderer,i1*taille_cell+50,(j1+1)*taille_cell+50,(i1+1)*taille_cell+50,(j1+1)*taille_cell+50); //mur au sud
-			if ((x!=4) && (x!=5) && (x!=6) && (x!=7) && (x!=12) && (x!=13) && (x!=14) && (x!=15)) 
-				SDL_RenderDrawLine(renderer,(i1+1)*taille_cell+50,j1*taille_cell+50,(i1+1)*taille_cell+50,(j1+1)*taille_cell+50); //mur à l'est
-			if (x<8)
-				SDL_RenderDrawLine(renderer,i1*taille_cell+50,j1*taille_cell+50,i1*taille_cell+50,(j1+1)*taille_cell+50); //mur à l'ouest
-			
-			noeud+=1;
-		
+			if ((x!=2) && (x!=6))
+				SDL_RenderDrawLine(renderer,i*taille_cell,(j+1)*taille_cell,(i+1)*taille_cell,(j+1)*taille_cell); //mur au sud
+			if ((x!=4) &&  (x!=6)) 
+				SDL_RenderDrawLine(renderer,(i+1)*taille_cell,j*taille_cell,(i+1)*taille_cell,(j+1)*taille_cell); //mur à l'est
 		}
 	}
 
-        SDL_RenderPresent(renderer);
-        SDL_Delay(3000);
-        SDL_RenderClear(renderer);
 }
 
+int min(int a, int b)
+{
+	if (a>b)
+		return b;
+	else
+		return a;
+}	
 
 
 int main ()
@@ -71,30 +71,32 @@ int main ()
 		return EXIT_FAILURE;
 	}
 
-	int width = 800;
-	int height =900;
+ 	SDL_DisplayMode screen;
+	SDL_GetCurrentDisplayMode(0,&screen);
 	SDL_Window *window;
-	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,width, height, SDL_WINDOW_RESIZABLE);
+	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,screen.w,screen.h, SDL_WINDOW_RESIZABLE);
 	if (window == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	SDL_SetWindowTitle(window, "Mon_chef d'oeuvre");
 
 	SDL_Renderer *renderer;
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
 	if (renderer == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-  
 	int running=1;
 	srand(time(0));
 	int noeuds=N*P;
-	int nb_aretes;
+	int nb_aretes=2*N*P-N-P;
 	int **tab;
-	graph_t * graph=creer_graph(noeuds,100);
-	partition_t * part=creer(noeuds);
-	nb_aretes=generation(graph,4,5);
+	int cours=0;
+	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
+	printf("%d \n", taille_cell);
+	graph_t * graph=creer_graph(noeuds,nb_aretes);
+	generation(graph);
 	graph=Fisher(graph,nb_aretes);
-	affiche_graph_couple(graph,noeuds,nb_aretes);
+	//printf("%d \n", nb_aretes);
 	graph=kruskal(graph,noeuds,nb_aretes,&cours);
-	affiche_graph_couple(graph,noeuds,nb_aretes);
-	tab=tableau_ligne(graph,nb_aretes);
+	//printf("cours %d\n",cours);
+//	affiche_graph_couple(graph,noeuds,cours);
+	tab=tableau_ligne(graph,cours);
 
 	SDL_Event event;
 	while (running)
@@ -112,21 +114,17 @@ int main ()
 					case SDL_WINDOWEVENT_CLOSE:
 						running = 0;
 						break;
-					case SDL_WINDOWEVENT_SIZE_CHANGED:
-						width = event.window.data1;
-						height = event.window.data2;
-						break;
-					case SDL_WINDOWEVENT_EXPOSED:
+					default:
 						break;
 					}
 					break;
 			break;
 			}
+			afficherEcranIntelligemment(renderer,tab,taille_cell);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(10);
+        SDL_RenderClear(renderer);
 		}
-		afficherEcranIntelligemment(renderer,tab,100);
-		SDL_RenderClear(renderer);
-		SDL_Delay(30);
-		SDL_RenderPresent(renderer);
 	}
 	end_sdl(1, "Normal ending", window, renderer);
 	return 1;

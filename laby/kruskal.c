@@ -2,27 +2,46 @@
 
 int ** tableau_ligne(graph_t * graph,int nb_aretes)
 {
-	int** tab=malloc(N*sizeof(int*));
-	for (int i=0; i<N; i++)
-		tab[i]=malloc(P*sizeof(int));	
+	int** tab=malloc(P*sizeof(int*));
+	for (int i=0; i<P; i++)
+		tab[i]=malloc(N*sizeof(int));	
+	for (int i=0; i<P; i++)
+		for (int j=0; j<N; j++)
+			tab[i][j]=0;
+
 	int diff;
 	int x;
 	int y;
 	for (int i=0; i<nb_aretes; i++)
 	{
-		diff=graph->liste[i].un - graph->liste[i].deux;
-		x=graph->liste[i].un%N;
-		y=graph->liste[i].un%P;
-		if (x==0)
-			tab[x][y]+=8;
-		if (y==0)
-			tab[x][y]+=1;
+		diff=abs(graph->liste[i].un - graph->liste[i].deux);
+		x=graph->liste[i].un%P;
+		y=graph->liste[i].un/P;
+//		printf("sommet1: %d sommet2: %d x :%d y :%d diff :%d\n",graph->liste[i].un,graph->liste[i].deux,x,y,diff);
 		if (diff==1)
 			tab[x][y]+=4;
-		else 
+		else // ne marche pas c'est incomprehensibleif (diff==P)
 			tab[x][y]+=2;
 	}
-	return tab;			
+/*
+	for (int i=0; i<N; i++)
+	{
+		tab[i][0]-=8;
+		tab[i][P-1]-=4;
+		
+	}
+	for(int j=0; j<P; j++)
+	{
+			tab[0][j]-=1;
+			tab[N-1][j]-=2;
+	}*/
+/*	for (int i=0; i<N; i++)
+	{
+		for (int j=0; j<P; j++)
+			printf("%d ", tab[j][i]);
+		printf("\n");
+	}*/
+		return tab;			
 }
 
 graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours)
@@ -65,32 +84,27 @@ graph_t * Fisher(graph_t * graph, int nb_aretes)
 	return graph;
 }
 
-int generation(graph_t * graph, int n, int p)
+void generation(graph_t * graph)
 {
-	int nb_aretes=0;
-	int rand1;
-	int rand2;
-	for (int i=0; i<n*p; i++)
+	int c=0;
+	for (int i=0; i<N*P; i++)
 	{
-		rand1=(rand()%8);
-		rand2=(rand()%8);
-		printf("%d %d\n",rand1,rand2);
-		if (rand1 && (i+1)%n)
+		
+		if ((i+1)%P)
 		{
-			graph->liste[nb_aretes].un=i;
-  			graph->liste[nb_aretes].deux=i+1;
-  			graph->liste[nb_aretes].valuation=1;
-			nb_aretes++;
+			graph->liste[c].un=i;
+			graph->liste[c].deux=i+1;
+			graph->liste[c].valuation=1;
+			c++;
 		}
-		if (rand2 && i<(n-1)*p)
+		if (i/P<N-1)
 		{
-			graph->liste[nb_aretes].un=i;
-  			graph->liste[nb_aretes].deux=i+n;
-  			graph->liste[nb_aretes].valuation=1;
-			nb_aretes++;
-		}		
+			graph->liste[c].un=i;
+			graph->liste[c].deux=i+P;
+			graph->liste[c].valuation=1;
+			c++;
+		}
 	}
-	return nb_aretes;
 }
 /*
 int main()

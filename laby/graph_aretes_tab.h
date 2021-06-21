@@ -35,5 +35,4 @@ void partition_connexe(partition_t *,graph_t *,int);
 
 void affiche_graph2(graph_t *,partition_t *, int, int,int);
 
-int main();
 #endif
