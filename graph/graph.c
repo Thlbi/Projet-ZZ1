@@ -137,7 +137,7 @@ arete_t * kruskal(graph_t *graph){
     }
     return A;
 }
-
+/*
 int main(){
     graph_t *graph=initgraph(10);
     
@@ -145,7 +145,7 @@ int main(){
     /*
     printf("%d\n",(graph->suiv)->poids);
     printf("%d\n",(graph->suiv)->suiv->poids);
-    */
+    
     afficher_graph(graph);
     arete_t *A=kruskal(graph);
     afficher_arete(A);
@@ -156,3 +156,4 @@ int main(){
 
     return 0;
 }
+*/
