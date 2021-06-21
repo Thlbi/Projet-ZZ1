@@ -8,6 +8,15 @@ graph_t *  initgraph(int noyau){
 
     return graph;
 }
+arete_t * allouer(int coord1,int coord2,int poids){
+	arete_t *nouv=(arete_t *)malloc(sizeof(arete_t));
+	if (nouv!=NULL){
+		nouv->sommet1=coord1;
+		nouv->sommet2=coord2;
+		nouv->poids=poids;
+	}
+	return nouv;
+}
 
 
 void ajouter_arete(graph_t*graph,int sommet1,int sommet2,int poids){
@@ -64,11 +73,31 @@ void afficher_graph(graph_t*graph){
 	}
 	fprintf(fichier, "}");
 	fclose(fichier);
-    system("dot -Tpng graph.dot -o graph.png");
-	system("display graph.png ");
+
 }
 
+void afficher_arete(arete_t *arete){
+	FILE *fichier;
 
+	fichier=fopen("graph6.dot","w");
+	if (fichier==NULL)
+		printf("echec de louverture du fichier\n");
+	else 
+		fprintf(fichier,"graph Nom{\n");
+    while(arete->suiv!=NULL)
+    {   
+		fprintf(fichier,"%d",arete->sommet1);
+		fprintf(fichier,"--");
+		fprintf(fichier,"%d",arete->sommet2);
+        fprintf(fichier,"[label=");
+		fprintf(fichier,"%d",arete->poids);
+		fprintf(fichier,"];\n");
+        arete=arete->suiv;
+	}
+	fprintf(fichier, "}");
+	fclose(fichier);
+    
+}
 
 
 void generer_couple(graph_t *graph){
@@ -85,8 +114,10 @@ void generer_couple(graph_t *graph){
 		}
 }
 
-partition_t * kruskal(graph_t *graph){
+arete_t * kruskal(graph_t *graph){
     int noyau=graph->Nb_Noyau;
+    arete_t *A=NULL;
+    arete_t *nouv;
     partition_t *part=creer(noyau);
     arete_t *cour=graph->suiv;
     int sommet1;
@@ -97,10 +128,14 @@ partition_t * kruskal(graph_t *graph){
         sommet2=cour->sommet2;
         if(recuperer_classe(sommet1,part)!=recuperer_classe(sommet2,part)){
             fusion(sommet1,sommet2,part);
+            nouv=allouer(sommet1,sommet2,cour->poids);
+            nouv->suiv=A;
+            A=nouv;
+            
         }
         cour=cour->suiv;
     }
-    return part;
+    return A;
 }
 
 int main(){
@@ -112,8 +147,12 @@ int main(){
     printf("%d\n",(graph->suiv)->suiv->poids);
     */
     afficher_graph(graph);
-    partition_t *part=kruskal(graph);
-    aff_graph(part,graph->Nb_Noyau);
+    arete_t *A=kruskal(graph);
+    afficher_arete(A);
+    system("dot -Tpng graph6.dot -o graph6.png");
+    system("dot -Tpng graph.dot -o graph.png");
+	system("display graph6.png &");
+	system("display graph.png &");
 
     return 0;
 }
