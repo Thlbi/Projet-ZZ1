@@ -37,7 +37,7 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
                     &window_dimensions.h);
   SDL_QueryTexture(my_texture, NULL, NULL,    // Récupération des dimensions de l'image
                    &source.w, &source.h);
-  float zoom = 0.3;                             // valeur du zoom pour l'affichage final
+  float zoom = 0.4;                             // valeur du zoom pour l'affichage final
   int offset_x = source.w / 14,                // La largeur d'une vignette de l'image 14
       offset_y = source.h / 9.4;                // La hauteur d'une vignette de l'image 9.4 
  	state.w = offset_x;
