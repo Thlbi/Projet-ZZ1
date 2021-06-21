@@ -24,6 +24,38 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 }
 
 
+int ** tableau_aretes(aretes_t *A){
+	int ** tab=malloc(N*sizeof(int *));
+	int x;
+
+	if (!tab)
+		exit(EXIT_FAILURE);
+
+	for (int i=0;i<N;i++){
+		tab[i]=malloc(P*sizeof(int ));
+		for (int j=0;j<P;j++){
+			tab[i][j]=0;
+		}
+	}
+	while (A!=NULL){
+		x=A->coord1;
+		while ((A!=NULL) && (A->coord1==x)){
+		       if (A->coord2==x+1){
+			       tab[(int)x/P][x%P]+=4;
+			       tab[(int)x/P][(x%P)+1]+=8;
+		       	}
+			else{
+			       tab[(int)x/P][x%P]+=2;
+			       tab[((int)x/P)+1][x%P]+=1;
+			}
+			A=A->suiv;
+		}
+	}
+	//Nord=1,sud=2,est=4,ouest=8;
+	return tab;
+}
+
+
 /*
  *Affiche le labyrinthe arborescent avec des rectangles 
  */
@@ -62,6 +94,38 @@ void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
         SDL_RenderPresent(renderer);
 	SDL_Delay(3000);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+        SDL_RenderClear(renderer);
+}
+
+
+void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
+        int i1,j1,x,noeud=0;
+
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+        SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer,0,0,0,0);
+
+        for (int i=0;i<N;i++){
+		for (int j=0;j<P;j++){
+			x=tab[i][j];
+                	j1=(noeud%P)+1;
+                	i1=((int)noeud/P)+1;
+               		
+			if (x%2!=0)
+				SDL_RenderDrawLine(renderer,i1*100,j1*100,(i1+1)*100,j1*100); //mur au nord
+			if ((x!=2) && (x!=3) && (x!=6) && (x!=7) && (x!=10) && (x!=11) && (x!=14) && (x!=15))
+				SDL_RenderDrawLine(renderer,i1*100,(j1+1)*100,(i1+1)*100,(j1+1)*100); //mur au sud
+			if ((x!=4) && (x!=5) && (x!=6) && (x!=7) && (x!=12) && (x!=13) && (x!=14) && (x!=15)) 
+				SDL_RenderDrawLine(renderer,(i1+1)*100,j1*100,(i1+1)*100,(j1+1)*100); //mur à l'est
+			if (x<8)
+				SDL_RenderDrawLine(renderer,i1*100,j1*100,i1*100,(j1+1)*100); //mur à l'ouest
+			noeud+=1;
+		
+		}
+	}
+
+        SDL_RenderPresent(renderer);
+        SDL_Delay(3000);
         SDL_RenderClear(renderer);
 }
 
@@ -106,7 +170,7 @@ couple_t * ordonner_Fisher(couple_t *c){
 }
 
 
-void creation_SDL(aretes_t *A){
+void creation_SDL(aretes_t *A,int **tab){
    if (SDL_Init(SDL_INIT_VIDEO) == -1){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	   exit(EXIT_FAILURE);
@@ -126,13 +190,15 @@ void creation_SDL(aretes_t *A){
    if (renderer == 0){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
    }
-   afficherEcran(renderer, A);
+   //afficherEcran(renderer, A); //version naïve
+   afficherEcranIntelligemment(renderer,tab);
 }
 
 
 void labyrinthe_arbo(){
 	partition_t *t=creer(TAILLE);
-        couple_t *c=init_couple();
+        int **tab;
+	couple_t *c=init_couple();
         aretes_t *cour;
         aretes_t *A=NULL;
         aretes_t *nouv;
@@ -157,6 +223,7 @@ void labyrinthe_arbo(){
                 cour=cour->suiv;
         }
         graph_kruskal(A);
-	creation_SDL(A);
+	tab=tableau_aretes(A);
+	creation_SDL(A,tab);
 }
 
