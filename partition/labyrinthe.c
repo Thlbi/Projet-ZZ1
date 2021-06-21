@@ -210,8 +210,8 @@ void creation_SDL(aretes_t *A,int **tab){
 
    //afficherEcran(renderer, A); //version naïve
    texture=init_textures(renderer);
-   //afficherEcranIntelligemment(renderer,tab,taille_cell);
-   //afficherImage(renderer,window,tab,taille_cell);
+   afficherEcranIntelligemment(renderer,tab,taille_cell);
+   afficherImage(renderer,window,tab,taille_cell,texture);
 }
 
 

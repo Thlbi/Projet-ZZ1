@@ -23,41 +23,145 @@ SDL_Texture* load_texture_from_image(char  *  file_image_name, SDL_Renderer *ren
 }
 
 
-void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer) {
-/*  SDL_Rect
-    source = {0},                             // Rectangle définissant la zone de la texture à récupérer
-    window_dimensions = {0},                  // Rectangle définissant la fenêtre, on  n'utilisera que largeur et hauteur
-    destination = {0};                        // Rectangle définissant où la zone_source doit être déposée dans le renderer
+/*
+ *affiche les textures du labyrinthes en fonction de la position des murs autour de la case
+ */
+void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer,int x,int coord_colonne,int coord_ligne) {
+  SDL_Rect source = {0},  // Rectangle définissant la zone de la texture à récupérer
+    window_dimensions = {0}, // Rectangle définissant la fenêtre, on  n'utilisera que largeur et hauteur
+    destination = {0}, // Rectangle définissant où la zone_source doit être déposée dans le renderer
+    state = {0};
 
   SDL_GetWindowSize(window,                   // Récupération des dimensions de la fenêtre
                     &window_dimensions.w,
                     &window_dimensions.h);
   SDL_QueryTexture(my_texture, NULL, NULL,    // Récupération des dimensions de l'image
                    &source.w, &source.h);
+  float zoom = 1.5;                             // valeur du zoom pour l'affichage final
+  int offset_x = source.w / 14,                // La largeur d'une vignette de l'image 14
+      offset_y = source.h / 9.4;                // La hauteur d'une vignette de l'image 9.4 
+  
+  switch (x){
+  	case 6 :
+  		state.x = 140;
+  		state.y = 15;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  	case 10 :
+  		state.x = 265;
+  		state.y = 15;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+ 
+  	case 5 :
+  	state.x = 140;
+  	state.y = 140;
+  	state.w = offset_x;
+  	state.h = offset_y;
+		break;
+  
+  	case 9 :
+  		state.x = 265;
+  	state.y = 140;
+  	state.w = offset_x;
+  	state.h = offset_y;
+		break;
 
-  float zoom = 3;                             // zoom, car ces images sont un peu petites
-  int offset_x = source.w / 8,                // La largeur d'une vignette de l'image
-      offset_y = source.h / 4;                // La hauteur d'une vignette de l'image
+  	case 3 :
+  	state.x = 10;
+  	state.y = 0;
+  	state.w = offset_x;
+  	state.h = offset_y;
+		break;
 
-  *//* construction des différents rectangles autour de chacune des vignettes de la planche */
-/*
+  	case 12 :
+  		state.x = 10;
+  		state.y = 137;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+
+  	case 15 :
+  		state.x = 1160;
+  		state.y = 10;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  
+  	case 7 :
+  		state.x = 525;
+  		state.y = 265;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  
+  	case 11 :
+  		state.x = 645;
+  		state.y = 265;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+
+  	case 13 :
+  		state.x = 522;
+  		state.y = 392;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  
+  	case 14 :
+  		state.x = 647;
+  		state.y = 397;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  
+  	case 2 :
+  		state.x = 1034;
+  		state.y = 266;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  
+  	case 1 :
+  		state.x = 1161;
+  		state.y = 265;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+
+  	case 8 :
+  		state.x = 1161;
+  		state.y = 393;
+  		state.w = offset_x;
+  		state.h = offset_y;
+		break;
+  
+  	case 4 :
+  		state.x = 1036;
+  		state.y = 393;
+  		state.w = offset_x;
+  		state.h = offset_y;
+ 		break;
+	case 0 :
+  		state.x = 0;
+  		state.y = 265;
+  		state.w = offset_x;
+  		state.h = offset_y;
+ 		break;
+  }
+ /* construction des différents rectangles autour de chacune des vignettes de la planche */
+
   destination.w = offset_x * zoom;            // Largeur du sprite à l'écran
   destination.h = offset_y * zoom;            // Hauteur du sprite à l'écran
-  destination.x = window_dimensions.w * 0.75; // Position en x pour l'affichage du sprite
-  destination.y = window_dimensions.h * 0.7;  // Position en y pour l'affichage du sprite
-  int i = 0;
-  for (int cpt = 0; cpt < nb_images_animation ; ++cpt) {
-    play_with_texture_1_1(bg_texture,         // identique à play_with_texture_1, où on a enlevé l'affichage et la pause
-                          window, renderer);
-    SDL_RenderCopy(renderer,                  // Préparation de l'affichage
-                   my_texture, &state[i], &destination);
-    i = (i + 1) % nb_images;                  // Passage à l'image suivante, le modulo car l'animation est cyclique
-    SDL_RenderPresent(renderer);              // Affichage
-    SDL_Delay(100);            // Pause en ms
-  }
-
-  SDL_RenderClear(renderer);                  // Effacer la fenêtre avant de rendre la main
-*/}
+  destination.x = 100+coord_colonne*(source.h / 9.4)*zoom; // Position en x pour l'affichage du sprite
+  destination.y = 100+coord_ligne*(source.h / 9.4)*zoom;  // Position en y pour l'affichage du sprite
+  SDL_RenderCopy(renderer,                  // Préparation de l'affichage
+                   my_texture,&state, &destination);
+  SDL_RenderPresent(renderer);              // Affichage
+}
 
 
 
@@ -71,7 +175,7 @@ SDL_Texture * init_textures(SDL_Renderer* renderer) {
     return my_texture;
 }
 
-void afficherEcranImages(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture){
+void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture){
         int i1,j1,x,noeud=0;
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -80,17 +184,17 @@ void afficherEcranImages(SDL_Renderer *renderer,SDL_Window *window,int **tab,int
         for (int i=0;i<N;i++){
                 for (int j=0;j<P;j++){
                         x=tab[i][j];
-                        i1=(noeud%P)+1;
-                        j1=((int)noeud/P)+1;
+                        i1=(noeud%P)+1; //coordonee colonne du noeud
+                        j1=((int)noeud/P)+1; // coordonee ligne du noeud
 
-                        affichage_texture(texture,window,renderer);
+                        affichage_texture(texture,window,renderer,x,i1,j1);
 
                         noeud+=1;
                         }
                 }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(3000);
+        SDL_Delay(20000);
         SDL_RenderClear(renderer);
 }
 
