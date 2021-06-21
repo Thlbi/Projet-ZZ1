@@ -98,7 +98,7 @@ void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
 }
 
 
-void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
+void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cell){
         int i1,j1,x,noeud=0;
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -108,17 +108,20 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab){
         for (int i=0;i<N;i++){
 		for (int j=0;j<P;j++){
 			x=tab[i][j];
-                	j1=(noeud%P)+1;
-                	i1=((int)noeud/P)+1;
-               		
-			if (x%2!=0)
-				SDL_RenderDrawLine(renderer,i1*100,j1*100,(i1+1)*100,j1*100); //mur au nord
+                	i1=(noeud%P)+1;
+                	j1=((int)noeud/P)+1;
+               		printf("%d %d \n",noeud,x);
+
+			if (x%2!=1){
+				SDL_RenderDrawLine(renderer,i1*taille_cell+50,j1*taille_cell+50,(i1+1)*taille_cell+50,j1*taille_cell+50); //mur au nord
+				}
 			if ((x!=2) && (x!=3) && (x!=6) && (x!=7) && (x!=10) && (x!=11) && (x!=14) && (x!=15))
-				SDL_RenderDrawLine(renderer,i1*100,(j1+1)*100,(i1+1)*100,(j1+1)*100); //mur au sud
+				SDL_RenderDrawLine(renderer,i1*taille_cell+50,(j1+1)*taille_cell+50,(i1+1)*taille_cell+50,(j1+1)*taille_cell+50); //mur au sud
 			if ((x!=4) && (x!=5) && (x!=6) && (x!=7) && (x!=12) && (x!=13) && (x!=14) && (x!=15)) 
-				SDL_RenderDrawLine(renderer,(i1+1)*100,j1*100,(i1+1)*100,(j1+1)*100); //mur à l'est
+				SDL_RenderDrawLine(renderer,(i1+1)*taille_cell+50,j1*taille_cell+50,(i1+1)*taille_cell+50,(j1+1)*taille_cell+50); //mur à l'est
 			if (x<8)
-				SDL_RenderDrawLine(renderer,i1*100,j1*100,i1*100,(j1+1)*100); //mur à l'ouest
+				SDL_RenderDrawLine(renderer,i1*taille_cell+50,j1*taille_cell+50,i1*taille_cell+50,(j1+1)*taille_cell+50); //mur à l'ouest
+			
 			noeud+=1;
 		
 		}
@@ -171,27 +174,36 @@ couple_t * ordonner_Fisher(couple_t *c){
 
 
 void creation_SDL(aretes_t *A,int **tab){
+   int taille_cell;
    if (SDL_Init(SDL_INIT_VIDEO) == -1){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	   exit(EXIT_FAILURE);
    }
    SDL_Window *window;
-   int width = 1900;
-   int height = 1000;
-   
-   window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height,SDL_WINDOW_RESIZABLE);
+   SDL_DisplayMode screen;
+   SDL_GetCurrentDisplayMode(0, &screen);
+
+   window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen.w, screen.h,SDL_WINDOW_RESIZABLE);
    if (window == 0) {
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
    }
    SDL_SetWindowTitle(window, "Labyrinthe");
    
+
    SDL_Renderer *renderer;
    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
    if (renderer == 0){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
    }
+   
+   if (screen.w/N<screen.h/P){
+	taille_cell=screen.w/N;
+   }   
+   else
+	taille_cell=screen.h/P;
+
    //afficherEcran(renderer, A); //version naïve
-   afficherEcranIntelligemment(renderer,tab);
+   afficherEcranIntelligemment(renderer,tab,taille_cell);
 }
 
 
