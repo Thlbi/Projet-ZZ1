@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-
+#include "affichage_image.h"
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer) {   
 	char msg_formated[255];
@@ -24,6 +24,9 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 }
 
 
+/*
+ *tableau contenant les valeurs déterminant quels sont les murs à créer
+ */
 int ** tableau_aretes(aretes_t *A){
 	int ** tab=malloc(N*sizeof(int *));
 	int x;
@@ -57,7 +60,7 @@ int ** tableau_aretes(aretes_t *A){
 
 
 /*
- *Affiche le labyrinthe arborescent avec des rectangles 
+ *Affiche le labyrinthe arborescent avec des rectangles (qui ne marche pas d'ailleurs)
  */
 void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
 	int i1,j1,x,y;
@@ -97,7 +100,9 @@ void afficherEcran(SDL_Renderer *renderer,aretes_t *A){
         SDL_RenderClear(renderer);
 }
 
-
+/*
+ *Affichage du labyrinthe avec des dessins, mais intelligemment
+ */
 void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cell){
         int i1,j1,x,noeud=0;
 
@@ -110,7 +115,6 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 			x=tab[i][j];
                 	i1=(noeud%P)+1;
                 	j1=((int)noeud/P)+1;
-               		printf("%d %d \n",noeud,x);
 
 			if (x%2!=1){
 				SDL_RenderDrawLine(renderer,i1*taille_cell+50,j1*taille_cell+50,(i1+1)*taille_cell+50,j1*taille_cell+50); //mur au nord
@@ -175,6 +179,8 @@ couple_t * ordonner_Fisher(couple_t *c){
 
 void creation_SDL(aretes_t *A,int **tab){
    int taille_cell;
+   SDL_Texture *texture;
+
    if (SDL_Init(SDL_INIT_VIDEO) == -1){
  	   fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	   exit(EXIT_FAILURE);
@@ -197,13 +203,15 @@ void creation_SDL(aretes_t *A,int **tab){
    }
    
    if (screen.w/N<screen.h/P){
-	taille_cell=screen.w/N;
+	taille_cell=screen.w/N+2;
    }   
    else
-	taille_cell=screen.h/P;
+	taille_cell=screen.h/P+2;
 
    //afficherEcran(renderer, A); //version naïve
-   afficherEcranIntelligemment(renderer,tab,taille_cell);
+   texture=init_textures(renderer);
+   //afficherEcranIntelligemment(renderer,tab,taille_cell);
+   //afficherImage(renderer,window,tab,taille_cell);
 }
 
 

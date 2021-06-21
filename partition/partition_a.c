@@ -9,7 +9,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-
+#include "affichage_image.h"
 
 /*
  *cree une partition
@@ -492,7 +492,7 @@ void kruskal(int taille){
 }
 
 
-
+/*
 int main(){
 	srand(time(0));
 	//int taille=10;
@@ -502,11 +502,11 @@ int main(){
 	//int erreur=0;
 	//couple_t *c=init_couple();
 	//generer_couple(c,taille);
-	/*
+	
 	fusion(t,6,5,taille);
 	lister_classe(t,3,taille);
 	lister_partition(t,taille);
-	*/
+	
 	//fusion_couple(c,t,taille);
 
 	//fusion_mat(mat,t,taille);
@@ -518,11 +518,13 @@ int main(){
 	//kruskal(taille);
 	labyrinthe_arbo();
 
-	/*if (erreur)
+	if (erreur)
 		printf("erreur\n");
 
 	liberer(mat,taille);
-	*/
+	
 
 	return 0;
+
 }
+*/
