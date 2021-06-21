@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include "affichage_image.h"
 
-#define N 5 //nbr lignes
-#define P 7 //nbr colonnes
+#define N 20 //nbr lignes
+#define P 35 //nbr colonnes
 #define TAILLE (N*P)
 
 void labyrinthe_arbo();

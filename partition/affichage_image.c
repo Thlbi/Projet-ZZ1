@@ -37,7 +37,7 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
                     &window_dimensions.h);
   SDL_QueryTexture(my_texture, NULL, NULL,    // Récupération des dimensions de l'image
                    &source.w, &source.h);
-  float zoom = 1.5;                             // valeur du zoom pour l'affichage final
+  float zoom = 0.3;                             // valeur du zoom pour l'affichage final
   int offset_x = source.w / 14,                // La largeur d'une vignette de l'image 14
       offset_y = source.h / 9.4;                // La hauteur d'une vignette de l'image 9.4 
  	state.w = offset_x;
@@ -127,8 +127,8 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
 
   destination.w = offset_x * zoom;            // Largeur du sprite à l'écran
   destination.h = offset_y * zoom;            // Hauteur du sprite à l'écran
-  destination.x = 10+coord_colonne*(source.h / 9.4)*zoom; // Position en x pour l'affichage du sprite
-  destination.y = 10+coord_ligne*(source.h / 9.4)*zoom;  // Position en y pour l'affichage du sprite
+  destination.x = 60+coord_colonne*(source.h / 9.4)*zoom; // Position en x pour l'affichage du sprite
+  destination.y = 60+coord_ligne*(source.h / 9.4)*zoom;  // Position en y pour l'affichage du sprite
   SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
 
 }
@@ -157,7 +157,6 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
                         i1=(noeud%P)+1; //coordonee colonne du noeud
                         j1=((int)noeud/P)+1; // coordonee ligne du noeud
 
-  			printf("%d ",x);
   			affichage_texture(texture,window,renderer,x,i1,j1);
 
                         noeud+=1;

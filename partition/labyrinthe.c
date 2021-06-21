@@ -225,7 +225,7 @@ void labyrinthe_arbo(){
         int classe1,classe2;
 
         generer_couple_poids1(c,TAILLE);
-        graph_couple(c);
+   //     graph_couple(c);
         c=ordonner_Fisher(c); //pour ordonner aléatoirement la forêt arborescente
         cour=c->suiv;
 
@@ -242,7 +242,7 @@ void labyrinthe_arbo(){
                 }
                 cour=cour->suiv;
         }
-        graph_kruskal(A);
+     //   graph_kruskal(A);
 	tab=tableau_aretes(A);
 	creation_SDL(A,tab);
 }
