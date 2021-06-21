@@ -30,12 +30,15 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 	int x=0;
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
-	SDL_SetRenderDrawColor(renderer,255,0,0,0);
-
-		SDL_RenderDrawLine(renderer,0,0,P*taille_cell,0); //mur au nord
-		SDL_RenderDrawLine(renderer,0,N*taille_cell,P*taille_cell,(N)*taille_cell); //mur au sud 
-		SDL_RenderDrawLine(renderer,0,0,0,(N)*taille_cell); //mur à l'ouest
-		SDL_RenderDrawLine(renderer,(P)*taille_cell,0,(P)*taille_cell,(N)*taille_cell); //mur à l'est
+	SDL_SetRenderDrawColor(renderer,0,0,0,0);
+ 	SDL_DisplayMode screen;
+	SDL_GetCurrentDisplayMode(0,&screen);
+	int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
+	int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
+	SDL_RenderDrawLine(renderer,decalage_horizontale,decalage_vertical,decalage_horizontale+P*taille_cell,decalage_vertical); //mur au nord
+	SDL_RenderDrawLine(renderer,decalage_horizontale,decalage_vertical+N*taille_cell,decalage_horizontale+P*taille_cell,(N)*taille_cell+decalage_vertical); //mur au sud 
+	SDL_RenderDrawLine(renderer,decalage_horizontale,decalage_vertical,decalage_horizontale,decalage_vertical+(N)*taille_cell); //mur à l'ouest
+	SDL_RenderDrawLine(renderer,decalage_horizontale+(P)*taille_cell,decalage_vertical,decalage_horizontale+(P)*taille_cell,decalage_vertical+(N)*taille_cell); //mur à l'est
 
 	SDL_SetRenderDrawColor(renderer,0,0,0,0);
 	for (int i=0;i<P;i++)
@@ -46,9 +49,9 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 			x=tab[i][j];
 
 			if ((x!=2) && (x!=6))
-				SDL_RenderDrawLine(renderer,i*taille_cell,(j+1)*taille_cell,(i+1)*taille_cell,(j+1)*taille_cell); //mur au sud
+				SDL_RenderDrawLine(renderer,i*taille_cell+decalage_horizontale,(j+1)*taille_cell+decalage_vertical,(i+1)*taille_cell+decalage_horizontale,(j+1)*taille_cell+decalage_vertical); //mur au sud
 			if ((x!=4) &&  (x!=6)) 
-				SDL_RenderDrawLine(renderer,(i+1)*taille_cell,j*taille_cell,(i+1)*taille_cell,(j+1)*taille_cell); //mur à l'est
+				SDL_RenderDrawLine(renderer,(i+1)*taille_cell+decalage_horizontale,j*taille_cell+decalage_vertical,(i+1)*taille_cell+decalage_horizontale,(j+1)*taille_cell+decalage_vertical); //mur à l'est
 		}
 	}
 
