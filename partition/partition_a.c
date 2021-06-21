@@ -385,13 +385,14 @@ void generer_couple(couple_t *c,int taille){
 
 
 void generer_couple_poids1(couple_t *c,int taille){
-                int x;
+                int x,a;
 
                 c->nb_noeud=taille;
                 for (int i=0;i<taille;i++){
                         for (int j=i+1;j<taille;j++){
-                                x=rand()%2;
-                                if (x==1){
+                                x=rand()%20;
+         			a=rand()/RAND_MAX;
+	 			if ((x)&&(a<ARG_P)){
                                         if (abs(j/P-i/P)+abs(j%P-i%P)==1){
 				       		aretes_t *nouv=malloc(sizeof(aretes_t));
                                         	nouv->coord1=i;
@@ -474,7 +475,6 @@ void kruskal(int taille){
 	graph_couple(c);
 	c=ordonner_aretes(c); //pour ordonner par ordre croissant
 	cour=c->suiv;
-
 
 	while (cour!=NULL){
 		classe1=recuperer_classe(t,cour->coord1,taille);

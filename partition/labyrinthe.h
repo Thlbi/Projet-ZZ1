@@ -10,6 +10,7 @@
 #define N 20 //nbr lignes
 #define P 35 //nbr colonnes
 #define TAILLE (N*P)
+#define ARG_P 0.5
 
 int ** labyrinthe_arbo();
 couple_t * ordonner_Fisher(couple_t *c);
