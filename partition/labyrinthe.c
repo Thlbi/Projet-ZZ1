@@ -23,6 +23,17 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
      	}
 }
 
+
+int max(int x,int y){
+	int max;
+
+	if (x>y)
+		max=x;
+	else
+		max=y;
+	return max;
+}
+
 /*
  *Affiche le labyrinthe arborescent avec des rectangles 
  */
@@ -44,23 +55,25 @@ void afficherEcran(SDL_Renderer *renderer,aretes_t *A,partition_t *t){
 	while (A!=NULL){
 		x=A->coord1;
 		y=A->coord2;
-		//y=t[x].par;
 
-		//while(y!=x){
-			j1=x%P;
-			i1=(int)x/P;
-			j2=y%P;
-			i2=(int)y/P;
+		j1=x%P;
+		i1=(int)x/P;
+		j2=y%P;
+		i2=(int)y/P;
+		SDL_SetRenderDrawColor(renderer,255,0,255,0);
 
-			SDL_RenderDrawLine(renderer,i1*100+100,j1*100+100,i2*100+100,j2*100+100);
-				//x=y;
-				//y=t[x].par;
-		//}
+		if (x==y-1){
+			printf("%d %d %d %d %d\n",x,i1,i2,j1,j2);
+			SDL_RenderDrawLine(renderer,(i1+1)*100,(j1+1)*100,(i2+1)*100,(j2+1)*100);
+		}
+		else
+			SDL_RenderDrawLine(renderer,(i1+1)*100,(j1+1)*100,(i2+1)*100,(j2+1)*100);
+		
 		A=A->suiv;
 	}
 
         SDL_RenderPresent(renderer);
-	SDL_Delay(5000);
+	SDL_Delay(3000);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
         SDL_RenderClear(renderer);
 }
