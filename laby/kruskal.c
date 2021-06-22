@@ -44,7 +44,7 @@ int ** tableau_ligne(graph_t * graph,int nb_aretes)
 		return tab;			
 }
 
-graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours)
+graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours,double p)
 {
 	int c1;
 	int c2;
@@ -59,7 +59,7 @@ graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours)
 		c1=recuperer_classe(graph->liste[i].un,partA);
 		c2=recuperer_classe(graph->liste[i].deux, partA);
 //	printf("%d %d\n",c1,c2);
-		if (c1!=c2)
+		if (c1!=c2 || p<(double)rand()/(double)RAND_MAX)
 		{
 			A->liste[*cours]=graph->liste[i];
 			fusion(A->liste[*cours].un,A->liste[*cours].deux,partA);

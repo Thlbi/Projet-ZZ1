@@ -66,8 +66,11 @@ int min(int a, int b)
 }	
 
 
-int main ()
+int main (int argc, char** argv)
 {
+	double p;
+	if (argc==2)  p=atof(argv[1]);
+	else p=1; 
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
 		fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
@@ -95,10 +98,7 @@ int main ()
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
 	generation(graph);
 	graph=Fisher(graph,nb_aretes);
-	//printf("%d \n", nb_aretes);
-	graph=kruskal(graph,noeuds,nb_aretes,&cours);
-	//printf("cours %d\n",cours);
-//	affiche_graph_couple(graph,noeuds,cours);
+	graph=kruskal(graph,noeuds,nb_aretes,&cours,p);
 	tab=tableau_ligne(graph,cours);
 
 	SDL_Event event;

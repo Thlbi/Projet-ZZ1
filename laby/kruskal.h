@@ -7,7 +7,7 @@
 #define N 30
 #define P 52
 
-graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours);
+graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours,double p);
 
 graph_t * Fisher(graph_t * graph, int nb_aretes);
 
