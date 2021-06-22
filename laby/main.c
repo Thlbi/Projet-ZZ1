@@ -46,14 +46,14 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 			i1=(noeud%P);
                         j1=((int)noeud/P);
 
-                        if (x%2!=1){
+                        if (!(x & FLAG_N)){
                                 SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical); //mur au nord
                                 }
-                        if ((x!=2) && (x!=3) && (x!=6) && (x!=7) && (x!=10) && (x!=11) && (x!=14) && (x!=15))
+                        if ((x & FLAG_S)!=2)
                                 SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur au sud
-                        if ((x!=4) && (x!=5) && (x!=6) && (x!=7) && (x!=12) && (x!=13) && (x!=14) && (x!=15))
+                        if ((x & FLAG_E)!=4)
                                 SDL_RenderDrawLine(renderer,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'est
-                        if (x<8)
+                        if ((x & FLAG_O)!=8)
                                 SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'ouest
 
                         noeud+=1;
@@ -106,6 +106,7 @@ int main (int argc, char** argv)
 	graph=kruskal(graph,noeuds,nb_aretes,&cours,p);
 	tab=tableau_ligne(graph,cours);
 	SDL_Texture * texture;
+	texture=init_textures(renderer);
 
 	SDL_Event event;
 	while (running)
@@ -129,7 +130,7 @@ int main (int argc, char** argv)
 					break;
 			break;
 			}
-			afficherEcranIntelligemment(renderer,tab,taille_cell);
+	afficherEcranIntelligemment(renderer,tab,taille_cell);
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
         SDL_RenderClear(renderer);
@@ -138,8 +139,9 @@ int main (int argc, char** argv)
 	texture=init_textures(renderer);
 	afficherImage(renderer,window,tab,taille_cell,texture);	
 	SDL_RenderPresent(renderer);
-        SDL_Delay(20000);
+        SDL_Delay(2000);
         SDL_RenderClear(renderer);
+	
 
 	end_sdl(1, "Normal ending", window, renderer);
 	return 1;
