@@ -3,7 +3,7 @@
 
 
 #include "labyrinthe.h"
-
+#include "affichage.h"
 
 int main();
 

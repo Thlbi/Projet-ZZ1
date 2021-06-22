@@ -8,8 +8,8 @@
 
 
 
-#define N 30
-#define P 30
+#define N 15 //ligne
+#define P 15 //colonne
 #define TAILLE (N*P)
 typedef enum
 {

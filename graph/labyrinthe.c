@@ -3,24 +3,6 @@
 //gcc *.c -o prog -Wall -Wextra $(sdl2-config --cflags --libs) -lSDL2_image
 
 
-void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer) {   
-	char msg_formated[255];
-     	int l;
-     	if (!ok) {
-		strncpy(msg_formated, msg, 250);
-      		l = strlen(msg_formated);
-		strcpy(msg_formated + l, " : %s\n");
-      		SDL_Log(msg_formated, SDL_GetError());
-     	}
-     	if (renderer != NULL) SDL_DestroyRenderer(renderer);
-     	if (window != NULL)   SDL_DestroyWindow(window);
-     	SDL_Quit();
-     	if (!ok) {
-		exit(EXIT_FAILURE);
-     	}
-}
-
-
 int **tableau_aretes(arete_t *A){
     int **tab=malloc(N*sizeof(int *));
 	int x;
@@ -89,7 +71,7 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,SDL_DisplayMod
 	}
 
     SDL_RenderPresent(renderer);
-	SDL_Delay(1000);
+	SDL_Delay(5000);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
     SDL_RenderClear(renderer);
 }
