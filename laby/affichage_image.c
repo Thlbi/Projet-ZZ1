@@ -26,7 +26,7 @@ SDL_Texture* load_texture_from_image(char  *  file_image_name, SDL_Renderer *ren
 /*
  *affiche les textures du labyrinthes en fonction de la position des murs autour de la case
  */
-void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer,int x,int coord_colonne,int coord_ligne) {
+void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer,int x,int coord_colonne,int coord_ligne,int taille_cell) {
   SDL_Rect source = {0},  // Rectangle définissant la zone de la texture à récupérer
     window_dimensions = {0}, // Rectangle définissant la fenêtre, on  n'utilisera que largeur et hauteur
     destination = {0}, // Rectangle définissant où la zone_source doit être déposée dans le renderer
@@ -37,7 +37,7 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
                     &window_dimensions.h);
   SDL_QueryTexture(my_texture, NULL, NULL,    // Récupération des dimensions de l'image
                    &source.w, &source.h);
-  float zoom = 0.4;                // valeur du zoom pour l'affichage final
+  float zoom = (float)taille_cell/(float)109;                // valeur du zoom pour l'affichage final
   int offset_x = source.w / 14,                // La largeur d'une vignette de l'image 14
       offset_y = source.h / 9.4;                // La hauteur d'une vignette de l'image 9.4 
  	state.w = offset_x;
@@ -157,7 +157,7 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
                         i1=(noeud%P); //coordonee colonne du noeud
                         j1=((int)noeud/P); // coordonee ligne du noeud
 
-  			affichage_texture(texture,window,renderer,x,i1,j1);
+  			affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
 
                         noeud+=1;
                         }
