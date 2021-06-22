@@ -135,11 +135,10 @@ int main (int argc, char** argv)
         SDL_RenderClear(renderer);
 		}
 	}
-	printf("pourquoi?");
 	texture=init_textures(renderer);
 	afficherImage(renderer,window,tab,taille_cell,texture);	
 	SDL_RenderPresent(renderer);
-        SDL_Delay(2000);
+        SDL_Delay(20000);
         SDL_RenderClear(renderer);
 
 	end_sdl(1, "Normal ending", window, renderer);

@@ -54,7 +54,7 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
 		break;
  
   	case 5 :
-  		state.x = 140;
+  		state.x = 139;
   		state.y = 140;
 		break;
   
@@ -70,32 +70,32 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
 
   	case 12 :
   		state.x = 10;
-  		state.y = 137;
+  		state.y = 143;
 		break;
 
   	case 15 :
-  		state.x = 1160;
-  		state.y = 10;
+  		state.x = 1162;
+  		state.y = 13;
 		break;
   
   	case 7 :
-  		state.x = 525;
-  		state.y = 265;
+  		state.x = 522;
+  		state.y = 271;
 		break;
   
   	case 11 :
-  		state.x = 645;
-  		state.y = 265;
+  		state.x = 649;
+  		state.y = 271;
 		break;
 
   	case 13 :
   		state.x = 522;
-  		state.y = 392;
+  		state.y = 398;
 		break;
   
   	case 14 :
-  		state.x = 647;
-  		state.y = 397;
+  		state.x = 650;
+  		state.y = 399;
 		break;
   
   	case 2 :
@@ -110,12 +110,12 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
 
   	case 8 :
   		state.x = 1161;
-  		state.y = 393;
+  		state.y = 398;
 		break;
   
   	case 4 :
   		state.x = 1036;
-  		state.y = 393;
+  		state.y = 398;
  		break;
 	case 0 :
   		state.x = 0;
@@ -125,8 +125,8 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
 
  /* construction des différents rectangles autour de chacune des vignettes de la planche */
 
-  destination.w = offset_x * zoom;            // Largeur du sprite à l'écran
-  destination.h = offset_y * zoom;            // Hauteur du sprite à l'écran
+  destination.w = offset_x * zoom+1;            // Largeur du sprite à l'écran
+  destination.h = offset_y * zoom+1;            // Hauteur du sprite à l'écran
   destination.x = 1+coord_colonne*(source.h / 9.4)*zoom; // Position en x pour l'affichage du sprite
   destination.y = 1+coord_ligne*(source.h / 9.4)*zoom;  // Position en y pour l'affichage du sprite
   SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
