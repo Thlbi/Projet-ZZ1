@@ -137,6 +137,87 @@ void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
         SDL_Delay(10);
     }      
 }
+void play_with_elve_N_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
+    SDL_Rect source = {0},destination = {0};                 
+             
+    SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
+
+    int nb_images = 8;
+    int nb_images_animation=9;
+    int i=0;                          
+    int offset_x = source.w/nb_images;
+    int offset_y = source.h;   
+    SDL_Rect state[10];
+
+    destination.w = offset_x * zoom;  //taille image largeur
+    destination.h = offset_y * zoom; //taille image hauteur
+    destination.x=pos_x;             //position image x
+    destination.y=pos_y;             //position image y
+
+
+    state[0].x=7*offset_x; 
+    state[0].y=0;
+    state[0].w=offset_x;
+    state[0].h = offset_y;
+
+    state[1].x=3*offset_x;
+    state[1].y=0;
+    state[1].w=offset_x;
+    state[1].h = offset_y;
+
+    state[2].x=2*offset_x;
+    state[2].y=0;
+    state[2].w = offset_x;
+    state[2].h = offset_y;
+   
+    state[3].x=1*offset_x;
+    state[3].y=0;
+    state[3].w = offset_x;
+    state[3].h = offset_y;
+
+    state[4].x=0;
+    state[4].y=0;    
+    state[4].w=offset_x;
+    state[4].h = offset_y;
+
+    state[5].x=3*offset_x;
+    state[5].y=0;
+    state[5].w=offset_x;
+    state[5].h = offset_y;
+
+    state[6].x=2*offset_x;
+    state[6].y=0;
+    state[6].w=offset_x;
+    state[6].h = offset_y;
+
+    state[6].x=1*offset_x;
+    state[6].y=0;
+    state[6].w=offset_x;
+    state[6].h = offset_y;
+
+    state[7].x=0;
+    state[7].y=0;
+    state[7].w=offset_x;
+    state[7].h = offset_y;
+
+    state[8].x=3*offset_x;
+    state[8].y=0;
+    state[8].w=offset_x;
+    state[8].h = offset_y;
+
+    state[9].x=7*offset_x;
+    state[9].y=0;
+    state[9].w=offset_x;
+    state[9].h = offset_y;
+    
+    for(i=0;i<nb_images_animation;++i){
+        play_with_background(background,window,renderer);
+        destination.y=destination.y-(deplacement/nb_images_animation); //déplacement du personnage ici de wind dim.h /32 en tout (diviser par nb animation pour chaque anim)
+        SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(10);
+    }      
+}
 void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
      SDL_Rect source = {0}, window_dimensions = {0},destination = {0};                 
 
@@ -197,7 +278,7 @@ void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[6].w=offset_x;
     state[6].h = offset_y;
 
-    state[7].x=7*offset_x;;
+    state[7].x=7*offset_x;
     state[7].y=0;
     state[7].w=offset_x;
     state[7].h = offset_y;
@@ -208,6 +289,90 @@ void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[8].h = offset_y;
 
     state[9].x=0;
+    state[9].y=0;
+    state[9].w=offset_x;
+    state[9].h = offset_y;
+    
+    for(i=0;i<nb_images_animation;++i){
+        play_with_background(background,window,renderer);
+        destination.y=destination.y+(deplacement/nb_images_animation);
+        SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(10);
+    }      
+
+}
+void play_with_elve_S_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
+     SDL_Rect source = {0}, window_dimensions = {0},destination = {0};                 
+
+     SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);               
+     SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
+
+    int nb_images = 8;
+    int nb_images_animation=9;
+    int i=0;                      
+    int offset_x = source.w/nb_images;
+    int offset_y = source.h;   
+    SDL_Rect state[10];
+
+    destination.w = offset_x * zoom;           
+    destination.h = offset_y * zoom;
+    destination.x=pos_x;
+    destination.y=pos_y;
+
+
+
+    state[0].x=7*offset_x;
+    state[0].y=0;
+    state[0].w=offset_x;
+    state[0].h = offset_y;
+
+    state[1].x=3*offset_x;
+    state[1].y=0;
+    state[1].w=offset_x;
+    state[1].h = offset_y;
+
+    state[2].x=2*offset_x;
+    state[2].y=0;
+    state[2].w = offset_x;
+    state[2].h = offset_y;
+   
+    state[3].x=1*offset_x;
+    state[3].y=0;
+    state[3].w = offset_x;
+    state[3].h = offset_y;
+
+    state[4].x=0;
+    state[4].y=0;    
+    state[4].w=offset_x;
+    state[4].h = offset_y;
+
+    state[5].x=3*offset_x;
+    state[5].y=0;
+    state[5].w=offset_x;
+    state[5].h = offset_y;
+
+    state[6].x=2*offset_x;
+    state[6].y=0;
+    state[6].w=offset_x;
+    state[6].h = offset_y;
+
+    state[6].x=1*offset_x;
+    state[6].y=0;
+    state[6].w=offset_x;
+    state[6].h = offset_y;
+
+    state[7].x=0;
+    state[7].y=0;
+    state[7].w=offset_x;
+    state[7].h = offset_y;
+
+    state[8].x=3*offset_x;
+    state[8].y=0;
+    state[8].w=offset_x;
+    state[8].h = offset_y;
+
+    state[9].x=7*offset_x;
     state[9].y=0;
     state[9].w=offset_x;
     state[9].h = offset_y;
@@ -596,6 +761,11 @@ void play_standstill_4_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     play_with_background(background,window,renderer);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
+
+
+
+
+/*
 int main(int argc, char **argv){
     (void)argc;
     (void)argv;
@@ -621,7 +791,7 @@ int main(int argc, char **argv){
     if (window == 0)
         {
          fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-         /* on peut aussi utiliser SDL_Log() */
+         // on peut aussi utiliser SDL_Log() 
         }
     SDL_SetWindowTitle(window, "Anim Laby");
 
@@ -630,7 +800,7 @@ int main(int argc, char **argv){
     
     SDL_Renderer *renderer;
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); //  SDL_RENDERER_SOFTWARE 
     if (renderer == 0)
     {
         fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
@@ -655,6 +825,7 @@ int main(int argc, char **argv){
     int largeur_elve = source.w/8*zoom;
     int hauteur_elve = source.h*zoom;
     int right=1;
+    int keyPressed;
     SDL_Event event;
 	while (running)
 	{
@@ -686,42 +857,6 @@ int main(int argc, char **argv){
 						case SDLK_p:
 							pause=1-pause;
 							break;
-						case SDLK_LEFT:
-						case SDLK_q:
-                            if (pos_x-deplacement>0){
-                                    play_with_elve_O(texture_elve_reverse,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
-                                    pos_x=pos_x-deplacement;
-                                    stand=0;
-                                    right=0;
-                                }
-							break;
-						case SDLK_RIGHT:
-						case SDLK_d:
-                            if(pos_x+deplacement+largeur_elve<window_dimensions.w){
-                                play_with_elve_E(texture_elve,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
-                                pos_x=pos_x+deplacement;
-                                stand=0;
-                                right=1;
-                            }
-							break;
-                        case SDLK_UP:
-						case SDLK_z:
-                            if(pos_y-deplacement>0){
-                                play_with_elve_N(texture_elve,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
-                                pos_y=pos_y-deplacement;
-                                stand=0;
-                                right=1;
-                            }
-                            break;
-                        case SDLK_DOWN:
-                        case SDLK_s:
-                            if(pos_y+deplacement+hauteur_elve<window_dimensions.h){
-                                play_with_elve_S(texture_elve,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
-                                pos_y=pos_y+deplacement;
-                                stand=0;
-                                right=1;
-                            }
-                            break;
 						default:
 							break;
                     }
@@ -730,6 +865,44 @@ int main(int argc, char **argv){
 			        break;
 			}
         }
+        const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+			keyPressed = 0;
+			if ((keystates[SDL_SCANCODE_UP]||keystates[SDL_SCANCODE_W])&&(pos_y-deplacement>0)) {
+                if (right){
+                    play_with_elve_N(texture_elve,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+                }
+                else{
+                    play_with_elve_N_l(texture_elve_reverse,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+                }
+                pos_y=pos_y-deplacement;
+                stand=0;
+				keyPressed = 1;
+			}
+			if ((keystates[SDL_SCANCODE_DOWN]||keystates[SDL_SCANCODE_S])&&(pos_y+deplacement+hauteur_elve<window_dimensions.h)) {
+                if (right){
+                    play_with_elve_S(texture_elve,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+                }
+                else{
+                    play_with_elve_S_l(texture_elve_reverse,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+                }                
+                pos_y=pos_y+deplacement;
+                stand=0;
+				keyPressed = 1;
+			}
+			if ((keystates[SDL_SCANCODE_LEFT]||keystates[SDL_SCANCODE_A])&&(pos_x-deplacement>0)) {
+                play_with_elve_O(texture_elve_reverse,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+                pos_x=pos_x-deplacement;
+                stand=0;
+                right=0;
+				keyPressed = 1;
+			}
+			if ((keystates[SDL_SCANCODE_RIGHT]||keystates[SDL_SCANCODE_D])&&(pos_x+deplacement+largeur_elve<window_dimensions.w)) {
+                play_with_elve_E(texture_elve,bg_texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+                pos_x=pos_x+deplacement;
+                stand=0;
+                right=1;
+				keyPressed = 1;
+			}
         if (right){
         switch (stand){
             case 0:
@@ -790,4 +963,4 @@ int main(int argc, char **argv){
     end_sdl(1, "Normal ending", window, renderer);
 	return 1;
 }
-
+*/
