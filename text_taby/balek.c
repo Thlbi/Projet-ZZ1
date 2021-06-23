@@ -40,29 +40,42 @@ SDL_Texture* load_texture_from_image(char  *  file_image_name, SDL_Window *windo
     return my_texture;
 }
 
+void defineClip(SDL_Rect * clip,int pos_x,int pos_y, SDL_Rect window_dimensions,float zoom,int largeur_perso,int hauteur_perso){
+    if((pos_x-window_dimensions.w/2>0) &&(pos_x+window_dimensions.w/2<zoom*window_dimensions.w)){ // vérification si notr "camera" ne sort pas des limites de notre labyrinthe
+     clip->x=(int)(-pos_x+window_dimensions.w/2-largeur_perso/2);
+    }
+    if((pos_y-window_dimensions.h/2>0)&&(pos_y+window_dimensions.h/2<zoom*window_dimensions.h)){
+    clip->y=(int)(-pos_y+window_dimensions.h/2-hauteur_perso/2);
+    }
+     clip->h=window_dimensions.h*zoom;
+     clip->w=window_dimensions.w*zoom;
+}
 
-void play_with_background(SDL_Texture *my_background, SDL_Window *window, SDL_Renderer *renderer) {
-  SDL_Rect 
-          source = {0},                         // Rectangle définissant la zone de la texture à récupérer
-          window_dimensions = {0},              // Rectangle définissant la fenêtre, on n'utilisera que largeur et hauteur
-          destination = {0};                    // Rectangle définissant où la zone_source doit être déposée dans le renderer
+void play_with_background(SDL_Texture *my_background, SDL_Window *window, SDL_Renderer *renderer,float zoom) {
+    SDL_Rect 
+        source = {0},                         // Rectangle définissant la zone de la texture à récupérer
+        window_dimensions = {0},              // Rectangle définissant la fenêtre, on n'utilisera que largeur et hauteur
+        destination = {0};                    // Rectangle définissant où la zone_source doit être déposée dans le renderer
 
-  SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);                    // Récupération des dimensions de la fenêtre
-  SDL_QueryTexture(my_background, NULL, NULL,&source.w, &source.h);       // Récupération des dimensions de l'image
+    SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);                    // Récupération des dimensions de la fenêtre
+    SDL_QueryTexture(my_background, NULL, NULL,&source.w, &source.h);       // Récupération des dimensions de l'image
 
-  destination = window_dimensions;              
+    destination.x = 0;  
+    destination.y = 0;
+    destination.w = window_dimensions.w*zoom;
+    destination.h = window_dimensions.h*zoom;
 
 
-  SDL_RenderCopy(renderer, my_background,&source,&destination); 
+    SDL_RenderCopy(renderer, my_background,&source,&destination); 
                
 }
-void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
+void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,SDL_Rect* clip,SDL_Rect window_dimensions){
     SDL_Rect source = {0},destination = {0};                 
              
     SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
 
     int nb_images = 8;
-    int nb_images_animation=9;
+    int nb_images_animation=10;
     int i=0;                          
     int offset_x = source.w/nb_images;
     int offset_y = source.h;   
@@ -88,7 +101,7 @@ void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[2].y=0;
     state[2].w = offset_x;
     state[2].h = offset_y;
-   
+
     state[3].x=6*offset_x;
     state[3].y=0;
     state[3].w = offset_x;
@@ -128,22 +141,24 @@ void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].y=0;
     state[9].w=offset_x;
     state[9].h = offset_y;
-    
     for(i=0;i<nb_images_animation;++i){
-        play_with_background(background,window,renderer);
+        play_with_background(background,window,renderer,zoom);
         destination.y=destination.y-(deplacement/nb_images_animation); //déplacement du personnage ici de wind dim.h /32 en tout (diviser par nb animation pour chaque anim)
+        defineClip(clip,pos_x,pos_y-(deplacement/nb_images_animation),window_dimensions,zoom,offset_x,offset_y);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderSetViewport(renderer,clip);
         SDL_RenderPresent(renderer);
-        SDL_Delay(10);
+        SDL_Delay(20);
+        SDL_RenderClear(renderer);
     }      
 }
-void play_with_elve_N_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
+void play_with_elve_N_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,SDL_Rect* clip,SDL_Rect window_dimensions){
     SDL_Rect source = {0},destination = {0};                 
              
     SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
 
     int nb_images = 8;
-    int nb_images_animation=9;
+    int nb_images_animation=10;
     int i=0;                          
     int offset_x = source.w/nb_images;
     int offset_y = source.h;   
@@ -211,21 +226,24 @@ void play_with_elve_N_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wi
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        play_with_background(background,window,renderer);
+        play_with_background(background,window,renderer,zoom);
         destination.y=destination.y-(deplacement/nb_images_animation); //déplacement du personnage ici de wind dim.h /32 en tout (diviser par nb animation pour chaque anim)
+        defineClip(clip,pos_x,pos_y-(deplacement/nb_images_animation),window_dimensions,zoom,offset_x,offset_y);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderSetViewport(renderer,clip);
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
+        SDL_RenderClear(renderer);
     }      
 }
-void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
-     SDL_Rect source = {0}, window_dimensions = {0},destination = {0};                 
+void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,SDL_Rect* clip,SDL_Rect window_dimensions){
+     SDL_Rect source = {0},destination = {0};                 
 
      SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);               
      SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
 
     int nb_images = 8;
-    int nb_images_animation=9;
+    int nb_images_animation=10;
     int i=0;                      
     int offset_x = source.w/nb_images;
     int offset_y = source.h;   
@@ -294,22 +312,25 @@ void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        play_with_background(background,window,renderer);
+        play_with_background(background,window,renderer,zoom);
         destination.y=destination.y+(deplacement/nb_images_animation);
+        defineClip(clip,pos_x,pos_y+(deplacement/nb_images_animation),window_dimensions,zoom,offset_x,offset_y);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderSetViewport(renderer,clip);
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
+        SDL_RenderClear(renderer);
     }      
 
 }
-void play_with_elve_S_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
-     SDL_Rect source = {0}, window_dimensions = {0},destination = {0};                 
+void play_with_elve_S_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,SDL_Rect* clip,SDL_Rect window_dimensions){
+     SDL_Rect source = {0},destination = {0};                 
 
      SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);               
      SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
 
     int nb_images = 8;
-    int nb_images_animation=9;
+    int nb_images_animation=10;
     int i=0;                      
     int offset_x = source.w/nb_images;
     int offset_y = source.h;   
@@ -378,23 +399,26 @@ void play_with_elve_S_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wi
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        play_with_background(background,window,renderer);
+        play_with_background(background,window,renderer,zoom);
         destination.y=destination.y+(deplacement/nb_images_animation);
+        defineClip(clip,pos_x,pos_y+(deplacement/nb_images_animation),window_dimensions,zoom,offset_x,offset_y);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderSetViewport(renderer,clip);
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
+        SDL_RenderClear(renderer);
     }      
 
 }
-void play_with_elve_O(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
+void play_with_elve_O(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,SDL_Rect* clip,SDL_Rect window_dimensions){
 
-     SDL_Rect source = {0}, window_dimensions = {0},destination = {0};                 
+     SDL_Rect source = {0},destination = {0};                 
 
      SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);               
      SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
 
     int nb_images = 8;
-    int nb_images_animation=9;
+    int nb_images_animation=10;
     int i=0;                         
     int offset_x = source.w/nb_images;
     int offset_y = source.h;   
@@ -463,21 +487,24 @@ void play_with_elve_O(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        play_with_background(background,window,renderer);
+        play_with_background(background,window,renderer,zoom);
         destination.x=destination.x-(deplacement/nb_images_animation);
+        defineClip(clip,pos_x-(deplacement/nb_images_animation),pos_y,window_dimensions,zoom,offset_x,offset_y);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderSetViewport(renderer,clip);
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
+        SDL_RenderClear(renderer);
     }           
 }       
-void play_with_elve_E(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom){
-    SDL_Rect source = {0}, window_dimensions = {0},destination = {0};                 
+void play_with_elve_E(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,SDL_Rect* clip,SDL_Rect window_dimensions){
+    SDL_Rect source = {0},destination = {0};                 
 
     SDL_GetWindowSize(window, &window_dimensions.w,&window_dimensions.h);               
     SDL_QueryTexture(texture_elve, NULL, NULL,&source.w, &source.h);
 
     int nb_images = 8;
-    int nb_images_animation=9;
+    int nb_images_animation=10;
     int i=0;                           
     int offset_x = source.w/nb_images;
     int offset_y = source.h;   
@@ -546,11 +573,14 @@ void play_with_elve_E(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        play_with_background(background,window,renderer);
+        play_with_background(background,window,renderer,zoom);
         destination.x=destination.x+(deplacement/nb_images_animation);
+        defineClip(clip,pos_x+(deplacement/nb_images_animation),pos_y,window_dimensions,zoom,offset_x,offset_y);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
+        SDL_RenderSetViewport(renderer,clip);
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
+        SDL_RenderClear(renderer);
     }  
 }
 void play_standstill_1(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -576,7 +606,7 @@ void play_standstill_1(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_1_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -602,7 +632,7 @@ void play_standstill_1_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_2(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -628,7 +658,7 @@ void play_standstill_2(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_2_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -654,7 +684,7 @@ void play_standstill_2_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_3(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -680,7 +710,7 @@ void play_standstill_3(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_3_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -706,7 +736,7 @@ void play_standstill_3_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_4(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -732,7 +762,7 @@ void play_standstill_4(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 void play_standstill_4_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom){
@@ -758,7 +788,7 @@ void play_standstill_4_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    play_with_background(background,window,renderer);
+    play_with_background(background,window,renderer,zoom);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
 
@@ -770,8 +800,8 @@ int main(int argc, char **argv){
     (void)argc;
     (void)argv;
     int running=1, pause=1;
-    int pos_x=100;
-    int pos_y=100;
+    int pos_x=200;
+    int pos_y=200;
     int zoom =2;
     int stand=0; 
     SDL_Rect window_dimensions = {0},source={0};
