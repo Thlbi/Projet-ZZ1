@@ -133,6 +133,7 @@ void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *
 
 }
 
+
 void affichage_fin(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer,int coord_colonne,int coord_ligne,int taille_cell) {
   SDL_Rect source = {0},  // Rectangle définissant la zone de la texture à récupérer
     window_dimensions = {0}, // Rectangle définissant la fenêtre, on  n'utilisera que largeur et hauteur
@@ -143,7 +144,7 @@ void affichage_fin(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *rend
                     &window_dimensions.w,&window_dimensions.h);
   SDL_QueryTexture(my_texture, NULL, NULL,    // Récupération des dimensions de l'image
                    &source.w, &source.h);
-  float zoom = (float)taille_cell/(float)17;                // valeur du zoom pour l'affichage final
+  float zoom = (float)taille_cell/(float)16.1;                // valeur du zoom pour l'affichage final
   int offset_x = source.w / 56,                // La largeur d'une vignette de l'image 56
       offset_y = (float)source.h / (float)12;                // La hauteur d'une vignette de l'image 11
   	state.x = 0;
@@ -152,8 +153,8 @@ void affichage_fin(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *rend
   	state.h = offset_y;
   destination.w = offset_x * zoom+1;            // Largeur du sprite à l'écran
   destination.h = offset_y * zoom+1;            // Hauteur du sprite à l'écran
-  destination.x = 1+coord_colonne*(source.h / 12)*zoom; // Position en x pour l'affichage du sprite
-  destination.y = 1+coord_ligne*(source.h / 12)*zoom+2;  // Position en y pour l'affichage du sprite
+  destination.y = 1+coord_colonne*(source.w / 56)*zoom; // Position en x pour l'affichage du sprite
+  destination.x = coord_ligne*(source.w / 56)*zoom+6;  // Position en y pour l'affichage du sprite
   SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
 }
 

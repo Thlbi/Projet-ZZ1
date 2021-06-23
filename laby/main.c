@@ -162,12 +162,10 @@ int main (int argc, char** argv)
 	int pause=1;
 	int right=1;
 	int stand=0;
-	int pos_x=ND_DEP/P;
-	int pos_y=ND_DEP%P;
-	SDL_Rect sources={0};
-	int largeur_elve=taille_cell/8;
-	int hauteur_elve=taille_cell;
-	float zoom = 1;
+	int pos_x=ND_DEP%P*taille_cell;
+	int pos_y=ND_DEP/P*taille_cell;
+	printf("%d %d %d %d %d %d\n",N,P,ND_DEP,ND_ARRIVEE,pos_x,pos_y);
+	float zoom = 1.5;
 	int temps=1;
 	int deplacement=taille_cell;
 	int noeud_actuel=ND_DEP;
@@ -214,32 +212,32 @@ int main (int argc, char** argv)
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel/P-1){
 			if (right){
-        			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
+        			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		}
         		else{
-        			play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
+        			play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
        	 		}
         		pos_y=pos_y-deplacement;
         		stand=0;
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel/P+1){
 			if (right){
-        			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
+        			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		}
         		else{
-        			play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
+        			play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		}
         		pos_y=pos_y+deplacement;
         		stand=0;
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel%P-1){
-        		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
+        		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		pos_x=pos_x-deplacement;
         		stand=0;
         		right=0;
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel%P+1){
-			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
+			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		pos_x=pos_x+deplacement;
         		stand=0;
         		right=1;
@@ -247,19 +245,19 @@ int main (int argc, char** argv)
         	if (right){
         		switch (stand){
         		        case 0:
-                			play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                			play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 			stand=(stand+1)%7;
                 			break;
             			case 2:
-                			play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                			play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 			stand=(stand+1)%7;
                 			break;
             			case 4:
-                			play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                			play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 			stand=(stand+1)%7;
                 			break;
             			case 6:
-                			play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                			play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 			stand=(stand+1)%7;
                 			break;
             			default:
@@ -270,19 +268,19 @@ int main (int argc, char** argv)
         	else{
         		switch (stand){
         	    	case 0:
-        	    	    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+        	    	    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 		stand=(stand+1)%7;
                 		break;
             		case 2:
-                		play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                		play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                	 		stand=(stand+1)%7;
                 		break;
             		case 4:
-                		play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                		play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 		stand=(stand+1)%7;
                 		break;
             		case 6:
-                		play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
+                		play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin);
                 		stand=(stand+1)%7;
                 		break;
             		default:
