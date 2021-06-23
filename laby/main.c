@@ -141,6 +141,11 @@ int main (int argc, char** argv)
         SDL_Delay(2000);
         SDL_RenderClear(renderer);
 	tab_parents=algo_dijkstra(graph,0);
+	
+	/* affichage du tableau parent
+	for (int iter=0;iter<graph->noeuds;iter++){
+		printf("%d  ",tab_parents[iter]);
+	}*/
 
 	end_sdl(1, "Normal ending", window, renderer);
 	return 1;
