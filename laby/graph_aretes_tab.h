@@ -23,7 +23,6 @@ typedef struct graph
 	aretes_t * liste;
 }graph_t;
 
-int plusgrand(aretes_t, aretes_t);
 
 graph_t * creer_graph(int n,int);
 

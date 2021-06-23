@@ -127,10 +127,10 @@ int main (int argc, char** argv)
 	texture_fin = load_texture_from_image("roguelikeChar_transparent.png",renderer);
     	if (texture_fin==NULL) exit(EXIT_FAILURE);
 
-	tab_parents=algo_dijkstra(graph,ND_ARRIVEE);
+	tab_parents=dijkstra(tab,graph->noeuds,ND_ARRIVEE);
 
 	SDL_Event event;
-	while (running)
+	/*while (running)
 	{
 		while (SDL_PollEvent(&event))
 		{
@@ -158,7 +158,7 @@ int main (int argc, char** argv)
         		SDL_Delay(10);
         		SDL_RenderClear(renderer);
 		}
-	}/*
+	}*/
 	int pause=1;
 	int right=1;
 	int stand=0;
@@ -167,13 +167,11 @@ int main (int argc, char** argv)
 	SDL_Rect sources={0};
 	int largeur_elve=taille_cell/8;
 	int hauteur_elve=taille_cell;
-	int zoom = 2;
+	float zoom = 1;
 	int temps=1;
 	int deplacement=taille_cell;
 	int noeud_actuel=ND_DEP;
-	tab_parents=algo_dijkstra(graph,ND_ARRIVEE);
 
-	printf("couocu\n");
 	while ((running)||(temps<10))
         {
         	if (noeud_actuel==ND_ARRIVEE)
@@ -216,32 +214,32 @@ int main (int argc, char** argv)
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel/P-1){
 			if (right){
-        			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+        			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
         		}
         		else{
-        			play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+        			play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
        	 		}
         		pos_y=pos_y-deplacement;
         		stand=0;
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel/P+1){
 			if (right){
-        			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+        			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
         		}
         		else{
-        			play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+        			play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
         		}
         		pos_y=pos_y+deplacement;
         		stand=0;
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel%P-1){
-        		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+        		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
         		pos_x=pos_x-deplacement;
         		stand=0;
         		right=0;
         	}
 		if(tab_parents[noeud_actuel]/P==noeud_actuel%P+1){
-			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom);
+			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell);
         		pos_x=pos_x+deplacement;
         		stand=0;
         		right=1;
@@ -249,19 +247,19 @@ int main (int argc, char** argv)
         	if (right){
         		switch (stand){
         		        case 0:
-                			play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom);
+                			play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 			stand=(stand+1)%7;
                 			break;
             			case 2:
-                			play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom);
+                			play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 			stand=(stand+1)%7;
                 			break;
             			case 4:
-                			play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom);
+                			play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 			stand=(stand+1)%7;
                 			break;
             			case 6:
-                			play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom);
+                			play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 			stand=(stand+1)%7;
                 			break;
             			default:
@@ -272,19 +270,19 @@ int main (int argc, char** argv)
         	else{
         		switch (stand){
         	    	case 0:
-        	    	    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom);
+        	    	    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 		stand=(stand+1)%7;
                 		break;
             		case 2:
-                		play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom);
+                		play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                	 		stand=(stand+1)%7;
                 		break;
             		case 4:
-                		play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom);
+                		play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 		stand=(stand+1)%7;
                 		break;
             		case 6:
-                		play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom);
+                		play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell);
                 		stand=(stand+1)%7;
                 		break;
             		default:
@@ -297,8 +295,11 @@ int main (int argc, char** argv)
 		if (running==0){
 			temps++;
         	}
+		else
+			noeud_actuel=tab_parents[noeud_actuel];
+
 	}
-*/
+	
 	SDL_DestroyTexture(texture_elve_reverse);
 	SDL_DestroyTexture(texture_elve);
 	SDL_DestroyTexture(texture);

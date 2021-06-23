@@ -1,10 +1,5 @@
 #include "graph_aretes_tab.h"
 
-int plusgrand(aretes_t a, aretes_t b)
-{
-	return a.valuation>b.valuation;
-}
-
 graph_t * creer_graph(int n, int nb_aretes)
 {
 	graph_t* graph= malloc(sizeof(graph_t));
