@@ -210,7 +210,9 @@ int main (int argc, char** argv)
                                 break;
                         }
         	}
-		if(tab_parents[noeud_actuel]/P==noeud_actuel/P-1){
+		printf("%d ",tab_parents[noeud_actuel]);
+		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)-1){
+			printf("on monte \n");
 			if (right){
         			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		}
@@ -220,7 +222,8 @@ int main (int argc, char** argv)
         		pos_y=pos_y-deplacement;
         		stand=0;
         	}
-		if(tab_parents[noeud_actuel]/P==noeud_actuel/P+1){
+		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)+1){
+			printf("on descend \n");
 			if (right){
         			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		}
@@ -230,13 +233,15 @@ int main (int argc, char** argv)
         		pos_y=pos_y+deplacement;
         		stand=0;
         	}
-		if(tab_parents[noeud_actuel]/P==noeud_actuel%P-1){
+		if(tab_parents[noeud_actuel]%P==(noeud_actuel%P)-1){
+			printf("on tourne à gauche \n");
         		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		pos_x=pos_x-deplacement;
         		stand=0;
         		right=0;
         	}
-		if(tab_parents[noeud_actuel]/P==noeud_actuel%P+1){
+		if(tab_parents[noeud_actuel]%P==(noeud_actuel%P)+1){
+			printf("on va à droite \n");
 			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin);
         		pos_x=pos_x+deplacement;
         		stand=0;
