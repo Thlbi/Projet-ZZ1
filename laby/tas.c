@@ -1,5 +1,11 @@
 #include "tas.h"
 
+int plusgrand(poids_t a, poids_t b)
+{
+	return a.poids>b.poids;
+}
+
+
 tas_t * init_tas(int t)
 {
 	tas_t * tas= malloc(sizeof(tas_t));
@@ -15,12 +21,31 @@ void liberer(tas_t* tas)
 	free(tas);
 }
 
-tas_t * ajouter_tas_min(tas_t * tas,typetas x)
+tas_t * ajouter_tas_min(tas_t * tas,typetas x, int *indice_valeur)
 {
 	typetas aux;
 	tas->taille+=1;
 	int rang=tas->taille;
 	tas->tab[rang]=x;
+	indice_valeur[x.val]=rang;
+	int sauv;
+	while (rang>0 && plusgrand(tas->tab[(rang-1)/2],x))
+	{
+		aux=tas->tab[rang];
+		sauv=indice_valeur[tas->tab[rang].val];
+		indice_valeur[tas->tab[rang].val]=indice_valeur[tas->tab[(rang-1)/2].val];
+		indice_valeur[tas->tab[(rang-1)/2].val]=sauv;
+		tas->tab[rang]=tas->tab[(rang-1)/2];
+		rang=(rang-1)/2;
+		tas->tab[rang]=aux;
+	}
+	return tas;
+}
+
+tas_t *  percolation_haut_min(tas_t * tas, int rang)
+{
+	typetas x = tas->tab[rang];
+	typetas aux;
 	while (rang>0 && plusgrand(tas->tab[(rang-1)/2],x))
 	{
 		aux=tas->tab[rang];
@@ -87,18 +112,22 @@ tas_t * percolation_bas_tas_max(tas_t *tas, int indice)
 }
 
 
-tas_t * percolation_bas_tas_min(tas_t *tas, int indice)
+tas_t * percolation_bas_tas_min(tas_t *tas, int indice, int * indice_valeur)
 {
 	typetas valeur=tas->tab[indice];
 	int rang=indice;
 	typetas aux;
 	int fin=1;
+	int sauv;
 	while (fin)
 	{
  // 	printf("dans le while\n");
 		if (2*rang+1==(tas->taille) && !plusgrand(tas->tab[2*rang +1],valeur))
 		{
 			aux=tas->tab[rang];
+			sauv=indice_valeur[tas->tab[rang].val];
+			indice_valeur[tas->tab[rang].val]=indice_valeur[tas->tab[2*rang+1].val];
+			indice_valeur[tas->tab[2*rang+1].val]=sauv;
 			tas->tab[rang]=tas->tab[2*rang +1];
 			rang=2*rang +1;
 			tas->tab[rang]=aux;
@@ -109,6 +138,9 @@ tas_t * percolation_bas_tas_min(tas_t *tas, int indice)
 		
   //	printf("dans le 1er if\n");
 			aux=tas->tab[rang];
+			sauv=indice_valeur[tas->tab[rang].val];
+			indice_valeur[tas->tab[rang].val]=indice_valeur[tas->tab[rang*2 +1].val];
+			indice_valeur[tas->tab[2*rang+1].val]=sauv;
 			tas->tab[rang]=tas->tab[2*rang +1];
 			rang=2*rang +1;
 			tas->tab[rang]=aux;
@@ -117,6 +149,9 @@ tas_t * percolation_bas_tas_min(tas_t *tas, int indice)
 		{
 //	printf("dans le 2er if\n");
 			aux=tas->tab[rang];
+			sauv=indice_valeur[tas->tab[rang].val];
+			indice_valeur[tas->tab[rang].val]=indice_valeur[tas->tab[rang*2 + 2].val];
+			indice_valeur[tas->tab[2*rang+2].val]=sauv;
 			tas->tab[rang]=tas->tab[2*rang +2];
 			rang=2*rang +2;
 			tas->tab[rang]=aux;
@@ -127,7 +162,7 @@ tas_t * percolation_bas_tas_min(tas_t *tas, int indice)
 	return tas;
 }
 
-tas_t * construire_tas_min(tas_t * tas, typetas *t, int pos)
+/*tas_t * construire_tas_min(tas_t * tas, typetas *t, int pos)
 {
 	if (pos==0)
 		return tas;
@@ -142,7 +177,8 @@ tas_t * construire_tas_max(tas_t * tas, typetas *t, int pos)
 	else
 		return construire_tas_max(ajouter_tas_max(tas, t[pos-1]), t,pos-1);
 }
-
+*/
+/*
 tas_t* tri_par_tas(typetas *t, int n)
 {
 	tas_t* tas=init_tas(1000);
@@ -162,8 +198,8 @@ tas_t* tri_par_tas(typetas *t, int n)
 	tas->taille=n-1;
 	return tas;
 }
-
-void affichage(tas_t* tas)
+*/
+/*void affichage(tas_t* tas)
 {
 	for (int i=0; i<=tas->taille; i++)
 	{	
@@ -174,7 +210,7 @@ void affichage(tas_t* tas)
 	}
 	printf("\n");
 
-}
+}*/
 /*
 int main()
 {

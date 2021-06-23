@@ -26,12 +26,12 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 	for (int i=0; i<noeuds; i++)
 		tas->tab[i]=distance[i];
 
-	tas->taille=noeuds;
+	
 	
 	int sommet= depart;
+	ajouter_tas_min(tas,distance[depart],indice_valeur);
 	int i=0;
-	int oui=0;
-	int sauv;
+	int voisin;
 	affiche_graph_couple(graph,noeuds,nb_aretes);
 	while (nb_aretes)
 	{
@@ -40,57 +40,61 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 			i=0;
 			while (i<nb_aretes && A[i].un!=sommet && A[i].deux!=sommet)
 				i++;
-			if (A[i].un==voisin)
+			if (A[i].un==sommet)
 				voisin=A[i].deux;
-			else if (A[i].deux==voisin)
+			else if (A[i].deux==sommet)
 				voisin=A[i].un;
-			if (indice_valeur[voisin]!=-2)
+			if (voisin!=-1)
 			{
-				if (indice_valeur[voisin]==-1)
+				if (indice_valeur[voisin]!=-2)
 				{
-					distance[voisin].poids=1 + distance[sommet].poids;
-					ajouter_tas_min(tas,distance[voisin],indice_valeur);
-					parent[A[i].deux]=voisin;
-					A[i]=A[nb_aretes-1];
-					nb_aretes--;
-					oui=1;
-				}
-		//		printf("poids :%d \n",tas->tab[indice_valeur[voisin]].poids);
-				else
-					if (distance[voisin].poids>1+distance[sommet].poids);
+					if (indice_valeur[voisin]==-1)
 					{
 						distance[voisin].poids=1 + distance[sommet].poids;
-						percolation_bas_tas_min(tas,indice_valeur[voisin],indice_valeur);
-						parent[A[i].deux]=voisin;
+						ajouter_tas_min(tas,distance[voisin],indice_valeur);
+						parent[voisin]=sommet;
 						A[i]=A[nb_aretes-1];
 						nb_aretes--;
-						oui=1;
+						voisin=-1;
 					}
+		//		printf("poids :%d \n",tas->tab[indice_valeur[voisin]].poids);
+					else
+					{
+						if (distance[voisin].poids>1+distance[sommet].poids)
+						{
+							distance[voisin].poids=1 + distance[sommet].poids;
+							percolation_bas_tas_min(tas,indice_valeur[voisin],indice_valeur);
+							parent[voisin]=sommet;
+						}
+						A[i]=A[nb_aretes-1];
+						voisin=-1;
+						nb_aretes--;
+					}
+				}
 			}
 		}
-		if (oui)
-		{
-		oui=0;
-		indice_valeur[tas->tab[0].val]=indice_valeur[tas->tab[tas->taille-1].val];
-		indice_valeur[tas->tab[tas->taille-1].val]=-2;
+		indice_valeur[tas->tab[0].val]=-2;
+		indice_valeur[tas->tab[tas->taille].val]=0;
+		
 
 		typetas aux=tas->tab[0];
-		tas->tab[0]=tas->tab[tas->taille-1];
-		tas->tab[tas->taille-1]=aux;
-		
+		tas->tab[0]=tas->tab[tas->taille];
+		tas->tab[tas->taille]=aux;
+	
 		tas->taille+=-1;
 		percolation_bas_tas_min(tas,0,indice_valeur);
 		sommet=tas->tab[0].val;
-		}
+		
 	}
-	//	affichage(tas);   
-/*		for(int i=0; i<tas->taille; i++)
-			printf("%d ",tas->tab[i].poids);
+	//affichage(tas);   
+	for(int i=0; i<noeuds; i++)
+			printf("%d ",parent[i]);
 		printf("\n");
 		printf("taille tas: %d\n",tas->taille);
 		printf("nb_aretes: %d\n", nb_aretes);
-	}
-//	free(distance);
-//	free(A);
+	free(distance);
+	free(indice_valeur);
+	free(A);
+	liberer(tas);
 	return parent;	
 }
