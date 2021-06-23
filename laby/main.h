@@ -6,6 +6,7 @@
 
 #include<SDL2/SDL.h>
 #include "kruskal.h"
+#include "dijsktra.h"
 #include <math.h>
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);

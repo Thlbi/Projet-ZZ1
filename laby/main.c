@@ -57,6 +57,37 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 
 }
 
+void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,int *parent)
+{
+ 		SDL_DisplayMode screen;
+		SDL_GetCurrentDisplayMode(0,&screen);
+		int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
+		int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
+		SDL_Rect rectangle;
+		int cours=depart;
+		SDL_SetRenderDrawColor(renderer, 0,255,0,0);
+		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
+		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
+		rectangle.w=rectangle.h=taille_cell;
+		SDL_RenderFillRect(renderer, &rectangle);
+		cours=parent[cours];
+		SDL_SetRenderDrawColor(renderer, 255,0,0,0);
+		while(cours!=arrivee)
+		{
+			rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
+			rectangle.y=taille_cell*(cours/P)+decalage_vertical;
+			rectangle.w=rectangle.h=taille_cell;
+			SDL_RenderFillRect(renderer, &rectangle);
+			cours=parent[cours];
+		}
+		cours=arrivee;
+		SDL_SetRenderDrawColor(renderer, 0,0,255,0);
+		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
+		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
+		rectangle.w=rectangle.h=taille_cell;
+		SDL_RenderFillRect(renderer, &rectangle);
+}
+
 int min(int a, int b)
 {
 	if (a>b)
@@ -88,13 +119,16 @@ int main (int argc, char** argv)
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
 	if (renderer == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	int running=1;
-	srand(time(0));
+	srand(0);
 	int noeuds=N*P;
 	int nb_aretes=2*N*P-N-P;
 	int **tab;
+	int *parent;
 	int cours=0;
+	int depart=0;
+	int arrivee=12;
 	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
-	printf("%d \n", taille_cell);
+	//printf("%d \n", taille_cell);
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
 	generation(graph);
 	graph=Fisher(graph,nb_aretes);
@@ -124,9 +158,13 @@ int main (int argc, char** argv)
 			break;
 			}
 			afficherEcranIntelligemment(renderer,tab,taille_cell);
-        SDL_RenderPresent(renderer);
-        SDL_Delay(10);
-        SDL_RenderClear(renderer);
+			depart=rand()%noeuds;
+			arrivee=rand()%noeuds;
+			parent=dijsktra(graph,noeuds,cours,arrivee);
+			chemin(renderer,depart, arrivee, taille_cell, parent);
+			SDL_RenderPresent(renderer);
+			SDL_Delay(1000);
+			SDL_RenderClear(renderer);
 		}
 	}
 	end_sdl(1, "Normal ending", window, renderer);

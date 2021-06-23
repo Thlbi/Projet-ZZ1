@@ -26,13 +26,10 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 	for (int i=0; i<noeuds; i++)
 		tas->tab[i]=distance[i];
 
-	
-	
 	int sommet= depart;
 	ajouter_tas_min(tas,distance[depart],indice_valeur);
 	int i=0;
 	int voisin;
-	affiche_graph_couple(graph,noeuds,nb_aretes);
 	while (nb_aretes)
 	{
 		for (int j=0; j<4; j++)
@@ -54,10 +51,10 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 						ajouter_tas_min(tas,distance[voisin],indice_valeur);
 						parent[voisin]=sommet;
 						A[i]=A[nb_aretes-1];
-						nb_aretes--;
+						if (i!=nb_aretes)
+							nb_aretes--;
 						voisin=-1;
 					}
-		//		printf("poids :%d \n",tas->tab[indice_valeur[voisin]].poids);
 					else
 					{
 						if (distance[voisin].poids>1+distance[sommet].poids)
@@ -68,7 +65,8 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 						}
 						A[i]=A[nb_aretes-1];
 						voisin=-1;
-						nb_aretes--;
+						if (i!=nb_aretes)
+							nb_aretes--;
 					}
 				}
 			}
@@ -86,12 +84,6 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 		sommet=tas->tab[0].val;
 		
 	}
-	//affichage(tas);   
-	for(int i=0; i<noeuds; i++)
-			printf("%d ",parent[i]);
-		printf("\n");
-		printf("taille tas: %d\n",tas->taille);
-		printf("nb_aretes: %d\n", nb_aretes);
 	free(distance);
 	free(indice_valeur);
 	free(A);

@@ -1,9 +1,9 @@
 #include "graph_aretes_tab.h"
 
-int plusgrand(aretes_t a, aretes_t b)
+/*int plusgrand(aretes_t a, aretes_t b)
 {
-	return a.valuation>b.valuation;
-}
+	return a.etiqdji>b.etiqdji;
+}*/
 
 graph_t * creer_graph(int n, int nb_aretes)
 {

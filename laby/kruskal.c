@@ -95,6 +95,7 @@ void generation(graph_t * graph)
 			graph->liste[c].un=i;
 			graph->liste[c].deux=i+1;
 			graph->liste[c].valuation=1;
+			graph->liste[c].etiqdji=-1;
 			c++;
 		}
 		if (i/P<N-1)
@@ -102,6 +103,7 @@ void generation(graph_t * graph)
 			graph->liste[c].un=i;
 			graph->liste[c].deux=i+P;
 			graph->liste[c].valuation=1;
+			graph->liste[c].etiqdji=-1;
 			c++;
 		}
 	}
