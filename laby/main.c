@@ -42,7 +42,6 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 	for (int i=0;i<N;i++){
                 for (int j=0;j<P;j++){
                         x=tab[j][i];
-                        printf("%d\n",x);
 			i1=(noeud%P);
                         j1=((int)noeud/P);
 
@@ -99,7 +98,7 @@ int main (int argc, char** argv)
 	int **tab;
 	int cours=0;
 	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
-	printf("%d \n", taille_cell);
+	int * tab_parents;
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
 	generation(graph);
 	graph=Fisher(graph,nb_aretes);
@@ -130,10 +129,10 @@ int main (int argc, char** argv)
 					break;
 			break;
 			}
-	afficherEcranIntelligemment(renderer,tab,taille_cell);
-        SDL_RenderPresent(renderer);
-        SDL_Delay(10);
-        SDL_RenderClear(renderer);
+			afficherEcranIntelligemment(renderer,tab,taille_cell);
+        		SDL_RenderPresent(renderer);
+        		SDL_Delay(10);
+        		SDL_RenderClear(renderer);
 		}
 	}
 	texture=init_textures(renderer);
@@ -141,7 +140,7 @@ int main (int argc, char** argv)
 	SDL_RenderPresent(renderer);
         SDL_Delay(2000);
         SDL_RenderClear(renderer);
-	
+	tab_parents=algo_dijkstra(graph,0);
 
 	end_sdl(1, "Normal ending", window, renderer);
 	return 1;

@@ -6,8 +6,17 @@
 
 #include "graph_aretes_tab.h"
 
+typedef struct tri{
+	int noeud;
+	int distance;
+}tri_t;
 
-typedef aretes_t typetas;
+typedef struct tab_tas{
+	int distance;
+	int indice_noeud;
+} tab_tas_t;
+
+typedef  tri_t typetas;
 typedef struct tas
 {
 	int taille_max;
@@ -17,8 +26,7 @@ typedef struct tas
 
 tas_t * init_tas(int t);
 void liberer(tas_t* tas);
-tas_t * ajouter_tas_min(tas_t * tas,typetas x);
+void ajouter_tas_min(tas_t * tas,int noeud,int distance);
 void percolation_bas_tas_min(tas_t *tas, int indice);
-void affichage(tas_t* tas);
 
 #endif
