@@ -52,8 +52,8 @@ graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours,double p
 {
 	int c1;
 	int c2;
-   graph_t * A=creer_graph(noeuds,nb_aretes);
-   partition_t * partA=creer(noeuds);
+   	graph_t * A=creer_graph(noeuds,nb_aretes);
+  	partition_t * partA=creer(noeuds);
 
 	for (int i=0; i<nb_aretes;i++)
 	{

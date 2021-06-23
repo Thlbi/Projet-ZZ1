@@ -9,7 +9,7 @@
 #include <math.h>
 #include "affichage_image.h"
 #include "dijkstra.h"
-
+#include "texture_perso.h"
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);
 void afficheEcranIntelligement(SDL_Renderer*,int**,int);
 int min(int , int);

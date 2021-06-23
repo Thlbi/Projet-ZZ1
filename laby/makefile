@@ -2,8 +2,8 @@ CC= gcc
 OPT  = -c -Wextra -Wall -g
 SDL2 = -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net -lm
 
-prog : kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o
-	$(CC)  kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o $(SDL2) -o prog
+prog : kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o texture_perso.o
+	$(CC)  kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o texture_perso.o $(SDL2) -o prog
 
 main.o : main.c main.h
 	$(CC) $(OPT) main.c
@@ -25,6 +25,9 @@ partition.o : partition.c partition.h
 
 tas.o : tas.c tas.h
 	$(CC) $(OPT) tas.c 
+
+texture_perso.o : texture_perso.c texture_perso.h
+	$(CC) $(OPT) texture_perso.c 
 
 clear :
 	rm *.o
