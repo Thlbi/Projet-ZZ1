@@ -24,7 +24,6 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 
 	if (!ok) exit(EXIT_FAILURE);
 }
-
 void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cell)
 {
 	int x=0;
@@ -35,26 +34,31 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 	SDL_GetCurrentDisplayMode(0,&screen);
 	int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
 	int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
-	SDL_RenderDrawLine(renderer,decalage_horizontale,decalage_vertical,decalage_horizontale+P*taille_cell,decalage_vertical); //mur au nord
-	SDL_RenderDrawLine(renderer,decalage_horizontale,decalage_vertical+N*taille_cell,decalage_horizontale+P*taille_cell,(N)*taille_cell+decalage_vertical); //mur au sud 
-	SDL_RenderDrawLine(renderer,decalage_horizontale,decalage_vertical,decalage_horizontale,decalage_vertical+(N)*taille_cell); //mur à l'ouest
-	SDL_RenderDrawLine(renderer,decalage_horizontale+(P)*taille_cell,decalage_vertical,decalage_horizontale+(P)*taille_cell,decalage_vertical+(N)*taille_cell); //mur à l'est
 
 	SDL_SetRenderDrawColor(renderer,0,0,0,0);
-	for (int i=0;i<P;i++)
-	{
+	int i1,j1,noeud=0;
 	
-		for (int j=0;j<N;j++)
+	for (int i=0;i<N;i++)
+	{
+		for (int j=0;j<P;j++)
 		{
-			x=tab[i][j];
+			x=tab[j][i];
+			i1=(noeud%P);
+			j1=((int)noeud/P);
 
-			if ((x!=2) && (x!=6))
-				SDL_RenderDrawLine(renderer,i*taille_cell+decalage_horizontale,(j+1)*taille_cell+decalage_vertical,(i+1)*taille_cell+decalage_horizontale,(j+1)*taille_cell+decalage_vertical); //mur au sud
-			if ((x!=4) &&  (x!=6)) 
-				SDL_RenderDrawLine(renderer,(i+1)*taille_cell+decalage_horizontale,j*taille_cell+decalage_vertical,(i+1)*taille_cell+decalage_horizontale,(j+1)*taille_cell+decalage_vertical); //mur à l'est
+			if (!(x & FLAG_N))
+				SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical); //mur au nord
+			if ((x & FLAG_S)!=2)
+				SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur au sud
+			if ((x & FLAG_E)!=4)
+				SDL_RenderDrawLine(renderer,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'est
+			if ((x & FLAG_O)!=8)
+				SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'ouest
+
+			noeud+=1;
+
 		}
 	}
-
 }
 
 void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,int *parent)
@@ -134,7 +138,7 @@ int main (int argc, char** argv)
 	graph=Fisher(graph,nb_aretes);
 	graph=kruskal(graph,noeuds,nb_aretes,&cours,p);
 	tab=tableau_ligne(graph,cours);
-
+	int temps=600;
 	SDL_Event event;
 	while (running)
 	{
@@ -151,20 +155,24 @@ int main (int argc, char** argv)
 					case SDL_WINDOWEVENT_CLOSE:
 						running = 0;
 						break;
-					default:
-						break;
 					}
 					break;
 			break;
 			}
-			afficherEcranIntelligemment(renderer,tab,taille_cell);
-			depart=rand()%noeuds;
-			arrivee=rand()%noeuds;
-			parent=dijsktra(graph,noeuds,cours,arrivee);
-			chemin(renderer,depart, arrivee, taille_cell, parent);
+			if (temps>600)
+			{
+				temps=0;
+				SDL_RenderClear(renderer);
+				afficherEcranIntelligemment(renderer,tab,taille_cell);
+				depart=arrivee;
+				arrivee=rand()%noeuds;
+				parent=dijsktra(tab,noeuds,arrivee);
+				chemin(renderer,depart, arrivee, taille_cell, parent);
+			}
+			else
+				temps+=10;
 			SDL_RenderPresent(renderer);
-			SDL_Delay(1000);
-			SDL_RenderClear(renderer);
+			SDL_Delay(10);
 		}
 	}
 	end_sdl(1, "Normal ending", window, renderer);

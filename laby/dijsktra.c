@@ -1,7 +1,7 @@
 #include "dijsktra.h"
 
 
-int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
+int * dijsktra(int ** laby, int noeuds, int depart)
 {
 	int * parent = malloc(noeuds*sizeof(int));
 	parent[depart]=depart;
@@ -18,58 +18,52 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 	for (int i=0; i<noeuds; i++)
 		indice_valeur[i]=-1;
 
-	aretes_t * A= malloc(nb_aretes*sizeof(aretes_t));
-	for (int i=0; i<nb_aretes; i++)
-		A[i]=graph->liste[i];	
-
 	tas_t * tas=init_tas(noeuds+1);
 	for (int i=0; i<noeuds; i++)
 		tas->tab[i]=distance[i];
 
+	int * voisin=malloc(4*sizeof(int));
+	for (int i=0; i<4; i++)
+		voisin[i]=-1;
+
 	int sommet= depart;
 	ajouter_tas_min(tas,distance[depart],indice_valeur);
-	int i=0;
-	int voisin;
-	while (nb_aretes)
+
+	while (tas->taille>-1)
 	{
+		if (laby[sommet%P][sommet/P] & FLAG_N)
+			voisin[0]=sommet-P;
+		if (laby[sommet%P][sommet/P] & FLAG_S)
+			voisin[1]=sommet+P;
+		if (laby[sommet%P][sommet/P] & FLAG_O)
+			voisin[2]=sommet-1;
+		if (laby[sommet%P][sommet/P] & FLAG_E)
+			voisin[3]=sommet+1;
 		for (int j=0; j<4; j++)
 		{	
-			i=0;
-			while (i<nb_aretes && A[i].un!=sommet && A[i].deux!=sommet)
-				i++;
-			if (A[i].un==sommet)
-				voisin=A[i].deux;
-			else if (A[i].deux==sommet)
-				voisin=A[i].un;
-			if (voisin!=-1)
+			
+			if (voisin[j]!=-1)
 			{
-				if (indice_valeur[voisin]!=-2)
+				if (indice_valeur[voisin[j]]!=-2)
 				{
-					if (indice_valeur[voisin]==-1)
+					if (indice_valeur[voisin[j]]==-1)
 					{
-						distance[voisin].poids=1 + distance[sommet].poids;
-						ajouter_tas_min(tas,distance[voisin],indice_valeur);
-						parent[voisin]=sommet;
-						A[i]=A[nb_aretes-1];
-						if (i!=nb_aretes)
-							nb_aretes--;
-						voisin=-1;
+						distance[voisin[j]].poids=1 + distance[sommet].poids;
+						ajouter_tas_min(tas,distance[voisin[j]],indice_valeur);
+						parent[voisin[j]]=sommet;
 					}
 					else
 					{
-						if (distance[voisin].poids>1+distance[sommet].poids)
+						if (distance[voisin[j]].poids>1+distance[sommet].poids)
 						{
-							distance[voisin].poids=1 + distance[sommet].poids;
-							percolation_bas_tas_min(tas,indice_valeur[voisin],indice_valeur);
-							parent[voisin]=sommet;
+							distance[voisin[j]].poids=1 + distance[sommet].poids;
+							percolation_bas_tas_min(tas,indice_valeur[voisin[j]],indice_valeur);
+							parent[voisin[j]]=sommet;
 						}
-						A[i]=A[nb_aretes-1];
-						voisin=-1;
-						if (i!=nb_aretes)
-							nb_aretes--;
 					}
 				}
 			}
+			voisin[j]=-1;
 		}
 		indice_valeur[tas->tab[0].val]=-2;
 		indice_valeur[tas->tab[tas->taille].val]=0;
@@ -86,7 +80,6 @@ int * dijsktra(graph_t * graph, int noeuds, int nb_aretes, int depart)
 	}
 	free(distance);
 	free(indice_valeur);
-	free(A);
 	liberer(tas);
 	return parent;	
 }

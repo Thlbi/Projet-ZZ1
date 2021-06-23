@@ -8,7 +8,9 @@
 #include <time.h>
 #include "graph_aretes_tab.h"
 #include "tas.h"
+#include "kruskal.h"
+#include "main.h"
 
-int * dijsktra(graph_t *,int , int, int);
+int * dijsktra(int **, int, int);
 
 #endif

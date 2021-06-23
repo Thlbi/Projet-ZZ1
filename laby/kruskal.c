@@ -18,10 +18,14 @@ int ** tableau_ligne(graph_t * graph,int nb_aretes)
 		x=graph->liste[i].un%P;
 		y=graph->liste[i].un/P;
 //		printf("sommet1: %d sommet2: %d x :%d y :%d diff :%d\n",graph->liste[i].un,graph->liste[i].deux,x,y,diff);
-		if (diff==1)
+		if (diff==1){
 			tab[x][y]+=4;
-		else // ne marche pas c'est incomprehensibleif (diff==P)
+			tab[x+1][y]+=8;
+		}
+		else{ // ne marche pas c'est incomprehensibleif (diff==P)
 			tab[x][y]+=2;
+			tab[x][y+1]+=1;
+		}
 	}
 /*
 	for (int i=0; i<N; i++)
@@ -95,7 +99,6 @@ void generation(graph_t * graph)
 			graph->liste[c].un=i;
 			graph->liste[c].deux=i+1;
 			graph->liste[c].valuation=1;
-			graph->liste[c].etiqdji=-1;
 			c++;
 		}
 		if (i/P<N-1)
@@ -103,7 +106,6 @@ void generation(graph_t * graph)
 			graph->liste[c].un=i;
 			graph->liste[c].deux=i+P;
 			graph->liste[c].valuation=1;
-			graph->liste[c].etiqdji=-1;
 			c++;
 		}
 	}
