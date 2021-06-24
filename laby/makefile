@@ -2,8 +2,8 @@ CC= gcc
 OPT  = -c -Wextra -Wall -g
 SDL2 = -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net -lm
 
-prog : kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o texture_perso.o colision.o
-	$(CC)  kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o texture_perso.o colision.o $(SDL2) -o prog
+prog : kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o texture_perso.o colision.o DFS.o
+	$(CC)  kruskal.o graph_aretes_tab.o partition.o tas.o main.o affichage_image.o dijkstra.o texture_perso.o colision.o DFS.o $(SDL2) -o prog
 
 main.o : main.c main.h
 	$(CC) $(OPT) main.c
@@ -31,6 +31,9 @@ texture_perso.o : texture_perso.c texture_perso.h
 
 colision.o : colision.c colision.h
 	$(CC) $(OPT) colision.c
+
+DFS.o : DFS.c DFS.h
+	$(CC) $(OPT) DFS.c
 
 clear :
 	rm *.o

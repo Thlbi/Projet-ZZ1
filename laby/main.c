@@ -105,6 +105,7 @@ int main (int argc, char** argv)
 	int cours=0;
 	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
 	//int * tab_parents;  à décommenter pour l'utilisation de Dijkstra
+	//initialisation du graph
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
 	generation(graph);
 	graph=Fisher(graph,nb_aretes);
@@ -305,6 +306,18 @@ int main (int argc, char** argv)
 
 	}*/
 	
+	SDL_Window *window2;
+
+	window2 = SDL_CreateWindow("SDL2 Programme 0.1", screen.w-screen.w/5, 0,screen.w/4,screen.h/4, SDL_WINDOW_RESIZABLE);
+	
+	if (window2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+	
+	SDL_SetWindowTitle(window2, "Carte d'exploration");
+
+	SDL_Renderer *renderer2;
+	renderer2 = SDL_CreateRenderer(window2, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
+	if (renderer2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+
 	int pause=1;
 	int noeud_dep=rand()%TAILLE;
 	int right=1;
@@ -316,11 +329,16 @@ int main (int argc, char** argv)
 	int deplacement=taille_cell;
 	int noeud_arrive=rand()%TAILLE;
 	int colli;
+	int noeud_actuel;
+	int taille_cell2=min((screen.w/4)/(P+2),(screen.h/4)/(N+2));
+
+	affichage_fin(texture_fin,window2,renderer2,noeud_arrive%P,noeud_arrive/P,taille_cell2);
 	printf("l : relancer \np,SPACE : pause \ncroix : quitter\n");
 
 	while ((running)||(temps<50))
         {
-		if (pos_y*P/taille_cell+pos_x/taille_cell==noeud_arrive)
+		noeud_actuel=pos_y*P/taille_cell+pos_x/taille_cell;
+		if (noeud_actuel==noeud_arrive)
 			running=0;
 		while (SDL_PollEvent(&event))
                 {
@@ -360,6 +378,13 @@ int main (int argc, char** argv)
                                                 case SDLK_p:
                                                         pause=1-pause;
                                                         break;
+						case SDLK_m: //la fonction devra afficher la totalite du labyrinthe sans brouillard de guerre
+							afficherImage(renderer,window,tab,taille_cell2,texture);
+							affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
+							SDL_RenderPresent(renderer);
+							SDL_Delay(2000);
+							SDL_RenderClear(renderer);
+							break;
                                                 default:
                                                         break;
                     			}
@@ -370,6 +395,9 @@ int main (int argc, char** argv)
         	}
 		const Uint8 *keystates = SDL_GetKeyboardState(NULL);
 		if (pause){
+			printf("%d\n",noeud_actuel);
+        		peindreMap(texture,window2,renderer2,noeud_actuel,taille_cell,tab);
+			SDL_RenderPresent(renderer2);
 			if ((keystates[SDL_SCANCODE_UP]||keystates[SDL_SCANCODE_W])) {	
 				colli=collision_N(pos_x,pos_y,tab,taille_cell);
 				if(!colli){
@@ -381,7 +409,7 @@ int main (int argc, char** argv)
        	 				}
         				pos_y=pos_y-deplacement;
         				stand=0;
-        			}
+				}
 			}
 			if ((keystates[SDL_SCANCODE_DOWN]||keystates[SDL_SCANCODE_S])) {	
 				colli=collision_S(pos_x,pos_y,tab,taille_cell);
@@ -473,5 +501,6 @@ int main (int argc, char** argv)
 	SDL_DestroyTexture(texture);
 	SDL_DestroyTexture(texture_fin);
 	end_sdl(1, "Normal ending", window, renderer);
+	end_sdl(1,"Normal ending",window2,renderer2);
 	return 1;
 }
