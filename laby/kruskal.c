@@ -70,6 +70,9 @@ graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours,double p
 			*cours+=1;
 		}
 	}
+	free(graph->liste);
+	free(partA);
+	free(graph);
 	return A;
 }	
 

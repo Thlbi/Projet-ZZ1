@@ -4,15 +4,18 @@
 #ifndef main_gard
 #define main_gard
 
-#include<SDL2/SDL.h>
+#include <SDL2/SDL.h>
 #include "kruskal.h"
 #include <math.h>
 #include "affichage_image.h"
-#include "dijsktra.h"
+#include "dijkstra.h"
 #include "texture_perso.h"
 #include "colision.h"
 #include "DFS.h"
-#include<SDL2/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
+#include "affichage_txt.h"
+#include "main.h"
+
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);
 void afficheEcranIntelligement(SDL_Renderer*,int**,int);

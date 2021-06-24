@@ -11,7 +11,10 @@
 #include "affichage_image.h"
 #include "kruskal.h"
 
+void play_with_elve_end(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive,int right, int direction);
+
 void play_with_background(SDL_Texture *my_background, SDL_Window *window, SDL_Renderer *renderer,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
+
 void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
 void play_with_elve_N_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
 void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
