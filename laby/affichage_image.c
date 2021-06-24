@@ -160,31 +160,37 @@ void affichage_fin(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *rend
 
 void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
 {
-	int i1,j1,x,noeud=0;
-	int * voisin = malloc(4*sizeof(int));
+	int i1,j1,val=0;
+	int * voisin = malloc(5*sizeof(int));
+		for (int i=0; i<5; i++)
+			voisin[i]=-1;
 
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
+	int x=pos_x/taille_cell;
+	int y=pos_y/taille_cell;
+	voisin[4]=x+P*y;
+
 	
-	if (tab[pos_y][pos_x] & FLAG_N)
-		voisin[0]=pos_x+P*pos_y -P;
-	if (tab[pos_y][pos_x] & FLAG_S)
-		voisin[1]=pos_x+P*pos_y+P ;
-	if (tab[pos_y][pos_x] & FLAG_O)
-		voisin[2]=pos_x+P*pos_y -1;
-	if (tab[pos_y][pos_x] & FLAG_E)
-		voisin[3]=pos_x+P*pos_y+1;
-	for (int j=0; j<4; j++)
+	if (tab[x][y] & FLAG_N)
+		voisin[0]=x+P*y -P;
+	if (tab[x][y] & FLAG_S)
+		voisin[1]=x+P*y+P ;
+	if (tab[x][y] & FLAG_O)
+		voisin[2]=x+P*y -1;
+	if (tab[x][y] & FLAG_E)
+		voisin[3]=x+P*y+1;
+	for (int j=0; j<5; j++)
 	{	
 		if (voisin[j]!=-1)
 		{
 
-			x=tab[voisin[j]%P][voisin[j]/P];
-			i1=(noeud%P); //coordonee colonne du noeud
-			j1=(noeud/P); // coordonee ligne du noeud
+			val=tab[voisin[j]%P][voisin[j]/P];
+			i1=(voisin[j]%P); //coordonee colonne du noeud
+			j1=(voisin[j]/P); // coordonee ligne du noeud
+			affichage_texture(texture,window,renderer,val,i1,j1,taille_cell);
 		}
 	}
-	affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
 	free(voisin);
 }
 
