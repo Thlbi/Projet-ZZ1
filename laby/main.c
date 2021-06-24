@@ -76,7 +76,7 @@ int main (int argc, char** argv)
 
 	//l'argument p regit l'affichage des murs : s'il vaut 0 il n'y a aucun mur, s'il vaut un on a un arbre
 	if (argc==2)  p=atof(argv[1]);
-	else p=0.6; 
+	else p=0.75; 
 	
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
@@ -316,7 +316,8 @@ int main (int argc, char** argv)
 	int deplacement=taille_cell;
 	int noeud_actuel=noeud_dep;
 	int noeud_arrive=rand()%TAILLE;
-	
+	int colli;
+
 	while ((running)||(temps<10))
         {
         	if (noeud_actuel==noeud_arrive)
@@ -361,37 +362,49 @@ int main (int argc, char** argv)
 		const Uint8 *keystates = SDL_GetKeyboardState(NULL);
 		if (pause){
 			if ((keystates[SDL_SCANCODE_UP]||keystates[SDL_SCANCODE_W])) {	
-				if (right){
-        				play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+				colli=collision_N(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					if (right){
+        					play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				}
+        				else{
+        					play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+       	 				}
+        				pos_y=pos_y-deplacement;
+        				stand=0;
         			}
-        			else{
-        				play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
-       	 			}
-        			pos_y=pos_y-deplacement;
-        			stand=0;
-        		}
+			}
 			if ((keystates[SDL_SCANCODE_DOWN]||keystates[SDL_SCANCODE_S])) {	
-				if (right){
-        				play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+				colli=collision_S(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					if (right){
+        					play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				}
+        				else{
+        					play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				}
+        				pos_y=pos_y+deplacement;
+        				stand=0;
         			}
-        			else{
-        				play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
-        			}
-        			pos_y=pos_y+deplacement;
-        			stand=0;
-        		}
+			}
         		if ((keystates[SDL_SCANCODE_LEFT]||keystates[SDL_SCANCODE_A])) {	
-				play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
-        			pos_x=pos_x-deplacement;
-        			stand=0;
-        			right=0;
-        		}
+				colli=collision_O(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				pos_x=pos_x-deplacement;
+        				stand=0;
+        				right=0;
+        			}
+			}
 			if ((keystates[SDL_SCANCODE_RIGHT]||keystates[SDL_SCANCODE_D])) {	
-				play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
-        			pos_x=pos_x+deplacement;
-        			stand=0;
-        			right=1;
-        		}
+				colli=collision_E(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				pos_x=pos_x+deplacement;
+        				stand=0;
+        				right=1;
+        			}
+			}
         		if (right){
         			switch (stand){
         		        	case 0:
