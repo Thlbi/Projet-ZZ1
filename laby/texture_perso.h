@@ -18,14 +18,8 @@ void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
 void play_with_elve_S_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
 void play_with_elve_O(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
 void play_with_elve_E(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,int deplacement,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_1(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_1_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_2(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_2_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_3(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_3_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_4(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
-void play_standstill_4_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
+void play_standstill(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
+void play_standstill_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Window* window,SDL_Renderer* renderer,int pos_x,int pos_y,float zoom,int **tab, int taille_cell,SDL_Texture *texture_fin,int noeud_arrive);
 
 
 #endif
