@@ -1,6 +1,9 @@
 #ifndef _gard_affichage_image
 #define _gard_affichage_image
 
+#include "kruskal.h"
+#include "main.h"
+
 SDL_Texture* load_texture_from_image(char  *  file_image_name, SDL_Renderer *renderer);
 void affichage_texture(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer,int x,int coord_colonne,int coord_ligne,int taille_cell);
 void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture);

@@ -390,7 +390,7 @@ int main (int argc, char** argv)
                                                         pause=1-pause;
                                                         break;
 						case SDLK_m: //la fonction devra afficher la totalite du labyrinthe sans brouillard de guerre
-							afficherImage(renderer,window,tab,taille_cell2,texture);
+							afficherImage(renderer,window,tab,taille_cell,texture);
 							affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 							SDL_RenderPresent(renderer);
 							SDL_Delay(2000);

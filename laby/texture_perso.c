@@ -74,7 +74,8 @@ void play_with_elve_N(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        afficherImage(renderer,window,tab,taille_cell,background);
+        //afficherImage(renderer,window,tab,taille_cell,background);
+	afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
 	affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 	destination.y=destination.y-(deplacement/nb_images_animation); //déplacement du personnage ici de wind dim.h /32 en tout (diviser par nb animation pour chaque anim)
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
@@ -156,7 +157,8 @@ void play_with_elve_N_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wi
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        afficherImage(renderer,window,tab,taille_cell,background);
+        //afficherImage(renderer,window,tab,taille_cell,background);
+	afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
 	affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 	destination.y=destination.y-(deplacement/nb_images_animation);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
@@ -240,7 +242,8 @@ void play_with_elve_S(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        afficherImage(renderer,window,tab,taille_cell,background);
+        //afficherImage(renderer,window,tab,taille_cell,background);
+	afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
 	affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 	destination.y=destination.y+(deplacement/nb_images_animation);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
@@ -325,7 +328,8 @@ void play_with_elve_S_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wi
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        afficherImage(renderer,window,tab,taille_cell,background);
+        //afficherImage(renderer,window,tab,taille_cell,background);
+	afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
 	affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 	destination.y=destination.y+(deplacement/nb_images_animation);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
@@ -411,7 +415,8 @@ void play_with_elve_O(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        afficherImage(renderer,window,tab,taille_cell,background);
+        //afficherImage(renderer,window,tab,taille_cell,background);
+	afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
 	affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 	destination.x=destination.x-(deplacement/nb_images_animation);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
@@ -495,7 +500,8 @@ void play_with_elve_E(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Wind
     state[9].h = offset_y;
     
     for(i=0;i<nb_images_animation;++i){
-        afficherImage(renderer,window,tab,taille_cell,background);
+        //afficherImage(renderer,window,tab,taille_cell,background);
+	afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
 	affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
 	destination.x=destination.x+(deplacement/nb_images_animation);
         SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
@@ -526,7 +532,8 @@ void play_standstill_1(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -553,7 +560,8 @@ void play_standstill_1_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -580,7 +588,8 @@ void play_standstill_2(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -607,7 +616,8 @@ void play_standstill_2_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -634,7 +644,8 @@ void play_standstill_3(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -661,7 +672,8 @@ void play_standstill_3_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -688,7 +700,8 @@ void play_standstill_4(SDL_Texture* texture_elve,SDL_Texture* background,SDL_Win
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }
@@ -715,7 +728,8 @@ void play_standstill_4_l(SDL_Texture* texture_elve,SDL_Texture* background,SDL_W
     state[0].y=0;
     state[0].w=offset_x;
     state[0].h = offset_y;
-    afficherImage(renderer,window,tab,taille_cell,background);
+    //afficherImage(renderer,window,tab,taille_cell,background);
+    afficherImageBrouillard(renderer,window,tab,taille_cell,background,pos_x,pos_y);
     affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
     SDL_RenderCopy(renderer,texture_elve, &state[i], &destination);
 }

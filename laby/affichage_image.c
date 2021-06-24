@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "kruskal.h"
+#include "affichage_image.h"
 
 /*
  *chargement des textures
@@ -177,6 +177,66 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
                         }
                 }
 }
+
+
+void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
+{
+        int i1,j1,j;
+        int * voisin = malloc(9*sizeof(int));
+	int x=pos_x/taille_cell;
+	int y=pos_y/taille_cell;
+
+	for (j=0;j<9;j++)
+		voisin[j]=-1;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+
+        if (tab[x][y] & FLAG_N)
+                voisin[0]=x+P*y-P;
+        if (tab[x][y] & FLAG_S)
+                voisin[1]=x+P*y+P ;
+        if (tab[x][y] & FLAG_O)
+                voisin[2]=x+P*y -1;
+        if (tab[x][y] & FLAG_E)
+                voisin[3]=x+P*y+1;
+	
+	if (y>0){
+		if (x>0){
+			if (((tab[x][y] & FLAG_O) && (tab[x-1][y] & FLAG_N )) || ((tab[x][y] & FLAG_N) && (tab[x][y-1] & FLAG_O)))
+				voisin[5]=x+P*y-P-1;
+		}
+		if (x<P-1){
+			if (((tab[x][y] & FLAG_N) && (tab[x+1][y-1] & FLAG_E )) || ((tab[x][y] & FLAG_E) && (tab[x][y-1] & FLAG_N)))
+				voisin[6]=x+P*y-P+1;
+		}
+	}
+
+	if (y<N-1){
+		if (x>0){
+			if (((tab[x][y] & FLAG_O) && (tab[x-1][y] & FLAG_S )) || ((tab[x][y] & FLAG_S) && (tab[x][y+1] & FLAG_O)))
+				voisin[7]=x+P*y+P-1;
+		}
+		if (x<P-1){
+			if (((tab[x][y] & FLAG_S) && (tab[x][y+1] & FLAG_E )) || ((tab[x][y] & FLAG_E) && (tab[x+1][y] & FLAG_S)))
+				voisin[8]=x+P*y+P+1;
+		}
+	}
+
+	voisin[4]=x+P*y;
+	
+	for (j=0; j<9; j++)
+        {
+                if (voisin[j]!=-1)
+                {
+                        x=tab[voisin[j]%P][voisin[j]/P];
+                        i1=(voisin[j]%P); //coordonee colonne du noeud
+                        j1=(voisin[j]/P); // coordonee ligne du noeud
+        		affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
+		}
+        }
+        free(voisin);
+}
+
 
 void peindreMap(SDL_Texture * texture, SDL_Window* window ,SDL_Renderer *renderer, int noeuds, int taille_cell, int ** laby)
 {

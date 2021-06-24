@@ -14,6 +14,8 @@
 #include "DFS.h"
 #include <SDL2/SDL_ttf.h>
 #include "affichage_txt.h"
+#include "main.h"
+
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);
 void afficheEcranIntelligement(SDL_Renderer*,int**,int);
