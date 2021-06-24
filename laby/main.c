@@ -80,6 +80,10 @@ void peindreDFS(SDL_Renderer * renderer, int noeuds, int taille_cell)
 		SDL_RenderFillRect(renderer, &rectangle);
 }
 
+void peindreDFSGraphique(SDL_Texture * texture, SDL_Window* window ,SDL_Renderer *renderer, int noeuds, int taille_cell, int ** laby)
+{
+	affichage_texture(texture,window, renderer, laby[noeuds%P][noeuds/P], noeuds%P, noeuds/P, taille_cell);
+}
 
 void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,int *parent)
 {
@@ -152,7 +156,37 @@ int main (int argc, char** argv)
 
 	SDL_Renderer *renderer;
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
+
 	if (renderer == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+	SDL_Texture * texture,*texture_fin,* texture_elve,* texture_elve_reverse;
+
+	texture_elve = load_texture_from_image("Elve_lign.png",renderer);
+	if (texture_elve == NULL)
+	{
+		printf("erreur texture Elve_lign.png\n");
+		exit(EXIT_FAILURE);
+	}	
+	texture_elve_reverse = load_texture_from_image("Elve_ligne_reverse.png",renderer);
+	if (texture_elve_reverse == NULL) 
+	{
+		printf("erreur texture Elve_lign_reverse.png\n");
+		exit(EXIT_FAILURE);
+	}	
+	
+	texture = load_texture_from_image("road.png",renderer);
+	if (texture==NULL) 
+	{
+		printf("erreur texture road.png\n");
+		exit(EXIT_FAILURE);
+	}	
+
+	texture_fin = load_texture_from_image("roguelikeChar_transparent.png",renderer);
+	if (texture_fin==NULL) 
+	{
+		printf("erreur texture roguelikechar.png\n");
+		exit(EXIT_FAILURE);
+	}	
+
 	int running=1;
 	srand(0);
 	int noeuds=N*P;
@@ -211,10 +245,13 @@ int main (int argc, char** argv)
 				temps+=10;
 */
 			if (i==1)
-				afficherEcranIntelligemment(renderer,tab,taille_cell);
+			{
+//				afficherEcranIntelligemment(renderer,tab,taille_cell);
+			}
 			if  (i<=noeuds)
 			{
-				peindreDFS(renderer,explo[i],taille_cell);
+//				peindreDFS(renderer,explo[i],taille_cell);
+				peindreDFSGraphique(texture,window,renderer,explo[i],taille_cell,tab);
 				i++;
 			}
 			else
