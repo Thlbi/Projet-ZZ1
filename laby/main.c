@@ -341,14 +341,19 @@ int main (int argc, char** argv)
 	int noeud_arrive=rand()%TAILLE;
 	int colli;
 	int noeud_actuel;
+	int * minimap=malloc((TAILLE+1)*sizeof(int));
+	for (int iter=0;iter<TAILLE+1;iter++)
+		minimap[iter]=0;
 	int taille_cell2=min((screen.w/3)/(P+2),(screen.h/3)/(N+2));
 
 	affichage_fin(texture_fin2,window2,renderer2,noeud_arrive/P,noeud_arrive%P,taille_cell2);
 	printf("l : relancer \np,SPACE : pause \ncroix : quitter \nm : afficher la carte complète du labyrinthe pendant 2 secondes\n");
 
-	while ((running)||(temps<50))
+	while ((running)||(temps<30))
         {
 		noeud_actuel=pos_y*P/taille_cell+pos_x/taille_cell;
+		minimap[0]++;
+		minimap[minimap[0]]=noeud_actuel;
 		if (noeud_actuel==noeud_arrive)
 			running=0;
 		while (SDL_PollEvent(&event))
@@ -406,7 +411,10 @@ int main (int argc, char** argv)
         	}
 		const Uint8 *keystates = SDL_GetKeyboardState(NULL);
 		if (pause){
-        		peindreMap(texture2,window2,renderer2,noeud_actuel,taille_cell2,tab);
+        		SDL_RenderClear(renderer2);
+			for (int iter=1;iter<minimap[0];iter++)
+				peindreMap(texture2,window2,renderer2,minimap[iter],taille_cell2,tab);
+				
 			SDL_RenderPresent(renderer2);
 			if ((keystates[SDL_SCANCODE_UP]||keystates[SDL_SCANCODE_W])) {	
 				colli=collision_N(pos_x,pos_y,tab,taille_cell);
@@ -503,7 +511,7 @@ int main (int argc, char** argv)
 			if (running==0){
 				affichage_txt(window,renderer);
         			SDL_RenderPresent(renderer);
-        			SDL_Delay(30);
+        			SDL_Delay(50);
 				temps++;
         		}
 		}
