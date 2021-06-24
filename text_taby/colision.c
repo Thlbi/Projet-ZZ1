@@ -43,8 +43,8 @@ int collision_E(int pos_x,int pos_y,**tab,int taille_case,int largeur_perso,int 
     int i=pos_y/(P*taille_case);
     int colli=0
 
-    if(pos_x+deplacement<j*taille_case+taille_case){
-        if (tab[i][j]&FLAG_O){
+    if(pos_x+deplacement>j*taille_case+taille_case){
+        if (tab[i][j]&FLAG_E){
             colli=1;
         }
     }
