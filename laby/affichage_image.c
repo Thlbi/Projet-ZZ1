@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "kruskal.h"
+#include "affichage_image.h"
 
 /*
  *chargement des textures
@@ -158,24 +158,55 @@ void affichage_fin(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *rend
   SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
 }
 
+void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
+{
+	int i1,j1,x,noeud=0;
+	int * voisin = malloc(4*sizeof(int));
 
-void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture){
-        int i1,j1,x,noeud=0;
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_RenderClear(renderer);
+	
+	if (tab[pos_y][pos_x] & FLAG_N)
+		voisin[0]=pos_x+P*pos_y -P;
+	if (tab[pos_y][pos_x] & FLAG_S)
+		voisin[1]=pos_x+P*pos_y+P ;
+	if (tab[pos_y][pos_x] & FLAG_O)
+		voisin[2]=pos_x+P*pos_y -1;
+	if (tab[pos_y][pos_x] & FLAG_E)
+		voisin[3]=pos_x+P*pos_y+1;
+	for (int j=0; j<4; j++)
+	{	
+		if (voisin[j]!=-1)
+		{
 
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-        SDL_RenderClear(renderer);
+			x=tab[voisin[j]%P][voisin[j]/P];
+			i1=(noeud%P); //coordonee colonne du noeud
+			j1=(noeud/P); // coordonee ligne du noeud
+		}
+	}
+	affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
+	free(voisin);
+}
 
-        for (int i=0;i<N;i++){
-                for (int j=0;j<P;j++){
-                        x=tab[j][i];
-                        i1=(noeud%P); //coordonee colonne du noeud
-                        j1=((int)noeud/P); // coordonee ligne du noeud
+void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture)
+{
+	int i1,j1,x,noeud=0;
 
-  			affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_RenderClear(renderer);
 
-                        noeud+=1;
-                        }
-                }
+	for (int i=0;i<N;i++)
+	{
+		for (int j=0;j<P;j++)
+		{
+			x=tab[j][i];
+			i1=(noeud%P); //coordonee colonne du noeud
+			j1=((int)noeud/P); // coordonee ligne du noeud
+
+			affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
+			noeud+=1;
+		}
+	}
 }
 
 void peindreMap(SDL_Texture * texture, SDL_Window* window ,SDL_Renderer *renderer, int noeuds, int taille_cell, int ** laby)
