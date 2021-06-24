@@ -307,6 +307,7 @@ int main(int argc, char **argv)
 					right = 1;
 				}
 			}
+			/*
 			else
 			{
 				if (right)
@@ -318,7 +319,7 @@ int main(int argc, char **argv)
 					play_standstill_l(texture_elve_reverse, texture, window, renderer, pos_x, pos_y, zoom, tab, taille_cell, texture_fin, noeud_arrive);
 				}
 			}
-		
+			*/
 			SDL_RenderPresent(renderer);
 			SDL_Delay(30);
 			if (running == 0)
