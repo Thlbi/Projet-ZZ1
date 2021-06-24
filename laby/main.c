@@ -208,6 +208,9 @@ int main (int argc, char** argv)
 	explo=DFS(tab,noeuds);
 	int temps=600;
 	int i=1;
+	int nouv_noeuds=0;
+	int pause=0;
+	int direction=0;
 	SDL_Event event;
 	while (running)
 	{
@@ -226,9 +229,50 @@ int main (int argc, char** argv)
 						break;
 					}
 					break;
-			break;
+					
+				case SDL_KEYDOWN:  
+					switch (event.key.keysym.sym) 
+					{  
+      				case SDLK_p:                 
+      				case SDLK_SPACE:            
+        					pause = !pause;       
+        					break;
+						case SDLK_ESCAPE:
+							running = 0;
+        					break;
+						case SDLK_d:  /*on va a droite*/
+							direction = 1;
+        					break;
+						case SDLK_q: /*on va a gauche*/
+							direction = 2;
+        					break;
+						case SDLK_z:  /*on va en haut*/
+							direction = 3;
+        					break;
+						case SDLK_s:  /*on va en bas*/
+							direction = 4;
+							break;
+						default:
+							break;
+      			}
+      			break;
 			}
 		}
+			peindreDFSGraphique(texture,window,renderer,0,taille_cell,tab);
+		if (direction)
+		{
+			if (direction==1 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_E))
+				nouv_noeuds=nouv_noeuds+1;
+			if (direction==2 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_O))
+				nouv_noeuds=nouv_noeuds-1;
+			if (direction==3 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_N))
+				nouv_noeuds=nouv_noeuds-P;
+			if (direction==4 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_S))
+				nouv_noeuds=nouv_noeuds+P;
+			peindreDFSGraphique(texture,window,renderer,nouv_noeuds,taille_cell,tab);
+			direction=0;
+		}
+			
 /*
 			if (temps>100)
 			{
@@ -243,14 +287,14 @@ int main (int argc, char** argv)
 			}
 			else
 				temps+=10;
-*/
+
 			if (i==1)
 			{
-//				afficherEcranIntelligemment(renderer,tab,taille_cell);
+				afficherEcranIntelligemment(renderer,tab,taille_cell);
 			}
 			if  (i<=noeuds)
 			{
-//				peindreDFS(renderer,explo[i],taille_cell);
+				peindreDFS(renderer,explo[i],taille_cell);
 				peindreDFSGraphique(texture,window,renderer,explo[i],taille_cell,tab);
 				i++;
 			}
@@ -258,7 +302,7 @@ int main (int argc, char** argv)
 			{
 				SDL_Delay(8000);
 				running=0;
-			}
+			}*/
 			SDL_RenderPresent(renderer);
 			SDL_Delay(20);
 	}

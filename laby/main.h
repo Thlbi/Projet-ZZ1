@@ -8,6 +8,7 @@
 #include "kruskal.h"
 #include "dijsktra.h"
 #include "DFS.h"
+#include "affichage_image.h"
 #include <math.h>
 
 typedef enum {
@@ -20,6 +21,8 @@ typedef enum {
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);
 void afficheEcranIntelligement(SDL_Renderer*,int**,int);
 void chemin(SDL_Renderer *,int, int, int, int *);
+void peindreDFS(SDL_Renderer * , int, int);
+
 int min(int , int);
 int main(int ,char**);
 
