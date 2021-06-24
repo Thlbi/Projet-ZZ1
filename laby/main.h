@@ -12,6 +12,7 @@
 #include "texture_perso.h"
 #include "colision.h"
 #include "DFS.h"
+#include<SDL2/SDL_ttf.h>
 
 void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer);
 void afficheEcranIntelligement(SDL_Renderer*,int**,int);

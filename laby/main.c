@@ -306,17 +306,28 @@ int main (int argc, char** argv)
 
 	}*/
 	
+	//on initialise une fenêtre 2 pour une mini-map
 	SDL_Window *window2;
 
-	window2 = SDL_CreateWindow("SDL2 Programme 0.1", screen.w-screen.w/5, 0,screen.w/4,screen.h/4, SDL_WINDOW_RESIZABLE);
+	window2 = SDL_CreateWindow("SDL2 Programme 0.1", screen.w-screen.w/3, 0,screen.w/3,screen.h/4, SDL_WINDOW_RESIZABLE);
 	
 	if (window2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	
 	SDL_SetWindowTitle(window2, "Carte d'exploration");
 
+	//on initialise le renderer de la mini-map
 	SDL_Renderer *renderer2;
 	renderer2 = SDL_CreateRenderer(window2, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
 	if (renderer2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+
+	//on initialise les textures pour la deuxième fenêtre
+	SDL_Texture *texture2,*texture_fin2;
+
+	texture2 = load_texture_from_image("road.png",renderer2);
+	if (texture2==NULL) exit(EXIT_FAILURE);
+
+	texture_fin2 = load_texture_from_image("roguelikeChar_transparent.png",renderer2);
+    	if (texture_fin2==NULL) exit(EXIT_FAILURE);
 
 	int pause=1;
 	int noeud_dep=rand()%TAILLE;
@@ -330,9 +341,9 @@ int main (int argc, char** argv)
 	int noeud_arrive=rand()%TAILLE;
 	int colli;
 	int noeud_actuel;
-	int taille_cell2=min((screen.w/4)/(P+2),(screen.h/4)/(N+2));
+	int taille_cell2=min((screen.w/3)/(P+2),(screen.h/3)/(N+2));
 
-	affichage_fin(texture_fin,window2,renderer2,noeud_arrive%P,noeud_arrive/P,taille_cell2);
+	affichage_fin(texture_fin2,window2,renderer2,noeud_arrive/P,noeud_arrive%P,taille_cell2);
 	printf("l : relancer \np,SPACE : pause \ncroix : quitter\n");
 
 	while ((running)||(temps<50))
@@ -395,8 +406,7 @@ int main (int argc, char** argv)
         	}
 		const Uint8 *keystates = SDL_GetKeyboardState(NULL);
 		if (pause){
-			printf("%d\n",noeud_actuel);
-        		peindreMap(texture,window2,renderer2,noeud_actuel,taille_cell,tab);
+        		peindreMap(texture2,window2,renderer2,noeud_actuel,taille_cell2,tab);
 			SDL_RenderPresent(renderer2);
 			if ((keystates[SDL_SCANCODE_UP]||keystates[SDL_SCANCODE_W])) {	
 				colli=collision_N(pos_x,pos_y,tab,taille_cell);
