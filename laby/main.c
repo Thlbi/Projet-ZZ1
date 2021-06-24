@@ -309,7 +309,7 @@ int main (int argc, char** argv)
 	//on initialise une fenêtre 2 pour une mini-map
 	SDL_Window *window2;
 
-	window2 = SDL_CreateWindow("SDL2 Programme 0.1", screen.w-screen.w/3, 0,screen.w/3,screen.h/4, SDL_WINDOW_RESIZABLE);
+	window2 = SDL_CreateWindow("SDL2 Programme 0.1", screen.w-screen.w/3, 0,screen.w/3,screen.h/3, SDL_WINDOW_RESIZABLE);
 	
 	if (window2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
 	
@@ -344,7 +344,7 @@ int main (int argc, char** argv)
 	int taille_cell2=min((screen.w/3)/(P+2),(screen.h/3)/(N+2));
 
 	affichage_fin(texture_fin2,window2,renderer2,noeud_arrive/P,noeud_arrive%P,taille_cell2);
-	printf("l : relancer \np,SPACE : pause \ncroix : quitter\n");
+	printf("l : relancer \np,SPACE : pause \ncroix : quitter \nm : afficher la carte complète du labyrinthe pendant 2 secondes\n");
 
 	while ((running)||(temps<50))
         {
@@ -501,6 +501,9 @@ int main (int argc, char** argv)
         		SDL_Delay(30);
         		SDL_RenderPresent(renderer);
 			if (running==0){
+				affichage_txt(window,renderer);
+        			SDL_RenderPresent(renderer);
+        			SDL_Delay(30);
 				temps++;
         		}
 		}
@@ -512,5 +515,7 @@ int main (int argc, char** argv)
 	SDL_DestroyTexture(texture_fin);
 	end_sdl(1, "Normal ending", window, renderer);
 	end_sdl(1,"Normal ending",window2,renderer2);
+	TTF_Quit();
+	
 	return 1;
 }
