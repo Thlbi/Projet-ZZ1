@@ -24,6 +24,7 @@ void end_sdl(char ok,char const* msg,SDL_Window* window, SDL_Renderer* renderer)
 
 	if (!ok) exit(EXIT_FAILURE);
 }
+
 void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cell)
 {
 	int x=0;
@@ -33,98 +34,31 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
  	SDL_DisplayMode screen;
 	SDL_GetCurrentDisplayMode(0,&screen);
 	int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
-	int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
+	int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/20;
 
 	SDL_SetRenderDrawColor(renderer,0,0,0,0);
 	int i1,j1,noeud=0;
 	
-	for (int i=0;i<N;i++)
-	{
-		for (int j=0;j<P;j++)
-		{
-			x=tab[j][i];
+	for (int i=0;i<N;i++){
+                for (int j=0;j<P;j++){
+                        x=tab[j][i];
 			i1=(noeud%P);
-			j1=((int)noeud/P);
+                        j1=((int)noeud/P);
 
-			if (!(x & FLAG_N))
-				SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical); //mur au nord
-			if ((x & FLAG_S)!=2)
-				SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur au sud
-			if ((x & FLAG_E)!=4)
-				SDL_RenderDrawLine(renderer,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'est
-			if ((x & FLAG_O)!=8)
-				SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'ouest
+                        if (!(x & FLAG_N)){
+                                SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical); //mur au nord
+                                }
+                        if ((x & FLAG_S)!=2)
+                                SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur au sud
+                        if ((x & FLAG_E)!=4)
+                                SDL_RenderDrawLine(renderer,(i1+1)*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,(i1+1)*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'est
+                        if ((x & FLAG_O)!=8)
+                                SDL_RenderDrawLine(renderer,i1*taille_cell+decalage_horizontale,j1*taille_cell+decalage_vertical,i1*taille_cell+decalage_horizontale,(j1+1)*taille_cell+decalage_vertical); //mur à l'ouest
 
-			noeud+=1;
+                        noeud+=1;
 
-		}
-	}
-}
-
-void peindreDFS(SDL_Renderer * renderer, int noeuds, int taille_cell)
-{
- 		SDL_DisplayMode screen;
-		SDL_GetCurrentDisplayMode(0,&screen);
-		int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
-		int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
-		SDL_Rect rectangle;
-		
-		int x=noeuds%P;
-		int y=noeuds/P;
-		SDL_SetRenderDrawColor(renderer, 0,255,0,0);
-		
-		rectangle.x=taille_cell*x+ decalage_horizontale;
-		rectangle.y=taille_cell*y+ decalage_vertical;
-		rectangle.h=rectangle.w=taille_cell;	
-		
-		SDL_RenderFillRect(renderer, &rectangle);
-}
-
-void peindreDFSGraphique(SDL_Texture * texture, SDL_Window* window ,SDL_Renderer *renderer, int noeuds, int taille_cell, int ** laby)
-{
-	affichage_texture(texture,window, renderer, laby[noeuds%P][noeuds/P], noeuds%P, noeuds/P, taille_cell);
-}
-
-void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,int *parent)
-{
- 		SDL_DisplayMode screen;
-		SDL_GetCurrentDisplayMode(0,&screen);
-		int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
-		int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
-		SDL_Rect rectangle;
-
-		int cours=depart;
-		SDL_SetRenderDrawColor(renderer, 0,255,0,0);
-		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
-		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
-		rectangle.w=rectangle.h=taille_cell;
-		SDL_RenderFillRect(renderer, &rectangle);
-
-		cours=arrivee;
-		SDL_SetRenderDrawColor(renderer, 0,0,255,0);
-		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
-		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
-		rectangle.w=rectangle.h=taille_cell;
-		SDL_RenderFillRect(renderer, &rectangle);
-
-		cours=parent[depart];
-		SDL_SetRenderDrawColor(renderer, 255,0,0,0);
-		while(cours!=arrivee)
-		{
-			rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
-			rectangle.y=taille_cell*(cours/P)+decalage_vertical;
-			rectangle.w=rectangle.h=taille_cell;
-			SDL_RenderFillRect(renderer, &rectangle);
-			cours=parent[cours];
-			SDL_RenderPresent(renderer);
-			SDL_Delay(20);
-		}
-		cours=arrivee;
-		SDL_SetRenderDrawColor(renderer, 0,0,255,0);
-		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
-		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
-		rectangle.w=rectangle.h=taille_cell;
-		SDL_RenderFillRect(renderer, &rectangle);
+                }
+        }
 }
 
 int min(int a, int b)
@@ -139,8 +73,11 @@ int min(int a, int b)
 int main (int argc, char** argv)
 {
 	double p;
+
+	//l'argument p regit l'affichage des murs : s'il vaut 0 il n'y a aucun mur, s'il vaut un on a un arbre
 	if (argc==2)  p=atof(argv[1]);
-	else p=1; 
+	else p=0.75; 
+	
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
 		fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
@@ -150,70 +87,50 @@ int main (int argc, char** argv)
  	SDL_DisplayMode screen;
 	SDL_GetCurrentDisplayMode(0,&screen);
 	SDL_Window *window;
+
 	window = SDL_CreateWindow("SDL2 Programme 0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,screen.w,screen.h, SDL_WINDOW_RESIZABLE);
+	
 	if (window == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-	SDL_SetWindowTitle(window, "Mon_chef d'oeuvre");
+	
+	SDL_SetWindowTitle(window, "Labyrinthe");
 
 	SDL_Renderer *renderer;
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
-
 	if (renderer == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-	SDL_Texture * texture,*texture_fin,* texture_elve,* texture_elve_reverse;
-
-	texture_elve = load_texture_from_image("Elve_lign.png",renderer);
-	if (texture_elve == NULL)
-	{
-		printf("erreur texture Elve_lign.png\n");
-		exit(EXIT_FAILURE);
-	}	
-	texture_elve_reverse = load_texture_from_image("Elve_ligne_reverse.png",renderer);
-	if (texture_elve_reverse == NULL) 
-	{
-		printf("erreur texture Elve_lign_reverse.png\n");
-		exit(EXIT_FAILURE);
-	}	
-	
-	texture = load_texture_from_image("road.png",renderer);
-	if (texture==NULL) 
-	{
-		printf("erreur texture road.png\n");
-		exit(EXIT_FAILURE);
-	}	
-
-	texture_fin = load_texture_from_image("roguelikeChar_transparent.png",renderer);
-	if (texture_fin==NULL) 
-	{
-		printf("erreur texture roguelikechar.png\n");
-		exit(EXIT_FAILURE);
-	}	
-
 	int running=1;
-	srand(0);
+	srand(time(0));
 	int noeuds=N*P;
 	int nb_aretes=2*N*P-N-P;
 	int **tab;
-	int *parent;
 	int cours=0;
-	int depart=0;
-	int arrivee=12;
-	int * explo;
 	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
-	//printf("%d \n", taille_cell);
+	//int * tab_parents;  à décommenter pour l'utilisation de Dijkstra
+	//initialisation du graph
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
 	generation(graph);
 	graph=Fisher(graph,nb_aretes);
 	graph=kruskal(graph,noeuds,nb_aretes,&cours,p);
 	tab=tableau_ligne(graph,cours);
 
-	explo=DFS(tab,noeuds);
-	int temps=600;
-	int i=1;
-	int nouv_noeuds=0;
-	int pause=0;
-	int direction=-1;
-	int pronfondeur=0;
+	//initialisation des differentes textures
+	SDL_Texture * texture,*texture_fin,* texture_elve,* texture_elve_reverse;
+
+	texture_elve = load_texture_from_image("Elve_lign.png",renderer);
+    	if (texture_elve == NULL) end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer);
+
+    	texture_elve_reverse = load_texture_from_image("Elve_ligne_reverse.png",renderer);
+    	if (texture_elve_reverse == NULL) end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer);
+	
+	texture = load_texture_from_image("road.png",renderer);
+	if (texture==NULL) exit(EXIT_FAILURE);
+
+	texture_fin = load_texture_from_image("roguelikeChar_transparent.png",renderer);
+    	if (texture_fin==NULL) exit(EXIT_FAILURE);
+
+	//tab_parents=dijkstra(tab,graph->noeuds,ND_ARRIVEE);
+
 	SDL_Event event;
-	while (running)
+	/*while (running)
 	{
 		while (SDL_PollEvent(&event))
 		{
@@ -228,111 +145,362 @@ int main (int argc, char** argv)
 					case SDL_WINDOWEVENT_CLOSE:
 						running = 0;
 						break;
+					default:
+						break;
 					}
 					break;
-					
-				case SDL_KEYDOWN:  
-					switch (event.key.keysym.sym) 
-					{  
-      				case SDLK_p:                 
-      				case SDLK_SPACE:            
-        					pause = !pause;       
-        					break;
-						case SDLK_ESCAPE:
-							running = 0;
-        					break;
-						case SDLK_d:  /*on va a droite*/
-							direction = 1;
-        					break;
-						case SDLK_q: /*on va a gauche*/
-							direction = 2;
-        					break;
-						case SDLK_z:  /*on va en haut*/
-							direction = 3;
-        					break;
-						case SDLK_s:  /*on va en bas*/
-							direction = 4;
-							break;
-						case SDLK_r:  /*on va en bas*/
-							pronfondeur = 1;
-							break;
-						default:
-							break;
-      			}
-      			break;
+			break;
 			}
-		}
-		if (direction)
-		{
-			if (direction==-1)
-			{
-				peindreDFSGraphique(texture,window,renderer,depart,taille_cell,tab);
-				affichage_fin(texture_fin,window,renderer,arrivee%P,arrivee/P,taille_cell);
-			}
-			if (direction==1 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_E))
-			{
-				nouv_noeuds=nouv_noeuds+1;
-			}
-			if (direction==2 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_O))
-				nouv_noeuds=nouv_noeuds-1;
-			if (direction==3 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_N))
-				nouv_noeuds=nouv_noeuds-P;
-			if (direction==4 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_S))
-				nouv_noeuds=nouv_noeuds+P;
-			peindreDFSGraphique(texture,window,renderer,nouv_noeuds,taille_cell,tab);
-			direction=0;
-		}	
-		if (nouv_noeuds==arrivee)
-			running=0;
-		if (pronfondeur)
-		{
-			if  (i<=noeuds)
-			{
-				peindreDFSGraphique(texture,window,renderer,explo[i],taille_cell,tab);
-				affichage_fin(texture_fin,window,renderer,arrivee%P,arrivee/P,taille_cell);
-				i++;
-			}
-			else
-			{
-				SDL_Delay(8000);
-				running=0;
-			}
-		}	
-/*
-			if (temps>100)
-			{
-			
-				temps=0;
-				SDL_RenderClear(renderer);
-				afficherEcranIntelligemment(renderer,tab,taille_cell);
-				depart=arrivee;
-				arrivee=rand()%noeuds;
-				parent=dijsktra(tab,noeuds,arrivee);
-				chemin(renderer,depart, arrivee, taille_cell, parent);
-			}
-			else
-				temps+=10;
-
-			if (i==1)
-			{
-				afficherEcranIntelligemment(renderer,tab,taille_cell);
-			}
-			if  (i<=noeuds)
-			{
-				peindreDFS(renderer,explo[i],taille_cell);
-				peindreDFSGraphique(texture,window,renderer,explo[i],taille_cell,tab);
-				i++;
-			}
-			else
-			{
-				SDL_Delay(8000);
-				running=0;
-			}*/
+			//afficherEcranIntelligemment(renderer,tab,taille_cell);
+			//SDL_RenderPresent(renderer);
+        		//SDL_Delay(5000);
+        		//SDL_RenderClear(renderer);
+			afficherImage(renderer,window,tab,taille_cell,texture);	
+        		affichage_fin(texture_fin,window,renderer,ND_ARRIVEE/P,ND_ARRIVEE%P,taille_cell);
 			SDL_RenderPresent(renderer);
-			SDL_Delay(20);
+        		SDL_Delay(10);
+        		SDL_RenderClear(renderer);
+		}
+	}*/
+	/*
+	 *application du plus court chemin calculé par dijkstra
+	int pause=1;
+	int noeud_dep=rand()%TAILLE;
+	int right=1;
+	int stand=0;
+	int pos_x=noeud_dep%P*taille_cell;
+	int pos_y=noeud_dep/P*taille_cell;
+	float zoom = (float)taille_cell/(float)22;
+	int temps=1;
+	int deplacement=taille_cell;
+	int noeud_actuel=noeud_dep;
+	int noeud_arrive=rand()%TAILLE;
+	tab_parents=dijkstra(tab,graph->noeuds,noeud_arrive);
+
+	while ((running)||(temps<10))
+        {
+        	if (noeud_actuel==noeud_arrive)
+			running=0;
+		while (SDL_PollEvent(&event))
+                {
+                        switch (event.type)
+                        {
+                                case SDL_QUIT:
+                                        running = 0;
+					break;
+                                case SDL_WINDOWEVENT:
+                                        switch (event.window.event)
+                                        {
+                                        case SDL_WINDOWEVENT_CLOSE:
+                                                running = 0;
+                                                temps=10;
+						break;
+                                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                                                screen.w = event.window.data1;
+                                                screen.h = event.window.data2;
+                                                break;
+                                        case SDL_WINDOWEVENT_EXPOSED:
+                                                break;
+                                        }
+                                        break;
+                                case SDL_KEYDOWN:
+                                        switch (event.key.keysym.sym)
+                                        {
+                                                case SDLK_SPACE:
+                                                case SDLK_p:
+                                                        pause=1-pause;
+                                                        break;
+                                                default:
+                                                        break;
+                    			}
+                        	break;
+                	default:
+                                break;
+                        }
+        	}
+		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)-1){
+			if (right){
+        			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		}
+        		else{
+        			play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+       	 		}
+        		pos_y=pos_y-deplacement;
+        		stand=0;
+        	}
+		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)+1){
+			if (right){
+        			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		}
+        		else{
+        			play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		}
+        		pos_y=pos_y+deplacement;
+        		stand=0;
+        	}
+		if(tab_parents[noeud_actuel]%P==(noeud_actuel%P)-1){
+        		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		pos_x=pos_x-deplacement;
+        		stand=0;
+        		right=0;
+        	}
+		if(tab_parents[noeud_actuel]%P==(noeud_actuel%P)+1){
+			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		pos_x=pos_x+deplacement;
+        		stand=0;
+        		right=1;
+        	}
+        	if (right){
+        		switch (stand){
+        		        case 0:
+                			play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 2:
+                			play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 4:
+                			play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 6:
+                			play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			default:
+                			stand=(stand+1)%7;
+					break;
+        	    }
+       		 }
+        	else{
+        		switch (stand){
+        	    	case 0:
+        	    	    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                		stand=(stand+1)%7;
+                		break;
+            		case 2:
+                		play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+               	 		stand=(stand+1)%7;
+                		break;
+            		case 4:
+                		play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                		stand=(stand+1)%7;
+                		break;
+            		case 6:
+                		play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                		stand=(stand+1)%7;
+                		break;
+            		default:
+                		stand=(stand+1)%7;
+                	break;
+            		}
+        	}
+        	SDL_Delay(30);
+        	SDL_RenderPresent(renderer);
+		if (running==0){
+			temps++;
+        	}
+		else
+			noeud_actuel=tab_parents[noeud_actuel];
+
+	}*/
+	
+	SDL_Window *window2;
+
+	window2 = SDL_CreateWindow("SDL2 Programme 0.1", screen.w-screen.w/5, 0,screen.w/4,screen.h/4, SDL_WINDOW_RESIZABLE);
+	
+	if (window2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+	
+	SDL_SetWindowTitle(window2, "Carte d'exploration");
+
+	SDL_Renderer *renderer2;
+	renderer2 = SDL_CreateRenderer(window2, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
+	if (renderer2 == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+
+	int pause=1;
+	int noeud_dep=rand()%TAILLE;
+	int right=1;
+	int stand=0;
+	int pos_x=noeud_dep%P*taille_cell;
+	int pos_y=noeud_dep/P*taille_cell;
+	float zoom = (float)taille_cell/(float)22;
+	int temps=1;
+	int deplacement=taille_cell;
+	int noeud_arrive=rand()%TAILLE;
+	int colli;
+	int noeud_actuel;
+	int taille_cell2=min((screen.w/4)/(P+2),(screen.h/4)/(N+2));
+
+	affichage_fin(texture_fin,window2,renderer2,noeud_arrive%P,noeud_arrive/P,taille_cell2);
+	printf("l : relancer \np,SPACE : pause \ncroix : quitter\n");
+
+	while ((running)||(temps<50))
+        {
+		noeud_actuel=pos_y*P/taille_cell+pos_x/taille_cell;
+		if (noeud_actuel==noeud_arrive)
+			running=0;
+		while (SDL_PollEvent(&event))
+                {
+                        switch (event.type)
+                        {
+                                case SDL_QUIT:
+                                        running = 0;
+					break;
+                                case SDL_WINDOWEVENT:
+                                        switch (event.window.event)
+                                        {
+                                        case SDL_WINDOWEVENT_CLOSE:
+                                                running = 0;
+                                                temps=1000;
+						break;
+                                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                                                screen.w = event.window.data1;
+                                                screen.h = event.window.data2;
+                                                break;
+                                        case SDL_WINDOWEVENT_EXPOSED:
+                                                break;
+                                        }
+                                        break;
+                                case SDL_KEYDOWN:
+                                        switch (event.key.keysym.sym)
+                                        {
+						case SDLK_l:
+							noeud_dep=rand()%TAILLE;
+							right=1;
+							stand=0;
+							pos_x=noeud_dep%P*taille_cell;
+							pos_y=noeud_dep/P*taille_cell;
+							temps=1;
+							noeud_arrive=rand()%TAILLE;
+							break;
+                                                case SDLK_SPACE:
+                                                case SDLK_p:
+                                                        pause=1-pause;
+                                                        break;
+						case SDLK_m: //la fonction devra afficher la totalite du labyrinthe sans brouillard de guerre
+							afficherImage(renderer,window,tab,taille_cell2,texture);
+							affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
+							SDL_RenderPresent(renderer);
+							SDL_Delay(2000);
+							SDL_RenderClear(renderer);
+							break;
+                                                default:
+                                                        break;
+                    			}
+                        	break;
+                	default:
+                                break;
+                        }
+        	}
+		const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+		if (pause){
+			printf("%d\n",noeud_actuel);
+        		peindreMap(texture,window2,renderer2,noeud_actuel,taille_cell,tab);
+			SDL_RenderPresent(renderer2);
+			if ((keystates[SDL_SCANCODE_UP]||keystates[SDL_SCANCODE_W])) {	
+				colli=collision_N(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					if (right){
+        					play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				}
+        				else{
+        					play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+       	 				}
+        				pos_y=pos_y-deplacement;
+        				stand=0;
+				}
+			}
+			if ((keystates[SDL_SCANCODE_DOWN]||keystates[SDL_SCANCODE_S])) {	
+				colli=collision_S(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					if (right){
+        					play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				}
+        				else{
+        					play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				}
+        				pos_y=pos_y+deplacement;
+        				stand=0;
+        			}
+			}
+        		if ((keystates[SDL_SCANCODE_LEFT]||keystates[SDL_SCANCODE_A])) {	
+				colli=collision_O(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				pos_x=pos_x-deplacement;
+        				stand=0;
+        				right=0;
+        			}
+			}
+			if ((keystates[SDL_SCANCODE_RIGHT]||keystates[SDL_SCANCODE_D])) {	
+				colli=collision_E(pos_x,pos_y,tab,taille_cell);
+				if(!colli){
+					play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        				pos_x=pos_x+deplacement;
+        				stand=0;
+        				right=1;
+        			}
+			}
+        		if (right){
+        			switch (stand){
+        		        	case 0:
+                				play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                				stand=(stand+1)%7;
+                				break;
+            				case 2:
+                				play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                				stand=(stand+1)%7;
+                				break;
+            				case 4:
+                				play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                				stand=(stand+1)%7;
+                				break;
+            				case 6:
+                				play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                				stand=(stand+1)%7;
+                				break;
+            				default:
+                				stand=(stand+1)%7;
+						break;
+        		    }
+       			 }
+        		else{
+        			switch (stand){
+        	    		case 0:
+        	    		    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 2:
+                			play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+               	 			stand=(stand+1)%7;
+                			break;
+            			case 4:
+                			play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 6:
+                			play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			default:
+                			stand=(stand+1)%7;
+                		break;
+            			}
+        		}
+        		SDL_Delay(30);
+        		SDL_RenderPresent(renderer);
+			if (running==0){
+				temps++;
+        		}
+		}
 	}
+
+	SDL_DestroyTexture(texture_elve_reverse);
+	SDL_DestroyTexture(texture_elve);
+	SDL_DestroyTexture(texture);
+	SDL_DestroyTexture(texture_fin);
 	end_sdl(1, "Normal ending", window, renderer);
+	end_sdl(1,"Normal ending",window2,renderer2);
 	return 1;
 }
-                                     
-

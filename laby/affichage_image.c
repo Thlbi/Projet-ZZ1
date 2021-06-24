@@ -178,3 +178,10 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
                 }
 }
 
+void peindreMap(SDL_Texture * texture, SDL_Window* window ,SDL_Renderer *renderer, int noeuds, int taille_cell, int ** laby)
+{
+	printf("peindre case %d %d %d \n",noeuds%P,noeuds/P,laby[noeuds%P][noeuds/P]);
+        affichage_texture(texture,window, renderer, laby[noeuds%P][noeuds/P], noeuds%P, noeuds/P, taille_cell);
+}
+
+

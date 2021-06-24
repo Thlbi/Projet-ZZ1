@@ -10,7 +10,7 @@ int max(int a, int b)
 
 int distance_euclidienne(int a, int b)
 {
-	return (int) sqrt((a/P - b/b)*(a/P - b/P) + (a%P -b%P)*(a%P -b%P));
+	return (int) sqrt((a/P - b/P)*(a/P - b/P) + (a%P -b%P)*(a%P -b%P));
 }
 
 int distance_tcheby(int a, int b)
@@ -79,6 +79,7 @@ int * dijsktra(int ** laby, int noeuds, int depart)
 						if (distance[voisin[j]].poids>1+distance[sommet].poids)
 						{
 							distance[voisin[j]].poids=1 + distance[sommet].poids;
+							tas->tab[indice_valeur[voisin[j]]].poids=distance[voisin[j]].poids;
 							percolation_bas_tas_min(tas,indice_valeur[voisin[j]],indice_valeur);
 							parent[voisin[j]]=sommet;
 						}
@@ -162,6 +163,7 @@ int * Aetoile_euclidienne(int ** laby, int noeuds, int depart, int arrivee)
 						if (distance[voisin[j]].poids>(1+distance[sommet].poids+ distance_euclidienne(voisin[j],arrivee)))
 						{
 							distance[voisin[j]].poids=1 + distance[sommet].poids+ distance_euclidienne(voisin[j],arrivee);
+							tas->tab[indice_valeur[voisin[j]]].poids=distance[voisin[j]].poids;
 							percolation_bas_tas_min(tas,indice_valeur[voisin[j]],indice_valeur);
 							parent[voisin[j]]=sommet;
 						}
@@ -246,6 +248,7 @@ int * Aetoile_tcheby(int ** laby, int noeuds, int depart,int arrivee)
 						if (distance[voisin[j]].poids>1+distance[sommet].poids+ distance_tcheby(voisin[j],arrivee))
 						{
 							distance[voisin[j]].poids=1 + distance[sommet].poids+ distance_tcheby(voisin[j],arrivee);
+							tas->tab[indice_valeur[voisin[j]]].poids=distance[voisin[j]].poids;
 							percolation_bas_tas_min(tas,indice_valeur[voisin[j]],indice_valeur);
 							parent[voisin[j]]=sommet;
 						}
@@ -330,6 +333,7 @@ int * Aetoile_manhattan(int ** laby, int noeuds, int depart, int arrivee)
 						if (distance[voisin[j]].poids>1+distance[sommet].poids+ distance_manhattan(voisin[j],arrivee))
 						{
 							distance[voisin[j]].poids=1 + distance[sommet].poids+ distance_manhattan(voisin[j],arrivee);
+							tas->tab[indice_valeur[voisin[j]]].poids=distance[voisin[j]].poids;
 							percolation_bas_tas_min(tas,indice_valeur[voisin[j]],indice_valeur);
 							parent[voisin[j]]=sommet;
 						}
@@ -376,39 +380,41 @@ int main (int argc, char** argv)
 	graph=kruskal(graph,noeuds,nb_aretes,&cours,p);
 	tab=tableau_ligne(graph,cours);
 
+	affiche_graph_couple(gr
+
 	int depart=rand()%noeuds;
 	int arrivee=rand()%noeuds;
 	
 	clock_t t_depart, t_fin;
-	float temps;
+	long temps;
 
 	t_depart=clock();
 //	for (int i=0; i<1000; i++)
 	parent=dijsktra(tab,noeuds,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps dijsktra : %f\n",temps);
+	printf("temps dijsktra : %ld\n",temps);
 
 	t_depart=clock();
 //	for (int i=0; i<1000; i++)
 	parent=Aetoile_euclidienne(tab,noeuds,depart,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps Aetoile_euclidienne : %f\n",temps);
+	printf("temps Aetoile_euclidienne : %ld\n",temps);
 
 	t_depart=clock();
 //	for (int i=0; i<1000; i++)
 	parent=Aetoile_tcheby(tab,noeuds,depart,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps Aetoile_tcheby : %f\n",temps);
+	printf("temps Aetoile_tcheby : %ld\n",temps);
 
 	t_depart=clock();
 //	for (int i=0; i<1000; i++)
 	parent=Aetoile_manhattan(tab,noeuds,depart,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps Aetoile_manhattan: %f\n",temps);
+	printf("temps Aetoile_manhattan: %ld\n",temps);
 }
                                      
 
