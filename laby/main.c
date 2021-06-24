@@ -78,7 +78,10 @@ int main(int argc, char **argv)
 {
 	double p;
 	SDL_Rect source = {0};
-
+	const int FPS = 60;
+	const int frameDelay = 1000 / FPS;
+	Uint32 frameStart;
+	int frameTime;
 	//l'argument p regit l'affichage des murs : s'il vaut 0 il n'y a aucun mur, s'il vaut un on a un arbre
 	if (argc == 2)
 		p = atof(argv[1]);
@@ -179,25 +182,38 @@ int main(int argc, char **argv)
 
 	int hauteur_elve = source.h * zoom;
 
-	int pause = 1;
+	int pause = 0;
+	int temps = 1;
 	int noeud_dep = rand() % TAILLE;
 	int right = 1;
 	int pos_x = noeud_dep % P * taille_cell;
 	int pos_y = noeud_dep / P * taille_cell;
-	int temps = 1;
 	int deplacement = taille_cell;
 	int noeud_arrive = rand() % TAILLE;
 	int colli;
 	int noeud_actuel;
 	int taille_cell2 = min((screen.w / 3) / (P + 2), (screen.h / 3) / (N + 2));
+	int still = 0;
+	int affiche_carte = 0;
+	int dijkstra_ok;
+	int fin_mama = 0;
+	int relancer = 0;
+	int *minimap = malloc((TAILLE + 1) * sizeof(int));
+	for (int iter = 0; iter < TAILLE + 1; iter++)
+		minimap[iter] = 0;
+
 
 	affichage_fin(texture_fin2, window2, renderer2, noeud_arrive / P, noeud_arrive % P, taille_cell2);
-	printf("l : relancer \np,SPACE : pause \ncroix : quitter\n");
-	while ((running) || (temps < 50))
+	printf("l : relancer \np,SPACE : pause \ncroix : quitter \nm : afficher la carte complète du labyrinthe pendant 2 secondes\n");
+	while (running)
 	{
-		noeud_actuel=pos_x/taille_cell+(pos_y/taille_cell)*P;
+		frameStart = SDL_GetTicks();
+		noeud_actuel = pos_x / taille_cell + (pos_y / taille_cell) * P;
+		minimap[0]++;
+		minimap[minimap[0]] = noeud_actuel;
+
 		if (noeud_actuel == noeud_arrive)
-			running = 0;
+			fin_mama = 1;
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -210,7 +226,6 @@ int main(int argc, char **argv)
 				{
 				case SDL_WINDOWEVENT_CLOSE:
 					running = 0;
-					temps = 1000;
 					break;
 				case SDL_WINDOWEVENT_SIZE_CHANGED:
 					screen.w = event.window.data1;
@@ -224,24 +239,19 @@ int main(int argc, char **argv)
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_l:
-					noeud_dep = rand() % TAILLE;
-					right = 1;
-					pos_x = noeud_dep % P * taille_cell;
-					pos_y = noeud_dep / P * taille_cell;
-					temps = 1;
-					noeud_arrive = rand() % TAILLE;
+					relancer = 1;
 					break;
 				case SDLK_SPACE:
 				case SDLK_p:
-					pause = 1 - pause;
+					pause = !pause;
 					break;
 				case SDLK_m: //la fonction devra afficher la totalite du labyrinthe sans brouillard de guerre
-					afficherImage(renderer, window, tab, taille_cell2, texture);
-					affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
-					SDL_RenderPresent(renderer);
-					SDL_Delay(2000);
-					SDL_RenderClear(renderer);
+					affiche_carte = 1;
 					break;
+				case SDLK_d:
+					dijkstra_ok = 1;
+					break;
+
 				default:
 					break;
 				}
@@ -250,11 +260,54 @@ int main(int argc, char **argv)
 				break;
 			}
 		}
-		const Uint8 *keystates = SDL_GetKeyboardState(NULL);
-		if (pause)
+		/*		if (dijkstra_ok)
 		{
-			peindreMap(texture2, window2, renderer2, noeud_actuel, taille_cell2, tab);
+			tab_parents=dijkstra(tab,graph->noeuds,noeuds_arrive);
+			
+		}
+*/
+		if (affiche_carte && !pause)
+		{
+			afficherImage(renderer, window, tab, taille_cell, texture);
+			affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+			SDL_RenderPresent(renderer);
+			temps++;
+			if (temps > 50)
+			{
+				affiche_carte = 0;
+				SDL_RenderClear(renderer);
+				temps = 0;
+			}
+		}
+		if (relancer && !pause)
+		{
+			noeud_dep = rand() % TAILLE;
+			right = 1;
+			pos_x = noeud_dep % P * taille_cell;
+			pos_y = noeud_dep / P * taille_cell;
+			temps = 1;
+			noeud_arrive = rand() % TAILLE;
+			relancer = 0;
+			SDL_RenderClear(renderer2);
 			SDL_RenderPresent(renderer2);
+			for (int i = 1; i <= minimap[0]; i++)
+				minimap[i] = 0;
+			minimap[0] = 1;
+			minimap[1] = pos_y * P / taille_cell + pos_x / taille_cell;
+		}
+		else if (!pause)
+		{
+			SDL_RenderClear(renderer2);
+			for (int iter = 1; iter < minimap[0]; iter++)
+			{
+				peindreMap(texture2, window2, renderer2, minimap[iter], taille_cell2, tab);
+				affichage_fin(texture_fin2, window2, renderer2, noeud_arrive / P, noeud_arrive % P, taille_cell2);
+				point_minimap(renderer2, taille_cell2, taille_cell2 * (noeud_actuel % P), taille_cell2 * noeud_actuel / P);
+			}
+			SDL_RenderPresent(renderer2);
+
+			const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+
 			if ((keystates[SDL_SCANCODE_UP] || keystates[SDL_SCANCODE_W]))
 			{
 				colli = collision_N(pos_x, pos_y, tab, taille_cell, largeur_elve, deplacement);
@@ -262,13 +315,22 @@ int main(int argc, char **argv)
 				{
 					if (right)
 					{
-						play_with_elve_N(texture_elve, texture, window, renderer, pos_x, pos_y, deplacement, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+						//afficherImage(renderer, window, tab, taille_cell, texture);
+						SDL_RenderClear(renderer);
+						afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+						affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+						play_with_elve_N(texture_elve, renderer, pos_x, pos_y, deplacement, zoom);
 					}
 					else
 					{
-						play_with_elve_N_l(texture_elve_reverse, texture, window, renderer, pos_x, pos_y, deplacement, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+						//afficherImage(renderer, window, tab, taille_cell, texture);
+						SDL_RenderClear(renderer);
+						afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+						affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+						play_with_elve_N(texture_elve_reverse, renderer, pos_x, pos_y, deplacement, zoom);
 					}
 					pos_y = pos_y - deplacement / 10; //deplacement de deplacement/nb_image_aniamtion a chaque frame
+					still = 0;
 				}
 			}
 			if ((keystates[SDL_SCANCODE_DOWN] || keystates[SDL_SCANCODE_S]))
@@ -278,13 +340,22 @@ int main(int argc, char **argv)
 				{
 					if (right)
 					{
-						play_with_elve_S(texture_elve, texture, window, renderer, pos_x, pos_y, deplacement, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+						//afficherImage(renderer, window, tab, taille_cell, texture);
+						SDL_RenderClear(renderer);
+						afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+						affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+						play_with_elve_S(texture_elve, renderer, pos_x, pos_y, deplacement, zoom);
 					}
 					else
 					{
-						play_with_elve_S_l(texture_elve_reverse, texture, window, renderer, pos_x, pos_y, deplacement, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+						//afficherImage(renderer, window, tab, taille_cell, texture);
+						SDL_RenderClear(renderer);
+						afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+						affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+						play_with_elve_S_l(texture_elve_reverse, renderer, pos_x, pos_y, deplacement, zoom);
 					}
 					pos_y = pos_y + deplacement / 10;
+					still = 0;
 				}
 			}
 			if ((keystates[SDL_SCANCODE_LEFT] || keystates[SDL_SCANCODE_A]))
@@ -292,9 +363,14 @@ int main(int argc, char **argv)
 				colli = collision_O(pos_x, pos_y, tab, taille_cell, hauteur_elve, deplacement);
 				if (!colli)
 				{
-					play_with_elve_O(texture_elve_reverse, texture, window, renderer, pos_x, pos_y, deplacement, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+					//afficherImage(renderer, window, tab, taille_cell, texture);
+					SDL_RenderClear(renderer);
+					afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+					affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+					play_with_elve_O(texture_elve_reverse, renderer, pos_x, pos_y, deplacement, zoom);
 					pos_x = pos_x - deplacement / 10;
 					right = 0;
+					still = 0;
 				}
 			}
 			if ((keystates[SDL_SCANCODE_RIGHT] || keystates[SDL_SCANCODE_D]))
@@ -302,30 +378,58 @@ int main(int argc, char **argv)
 				colli = collision_E(pos_x, pos_y, tab, taille_cell, largeur_elve, hauteur_elve, deplacement);
 				if (!colli)
 				{
-					play_with_elve_E(texture_elve, texture, window, renderer, pos_x, pos_y, deplacement, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+					//afficherImage(renderer, window, tab, taille_cell, texture);
+					SDL_RenderClear(renderer);
+					afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+					affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+					play_with_elve_E(texture_elve, renderer, pos_x, pos_y, deplacement, zoom);
 					pos_x = pos_x + deplacement / 10;
 					right = 1;
+					still = 0;
 				}
 			}
-			/*
+
 			else
 			{
-				if (right)
+				if (still >= 10)
 				{
-					play_standstill(texture_elve, texture, window, renderer, pos_x, pos_y, zoom, tab, taille_cell, texture_fin, noeud_arrive);
+					if (right)
+					{
+						//afficherImage(renderer, window, tab, taille_cell, texture);
+						afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+						affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+						play_standstill(texture_elve, renderer, pos_x, pos_y, zoom);
+					}
+					else
+					{
+						//afficherImage(renderer, window, tab, taille_cell, texture);
+						afficherImageBrouillard(renderer,window,tab,taille_cell,texture,pos_x,pos_y);
+						affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+						play_standstill_l(texture_elve_reverse, renderer, pos_x, pos_y, zoom);
+					}
 				}
-				else
-				{
-					play_standstill_l(texture_elve_reverse, texture, window, renderer, pos_x, pos_y, zoom, tab, taille_cell, texture_fin, noeud_arrive);
-				}
+				still = (still + 1) % 11;
 			}
-			*/
-			SDL_RenderPresent(renderer);
-			SDL_Delay(30);
-			if (running == 0)
-			{
-				temps++;
-			}
+		}
+		if (fin_mama)
+		{
+			affichage_txt(window, renderer);
+			temps++;
+			if (temps > 50)
+				running = 0;
+		}
+		if (pause)
+		{
+			relancer = 0;
+			affiche_carte = 0;
+			affichage_txt(window, renderer);
+		}
+
+		SDL_RenderPresent(renderer);
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameDelay > frameTime)
+		{
+			SDL_Delay(frameDelay - frameTime);
 		}
 	}
 

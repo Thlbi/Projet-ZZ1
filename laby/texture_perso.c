@@ -3,7 +3,7 @@
 int frameCount = 0;
 float frameCount2 = 0;
 
-void play_with_elve_N(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_with_elve_N(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom )
 {
     SDL_Rect source = {0}, destination = {0};
 
@@ -76,13 +76,11 @@ void play_with_elve_N(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Wi
     state[9].w = offset_x;
     state[9].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
     destination.y = destination.y - (deplacement / nb_images_animation); //déplacement du personnage ici de wind dim.h /32 en tout (diviser par nb animation pour chaque anim)
     SDL_RenderCopy(renderer, texture_elve, &state[frameCount], &destination);
     frameCount = (frameCount + 1) % 10;
 }
-void play_with_elve_N_l(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_with_elve_N_l(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom )
 {
     SDL_Rect source = {0}, destination = {0};
 
@@ -154,17 +152,15 @@ void play_with_elve_N_l(SDL_Texture *texture_elve, SDL_Texture *background, SDL_
     state[9].w = offset_x;
     state[9].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
     destination.y = destination.y - (deplacement / nb_images_animation);
     SDL_RenderCopy(renderer, texture_elve, &state[frameCount], &destination);
     frameCount = (frameCount + 1) % 10;
 }
-void play_with_elve_S(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_with_elve_S(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom )
 {
-    SDL_Rect source = {0}, window_dimensions = {0}, destination = {0};
+    SDL_Rect source = {0}, destination = {0};
 
-    SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+    
     SDL_QueryTexture(texture_elve, NULL, NULL, &source.w, &source.h);
 
     int nb_images = 8;
@@ -233,17 +229,15 @@ void play_with_elve_S(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Wi
     state[9].w = offset_x;
     state[9].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
     destination.y = destination.y + (deplacement / nb_images_animation);
     SDL_RenderCopy(renderer, texture_elve, &state[frameCount], &destination);
     frameCount = (frameCount + 1) % 10;
 }
-void play_with_elve_S_l(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_with_elve_S_l(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom )
 {
-    SDL_Rect source = {0}, window_dimensions = {0}, destination = {0};
+    SDL_Rect source = {0}, destination = {0};
 
-    SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+    
     SDL_QueryTexture(texture_elve, NULL, NULL, &source.w, &source.h);
 
     int nb_images = 8;
@@ -312,18 +306,17 @@ void play_with_elve_S_l(SDL_Texture *texture_elve, SDL_Texture *background, SDL_
     state[9].w = offset_x;
     state[9].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+
     destination.y = destination.y + (deplacement / nb_images_animation);
     SDL_RenderCopy(renderer, texture_elve, &state[frameCount], &destination);
     frameCount = (frameCount + 1) % 10;
 }
-void play_with_elve_O(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_with_elve_O(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom )
 {
 
-    SDL_Rect source = {0}, window_dimensions = {0}, destination = {0};
+    SDL_Rect source = {0}, destination = {0};
 
-    SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+    
     SDL_QueryTexture(texture_elve, NULL, NULL, &source.w, &source.h);
 
     int nb_images = 8;
@@ -393,17 +386,15 @@ void play_with_elve_O(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Wi
     state[9].w = offset_x;
     state[9].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
     destination.x = destination.x - (deplacement / nb_images_animation);
     SDL_RenderCopy(renderer, texture_elve, &state[frameCount], &destination);
     frameCount = (frameCount + 1) % 10;
 }
-void play_with_elve_E(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_with_elve_E(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, int deplacement, float zoom )
 {
-    SDL_Rect source = {0}, window_dimensions = {0}, destination = {0};
+    SDL_Rect source = {0}, destination = {0};
 
-    SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+    
     SDL_QueryTexture(texture_elve, NULL, NULL, &source.w, &source.h);
 
     int nb_images = 8;
@@ -473,17 +464,16 @@ void play_with_elve_E(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Wi
     state[9].w = offset_x;
     state[9].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+
     destination.x = destination.x + (deplacement / nb_images_animation);
     SDL_RenderCopy(renderer, texture_elve, &state[frameCount], &destination);
     frameCount = (frameCount + 1) % 10;
 }
-void play_standstill(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_standstill(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, float zoom )
 {
-    SDL_Rect source = {0}, window_dimensions = {0}, destination = {0};
+    SDL_Rect source = {0}, destination = {0};
 
-    SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+    
     SDL_QueryTexture(texture_elve, NULL, NULL, &source.w, &source.h);
 
     int nb_images = 8;
@@ -516,8 +506,6 @@ void play_standstill(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Win
     state[3].w = offset_x;
     state[3].h = offset_y;
 
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
     SDL_RenderCopy(renderer, texture_elve, &state[(int)frameCount2], &destination);
     frameCount2 = (frameCount2 + 0.25); 
     
@@ -526,17 +514,17 @@ void play_standstill(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Win
     }
 
 }
-void play_standstill_l(SDL_Texture *texture_elve, SDL_Texture *background, SDL_Window *window, SDL_Renderer *renderer, int pos_x, int pos_y, float zoom, int **tab, int taille_cell, SDL_Texture *texture_fin, int noeud_arrive)
+void play_standstill_l(SDL_Texture *texture_elve,   SDL_Renderer *renderer, int pos_x, int pos_y, float zoom )
 {
-    SDL_Rect source = {0}, window_dimensions = {0}, destination = {0};
+    SDL_Rect source = {0}, destination = {0};
 
-    SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+    
     SDL_QueryTexture(texture_elve, NULL, NULL, &source.w, &source.h);
 
     int nb_images = 8;
     int offset_x = source.w / nb_images;
     int offset_y = source.h;
-    SDL_Rect state[1];
+    SDL_Rect state[4];
 
     destination.w = offset_x * zoom;
     destination.h = offset_y * zoom;
@@ -562,9 +550,7 @@ void play_standstill_l(SDL_Texture *texture_elve, SDL_Texture *background, SDL_W
     state[3].y = 0;
     state[3].w = offset_x;
     state[3].h = offset_y;
-
-    afficherImage(renderer, window, tab, taille_cell, background);
-    affichage_fin(texture_fin, window, renderer, noeud_arrive / P, noeud_arrive % P, taille_cell);
+    
     SDL_RenderCopy(renderer, texture_elve, &state[(int)frameCount2], &destination);
     frameCount2 = (frameCount2 + 0.25);
         if (frameCount2>=4){
