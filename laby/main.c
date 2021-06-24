@@ -210,7 +210,8 @@ int main (int argc, char** argv)
 	int i=1;
 	int nouv_noeuds=0;
 	int pause=0;
-	int direction=0;
+	int direction=-1;
+	int pronfondeur=0;
 	SDL_Event event;
 	while (running)
 	{
@@ -252,17 +253,26 @@ int main (int argc, char** argv)
 						case SDLK_s:  /*on va en bas*/
 							direction = 4;
 							break;
+						case SDLK_r:  /*on va en bas*/
+							pronfondeur = 1;
+							break;
 						default:
 							break;
       			}
       			break;
 			}
 		}
-			peindreDFSGraphique(texture,window,renderer,0,taille_cell,tab);
 		if (direction)
 		{
+			if (direction==-1)
+			{
+				peindreDFSGraphique(texture,window,renderer,depart,taille_cell,tab);
+				affichage_fin(texture_fin,window,renderer,arrivee%P,arrivee/P,taille_cell);
+			}
 			if (direction==1 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_E))
+			{
 				nouv_noeuds=nouv_noeuds+1;
+			}
 			if (direction==2 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_O))
 				nouv_noeuds=nouv_noeuds-1;
 			if (direction==3 && (tab[nouv_noeuds%P][nouv_noeuds/P] & FLAG_N))
@@ -271,8 +281,23 @@ int main (int argc, char** argv)
 				nouv_noeuds=nouv_noeuds+P;
 			peindreDFSGraphique(texture,window,renderer,nouv_noeuds,taille_cell,tab);
 			direction=0;
-		}
-			
+		}	
+		if (nouv_noeuds==arrivee)
+			running=0;
+		if (pronfondeur)
+		{
+			if  (i<=noeuds)
+			{
+				peindreDFSGraphique(texture,window,renderer,explo[i],taille_cell,tab);
+				affichage_fin(texture_fin,window,renderer,arrivee%P,arrivee/P,taille_cell);
+				i++;
+			}
+			else
+			{
+				SDL_Delay(8000);
+				running=0;
+			}
+		}	
 /*
 			if (temps>100)
 			{
