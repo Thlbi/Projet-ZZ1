@@ -314,13 +314,15 @@ int main (int argc, char** argv)
 	float zoom = (float)taille_cell/(float)22;
 	int temps=1;
 	int deplacement=taille_cell;
-	int noeud_actuel=noeud_dep;
 	int noeud_arrive=rand()%TAILLE;
 	int colli;
+	int noeud_actuel;
 
 	while ((running)||(temps<10))
         {
-        	if (noeud_actuel==noeud_arrive)
+        	noeud_actuel=pos_y*P/taille_cell+pos_x/taille_cell;
+		printf("%d %d\n",noeud_actuel,noeud_arrive);
+		if (noeud_actuel==noeud_arrive)
 			running=0;
 		while (SDL_PollEvent(&event))
                 {
