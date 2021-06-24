@@ -61,6 +61,26 @@ void afficherEcranIntelligemment(SDL_Renderer *renderer,int **tab,int taille_cel
 	}
 }
 
+void peindreDFS(SDL_Renderer * renderer, int noeuds, int taille_cell)
+{
+ 		SDL_DisplayMode screen;
+		SDL_GetCurrentDisplayMode(0,&screen);
+		int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
+		int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
+		SDL_Rect rectangle;
+		
+		int x=noeuds%P;
+		int y=noeuds/P;
+		SDL_SetRenderDrawColor(renderer, 0,255,0,0);
+		
+		rectangle.x=taille_cell*x+ decalage_horizontale;
+		rectangle.y=taille_cell*y+ decalage_vertical;
+		rectangle.h=rectangle.w=taille_cell;	
+		
+		SDL_RenderFillRect(renderer, &rectangle);
+}
+
+
 void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,int *parent)
 {
  		SDL_DisplayMode screen;
@@ -68,13 +88,22 @@ void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,in
 		int decalage_horizontale=(screen.w/taille_cell-P)*taille_cell/3;
 		int decalage_vertical=(screen.h/taille_cell-N)*taille_cell/4;
 		SDL_Rect rectangle;
+
 		int cours=depart;
 		SDL_SetRenderDrawColor(renderer, 0,255,0,0);
 		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
 		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
 		rectangle.w=rectangle.h=taille_cell;
 		SDL_RenderFillRect(renderer, &rectangle);
-		cours=parent[cours];
+
+		cours=arrivee;
+		SDL_SetRenderDrawColor(renderer, 0,0,255,0);
+		rectangle.x=taille_cell*(cours%P)+decalage_horizontale;
+		rectangle.y=taille_cell*(cours/P)+decalage_vertical;
+		rectangle.w=rectangle.h=taille_cell;
+		SDL_RenderFillRect(renderer, &rectangle);
+
+		cours=parent[depart];
 		SDL_SetRenderDrawColor(renderer, 255,0,0,0);
 		while(cours!=arrivee)
 		{
@@ -83,6 +112,8 @@ void chemin(SDL_Renderer * renderer, int depart, int arrivee, int taille_cell,in
 			rectangle.w=rectangle.h=taille_cell;
 			SDL_RenderFillRect(renderer, &rectangle);
 			cours=parent[cours];
+			SDL_RenderPresent(renderer);
+			SDL_Delay(20);
 		}
 		cours=arrivee;
 		SDL_SetRenderDrawColor(renderer, 0,0,255,0);
@@ -131,6 +162,7 @@ int main (int argc, char** argv)
 	int cours=0;
 	int depart=0;
 	int arrivee=12;
+	int * explo;
 	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
 	//printf("%d \n", taille_cell);
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
@@ -138,7 +170,10 @@ int main (int argc, char** argv)
 	graph=Fisher(graph,nb_aretes);
 	graph=kruskal(graph,noeuds,nb_aretes,&cours,p);
 	tab=tableau_ligne(graph,cours);
+
+	explo=DFS(tab,noeuds);
 	int temps=600;
+	int i=1;
 	SDL_Event event;
 	while (running)
 	{
@@ -159,8 +194,11 @@ int main (int argc, char** argv)
 					break;
 			break;
 			}
-			if (temps>600)
+		}
+/*
+			if (temps>100)
 			{
+			
 				temps=0;
 				SDL_RenderClear(renderer);
 				afficherEcranIntelligemment(renderer,tab,taille_cell);
@@ -171,9 +209,21 @@ int main (int argc, char** argv)
 			}
 			else
 				temps+=10;
+*/
+			if (i==1)
+				afficherEcranIntelligemment(renderer,tab,taille_cell);
+			if  (i<=noeuds)
+			{
+				peindreDFS(renderer,explo[i],taille_cell);
+				i++;
+			}
+			else
+			{
+				SDL_Delay(8000);
+				running=0;
+			}
 			SDL_RenderPresent(renderer);
-			SDL_Delay(10);
-		}
+			SDL_Delay(20);
 	}
 	end_sdl(1, "Normal ending", window, renderer);
 	return 1;

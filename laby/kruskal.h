@@ -4,8 +4,8 @@
 #include "tas.h"
 #include "graph_aretes_tab.h"
 
-#define N 13
-#define P 15
+#define N 53
+#define P 55
 
 graph_t * kruskal(graph_t * graph,int noeuds, int nb_aretes,int * cours,double p);
 

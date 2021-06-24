@@ -181,6 +181,7 @@ int * Aetoile_euclidienne(int ** laby, int noeuds, int depart, int arrivee)
 		tas->taille+=-1;
 		percolation_bas_tas_min(tas,0,indice_valeur);
 		sommet=tas->tab[0].val;
+		tas->tab[0].poids-=distance_euclidienne(tas->tab[0].val,arrivee);
 		
 	}
 	free(distance);
@@ -264,6 +265,7 @@ int * Aetoile_tcheby(int ** laby, int noeuds, int depart,int arrivee)
 		tas->taille+=-1;
 		percolation_bas_tas_min(tas,0,indice_valeur);
 		sommet=tas->tab[0].val;
+		tas->tab[0].poids-=distance_tcheby(tas->tab[0].val,arrivee);
 		
 	}
 	free(distance);
@@ -347,6 +349,7 @@ int * Aetoile_manhattan(int ** laby, int noeuds, int depart, int arrivee)
 		tas->taille+=-1;
 		percolation_bas_tas_min(tas,0,indice_valeur);
 		sommet=tas->tab[0].val;
+		tas->tab[0].poids-=distance_manhattan(tas->tab[0].val,arrivee);
 		
 	}
 	free(distance);
@@ -380,32 +383,32 @@ int main (int argc, char** argv)
 	float temps;
 
 	t_depart=clock();
-	for (int i=0; i<1000; i++)
+//	for (int i=0; i<1000; i++)
 	parent=dijsktra(tab,noeuds,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps dijsktra : %f\n",temps/1000);
+	printf("temps dijsktra : %f\n",temps);
 
 	t_depart=clock();
-	for (int i=0; i<1000; i++)
+//	for (int i=0; i<1000; i++)
 	parent=Aetoile_euclidienne(tab,noeuds,depart,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps Aetoile_euclidienne : %f\n",temps/1000);
+	printf("temps Aetoile_euclidienne : %f\n",temps);
 
 	t_depart=clock();
-	for (int i=0; i<1000; i++)
+//	for (int i=0; i<1000; i++)
 	parent=Aetoile_tcheby(tab,noeuds,depart,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps Aetoile_tcheby : %f\n",temps/1000);
+	printf("temps Aetoile_tcheby : %f\n",temps);
 
 	t_depart=clock();
-	for (int i=0; i<1000; i++)
+//	for (int i=0; i<1000; i++)
 	parent=Aetoile_manhattan(tab,noeuds,depart,arrivee);
 	t_fin=clock();
 	temps=-t_depart+t_fin;
-	printf("temps Aetoile_manhattan: %f\n",temps/1000);
+	printf("temps Aetoile_manhattan: %f\n",temps);
 }
                                      
 

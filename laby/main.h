@@ -7,6 +7,7 @@
 #include<SDL2/SDL.h>
 #include "kruskal.h"
 #include "dijsktra.h"
+#include "DFS.h"
 #include <math.h>
 
 typedef enum {

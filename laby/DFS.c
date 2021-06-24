@@ -6,17 +6,17 @@ void explorer(int ** laby,int sommet, int * som, int *explo)
 	explo[explo[0]]=sommet;
 	explo[0]+=1;
 	if (laby[sommet%P][sommet/P] & FLAG_N)
-		if (som[laby[sommet%P][sommet/P]]!=-1)
-			explorer(laby,laby[sommet%P][sommet/P],som,explo);
+		if (som[sommet-P]!=-1)
+			explorer(laby,sommet-P,som,explo);
 	if (laby[sommet%P][sommet/P] & FLAG_S)
-		if (som[laby[sommet%P][sommet/P]]!=-1)
-			explorer(laby,laby[sommet%P][sommet/P],som,explo);
+		if (som[sommet+P]!=-1)
+			explorer(laby,sommet+P,som,explo);
 	if (laby[sommet%P][sommet/P] & FLAG_O)
-		if (som[laby[sommet%P][sommet/P]]!=-1)
-			explorer(laby,laby[sommet%P][sommet/P],som,explo);
+		if (som[sommet-1]!=-1)
+			explorer(laby,sommet-1,som,explo);
 	if (laby[sommet%P][sommet/P] & FLAG_E)
-		if (som[laby[sommet%P][sommet/P]]!=-1)
-			explorer(laby,laby[sommet%P][sommet/P],som,explo);
+		if (som[sommet+1]!=-1)
+			explorer(laby,sommet+1,som,explo);
 }
 
 
@@ -28,6 +28,7 @@ int * DFS(int ** laby,int noeuds)
 	for (int i =0; i<noeuds; i++)
 		som[i]=0;
 	for (int i=0; i<noeuds; i++)
-			explorer(laby,laby[0][0],som,explo);
+			if (som[i]!=-1)
+				explorer(laby,i,som,explo);
 	return explo;
 }
