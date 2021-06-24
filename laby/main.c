@@ -316,13 +316,11 @@ int main (int argc, char** argv)
 	int deplacement=taille_cell;
 	int noeud_arrive=rand()%TAILLE;
 	int colli;
-	int noeud_actuel;
+	printf("l : relancer \np,SPACE : pause \ncroix : quitter\n");
 
-	while ((running)||(temps<10))
+	while ((running)||(temps<50))
         {
-        	noeud_actuel=pos_y*P/taille_cell+pos_x/taille_cell;
-		printf("%d %d\n",noeud_actuel,noeud_arrive);
-		if (noeud_actuel==noeud_arrive)
+		if (pos_y*P/taille_cell+pos_x/taille_cell==noeud_arrive)
 			running=0;
 		while (SDL_PollEvent(&event))
                 {
@@ -336,7 +334,7 @@ int main (int argc, char** argv)
                                         {
                                         case SDL_WINDOWEVENT_CLOSE:
                                                 running = 0;
-                                                temps=10;
+                                                temps=1000;
 						break;
                                         case SDL_WINDOWEVENT_SIZE_CHANGED:
                                                 screen.w = event.window.data1;
@@ -349,6 +347,15 @@ int main (int argc, char** argv)
                                 case SDL_KEYDOWN:
                                         switch (event.key.keysym.sym)
                                         {
+						case SDLK_l:
+							noeud_dep=rand()%TAILLE;
+							right=1;
+							stand=0;
+							pos_x=noeud_dep%P*taille_cell;
+							pos_y=noeud_dep/P*taille_cell;
+							temps=1;
+							noeud_arrive=rand()%TAILLE;
+							break;
                                                 case SDLK_SPACE:
                                                 case SDLK_p:
                                                         pause=1-pause;
@@ -468,5 +475,3 @@ int main (int argc, char** argv)
 	end_sdl(1, "Normal ending", window, renderer);
 	return 1;
 }
-                                     
-
