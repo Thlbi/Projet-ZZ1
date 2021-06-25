@@ -168,6 +168,7 @@ int main (int argc, char** argv)
 	int relancer=0;
 	int affiche_carte=0;
 	int dijkstra_ok=0;
+	int premier=1;
 	int * minimap=malloc((TAILLE+1)*sizeof(int));
 	for (int iter=0;iter<TAILLE+1;iter++)
 		minimap[iter]=0;
@@ -223,7 +224,11 @@ int main (int argc, char** argv)
 		}
 		if (dijkstra_ok)
 		{
+			if  (premier){	
 			tab_parents=dijkstra(tab,graph->noeuds,noeud_arrive);
+			premier=0;}
+			if (noeud_actuel==noeud_arrive && temps==1)
+				free(tab_parents);
 		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)-1){
 			if (right){
         			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
@@ -303,7 +308,7 @@ int main (int argc, char** argv)
             		}
         	}
 		}
-		if (affiche_carte && !pause)
+		if (affiche_carte && !pause && !dijkstra_ok)
 		{
 			afficherImage(renderer,window,tab,taille_cell,texture);
 			affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
