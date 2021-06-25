@@ -3,11 +3,20 @@
 int ** tableau_ligne(graph_t * graph,int nb_aretes)
 {
 	int** tab=malloc(P*sizeof(int*));
-	for (int i=0; i<P; i++)
+	int nbr_sewer=0,aleat; //ajout des bouches d'egouts
+	
+	for (int i=0; i<P; i++) 
 		tab[i]=malloc(N*sizeof(int));	
-	for (int i=0; i<P; i++)
-		for (int j=0; j<N; j++)
+	for (int i=0; i<P; i++){
+		for (int j=0; j<N; j++){
 			tab[i][j]=0;
+			aleat=rand()%10;
+			if (aleat==1 && nbr_sewer<N*P/20){
+				nbr_sewer++;
+			tab[i][j]+=16;
+			}
+		}
+	}
 
 	int diff;
 	int x;
@@ -22,7 +31,7 @@ int ** tableau_ligne(graph_t * graph,int nb_aretes)
 			tab[x][y]+=4;
 			tab[x+1][y]+=8;
 		}
-		else{ // ne marche pas c'est incomprehensibleif (diff==P)
+		else{ 
 			tab[x][y]+=2;
 			tab[x][y+1]+=1;
 		}
