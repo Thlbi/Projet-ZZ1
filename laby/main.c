@@ -103,7 +103,7 @@ int main (int argc, char** argv)
 	int **tab;
 	int cours=0;
 	int taille_cell=min(screen.w/(P+2),screen.h/(N+2));
-//	int * tab_parents;  a decommenter pour l'utilisation de Dijkstra
+	int * tab_parents; // a decommenter pour l'utilisation de Dijkstra
 	//initialisation du graph
 	graph_t * graph=creer_graph(noeuds,nb_aretes);
 	generation(graph);
@@ -167,7 +167,7 @@ int main (int argc, char** argv)
 	int fin_mama=0;
 	int relancer=0;
 	int affiche_carte=0;
-	int dijkstra_ok;
+	int dijkstra_ok=0;
 	int * minimap=malloc((TAILLE+1)*sizeof(int));
 	for (int iter=0;iter<TAILLE+1;iter++)
 		minimap[iter]=0;
@@ -212,7 +212,7 @@ int main (int argc, char** argv)
 						case SDLK_m: //la fonction devra afficher la totalite du labyrinthe sans brouillard de guerre
 							affiche_carte=1;
 							break; 
-						case SDLK_d:
+						case SDLK_r:
 							dijkstra_ok=1;
 							break;
 						default:
@@ -221,12 +221,89 @@ int main (int argc, char** argv)
          		break;
 			}
 		}
-/*		if (dijkstra_ok)
+		if (dijkstra_ok)
 		{
-			tab_parents=dijkstra(tab,graph->noeuds,noeuds_arrive);
-			
+			tab_parents=dijkstra(tab,graph->noeuds,noeud_arrive);
+		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)-1){
+			if (right){
+        			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		}
+        		else{
+        			play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+       	 		}
+        		pos_y=pos_y-deplacement;
+        		stand=0;
+        	}
+		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)+1){
+			if (right){
+        			play_with_elve_S(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		}
+        		else{
+        			play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		}
+        		pos_y=pos_y+deplacement;
+        		stand=0;
+        	}
+		if(tab_parents[noeud_actuel]%P==(noeud_actuel%P)-1){
+        		play_with_elve_O(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		pos_x=pos_x-deplacement;
+        		stand=0;
+        		right=0;
+        	}
+		if(tab_parents[noeud_actuel]%P==(noeud_actuel%P)+1){
+			play_with_elve_E(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+        		pos_x=pos_x+deplacement;
+        		stand=0;
+        		right=1;
+        	}
+        	if (right){
+        		switch (stand){
+        		        case 0:
+                			play_standstill_1(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 2:
+                			play_standstill_2(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 4:
+                			play_standstill_3(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			case 6:
+                			play_standstill_4(texture_elve,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                			stand=(stand+1)%7;
+                			break;
+            			default:
+                			stand=(stand+1)%7;
+					break;
+        	    }
+       		 }
+        	else{
+        		switch (stand){
+        	    	case 0:
+        	    	    play_standstill_1_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                		stand=(stand+1)%7;
+                		break;
+            		case 2:
+                		play_standstill_2_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+               	 		stand=(stand+1)%7;
+                		break;
+            		case 4:
+                		play_standstill_3_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                		stand=(stand+1)%7;
+                		break;
+            		case 6:
+                		play_standstill_4_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,zoom,tab,taille_cell,texture_fin,noeud_arrive);
+                		stand=(stand+1)%7;
+                		break;
+            		default:
+                		stand=(stand+1)%7;
+                	break;
+            		}
+        	}
 		}
-*/		if (affiche_carte && !pause)
+		if (affiche_carte && !pause)
 		{
 			afficherImage(renderer,window,tab,taille_cell,texture);
 			affichage_fin(texture_fin,window,renderer,noeud_arrive/P,noeud_arrive%P,taille_cell);
@@ -257,7 +334,7 @@ int main (int argc, char** argv)
 			minimap[1]=pos_y*P/taille_cell+pos_x/taille_cell;
 			
 		}
-		else if (!pause)
+		else if (!pause && !affiche_carte)
 		{
  			SDL_RenderClear(renderer2);
 			for (int iter=1;iter<minimap[0];iter++)
