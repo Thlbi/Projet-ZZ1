@@ -169,6 +169,9 @@ int main (int argc, char** argv)
 	int affiche_carte=0;
 	int dijkstra_ok=0;
 	int premier=1;
+	int temps_fin=20;
+	int perdu=0;
+	int compteur=0;
 	int * minimap=malloc((TAILLE+1)*sizeof(int));
 	for (int iter=0;iter<TAILLE+1;iter++)
 		minimap[iter]=0;
@@ -183,6 +186,8 @@ int main (int argc, char** argv)
 		minimap[minimap[0]]=noeud_actuel;
 		if (noeud_actuel==noeud_arrive)
 			fin_mama=1;
+		if (temps_fin==0)
+			perdu=1;
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -227,8 +232,6 @@ int main (int argc, char** argv)
 			if  (premier){	
 			tab_parents=dijkstra(tab,graph->noeuds,noeud_arrive);
 			premier=0;}
-			if (noeud_actuel==noeud_arrive && temps==1)
-				free(tab_parents);
 		if(tab_parents[noeud_actuel]/P==(noeud_actuel/P)-1){
 			if (right){
         			play_with_elve_N(texture_elve,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
@@ -318,7 +321,7 @@ int main (int argc, char** argv)
 				{
 					affiche_carte=0;
 					SDL_RenderClear(renderer);
-					temps=0;
+					temps=1;
 				}
 		}
 		if (relancer && !pause)
@@ -339,9 +342,16 @@ int main (int argc, char** argv)
 			minimap[1]=pos_y*P/taille_cell+pos_x/taille_cell;
 			
 		}
-		else if (!pause && !affiche_carte)
+		if (!pause && !affiche_carte)
 		{
+			compteur+=30;
  			SDL_RenderClear(renderer2);
+			if (compteur>1000 && temps_fin>0)
+			{
+				temps_fin-=1;
+				compteur-=1000;
+			}
+			timer(window2, renderer2,temps_fin);
 			for (int iter=1;iter<minimap[0];iter++)
 			{
 				peindreMap(texture2,window2,renderer2,minimap[iter],taille_cell2,tab);
@@ -362,6 +372,7 @@ int main (int argc, char** argv)
         					play_with_elve_N_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
         				pos_y=pos_y-deplacement;
         				stand=0;
+					compteur+=100;
 				}
 			}
 			if ((keystates[SDL_SCANCODE_DOWN]||keystates[SDL_SCANCODE_S])) 
@@ -375,6 +386,7 @@ int main (int argc, char** argv)
         					play_with_elve_S_l(texture_elve_reverse,texture,window,renderer,pos_x,pos_y,deplacement,zoom,tab,taille_cell,texture_fin,noeud_arrive);
         				pos_y=pos_y+deplacement;
         				stand=0;
+					compteur+=100;
         		}
 			}
         	if ((keystates[SDL_SCANCODE_LEFT]||keystates[SDL_SCANCODE_A])) 
@@ -386,6 +398,7 @@ int main (int argc, char** argv)
         			pos_x=pos_x-deplacement;
         			stand=0;
         			right=0;
+					compteur+=100;
         		}
 			}
 			if ((keystates[SDL_SCANCODE_RIGHT]||keystates[SDL_SCANCODE_D])) 
@@ -397,6 +410,7 @@ int main (int argc, char** argv)
         			pos_x=pos_x+deplacement;
         			stand=0;
      				right=1;
+					compteur+=100;
      			}
 			}
         	if (right)
@@ -460,6 +474,13 @@ int main (int argc, char** argv)
 				affiche_carte=0;
 				affichage_txt_pause(window, renderer);
 			}
+			if (perdu)
+			{
+				affichage_txt_perdu(window,renderer);
+				temps++;
+				if (temps>50)
+					running=0;
+			}
         	SDL_Delay(30);
         	SDL_RenderPresent(renderer);
 	}
@@ -473,6 +494,8 @@ int main (int argc, char** argv)
 	free(minimap);	
 	free(graph->liste);
 	free(graph);
+	if (dijkstra_ok)
+		free(tab_parents);
 	for (int i=0; i<P; i++)
 		free(tab[i]);
 	free(tab);

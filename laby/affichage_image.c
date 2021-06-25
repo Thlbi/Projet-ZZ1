@@ -218,7 +218,7 @@ void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab
 				voisin[5]=x+P*y-P-1;
 		}
 		if (x<P-1){
-			if (((tab[x][y] & FLAG_N) && (tab[x+1][y-1] & FLAG_E )) || ((tab[x][y] & FLAG_E) && (tab[x][y-1] & FLAG_N)))
+			if (((tab[x][y] & FLAG_N) && (tab[x][y-1] & FLAG_E )) || ((tab[x][y] & FLAG_E) && (tab[x+1][y] & FLAG_N)))
 				voisin[6]=x+P*y-P+1;
 		}
 	}
@@ -247,6 +247,15 @@ void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab
 		}
         }
         free(voisin);
+			SDL_Rect rectangle, window_dimensions={0};
+			SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+			SDL_SetRenderDrawColor(renderer, 0,0,0,150);
+			SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
+			rectangle.x=0;
+			rectangle.y=0;
+			rectangle.w=window_dimensions.w; 
+			rectangle.h=window_dimensions.h; 
+			SDL_RenderFillRect(renderer,&rectangle);
 }
 
 

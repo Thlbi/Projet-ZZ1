@@ -79,6 +79,7 @@ int * dijkstra(int ** laby, int noeuds, int depart)
 		
 	}
 	free(distance);
+	free(voisin);
 	free(indice_valeur);
 	liberer(tas);
 	return parent;	
