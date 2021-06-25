@@ -235,17 +235,23 @@ void affichage_fin(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *rend
   SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
 }
 
+
 void print_sewer(SDL_Texture *my_texture,SDL_Window *window,SDL_Renderer *renderer,int coord_colonne,int coord_ligne,int taille_cell) {
+
   SDL_Rect source = {0},window_dimensions = {0},destination = {0},state = {0};
 
   SDL_GetWindowSize(window,&window_dimensions.w,&window_dimensions.h);
   SDL_QueryTexture(my_texture, NULL, NULL,&source.w, &source.h);
-  float zoom = 1; 
+  state.x = 0;
+  state.y = 0;
+  state.w = source.w;
+  state.h = source.h;
+  float zoom = (float)taille_cell/(float)460; 
   destination.w = source.w * zoom;            // Largeur du sprite à l'écran
   destination.h = source.h * zoom;            // Hauteur du sprite à l'écran
-  printf("%d %d\n",destination.w,destination.h);
-  destination.y =0;// 2+coord_colonne*zoom; // Position en x pour l'affichage du sprite
-  destination.x = 0;//coord_ligne*zoom+2;  // Position en y pour l'affichage du sprite
+  destination.y =5+coord_ligne*source.w*zoom; // Position en ligne pour l'affichage du sprite
+  destination.x = coord_colonne*source.w*zoom+5;  // Position en colonne pour l'affichage du sprite
+  printf("%d %d \n",destination.x,destination.y);
   SDL_RenderCopy(renderer,my_texture,&state, &destination);   // Préparation de l'affichage
 }
 
@@ -285,9 +291,9 @@ void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab
                         j1=((int)noeud/P); // coordonee ligne du noeud
 
   			affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
-  		//	if (x>15){
+  			if (x>15){
 				print_sewer(texture_sewer,window,renderer,i1,j1,taille_cell);
-			//}
+			}
                         noeud+=1;
                 }
         }

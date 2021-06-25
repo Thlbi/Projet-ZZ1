@@ -3,16 +3,20 @@
 int ** tableau_ligne(graph_t * graph,int nb_aretes)
 {
 	int** tab=malloc(P*sizeof(int*));
-	int nbr_sewer=0,aleat; //ajout des bouches d'egouts
+	int sewerx=rand()%N; //ajout des bouches d'egouts
+	int sewery=rand()%P; //ajout des bouches d'egouts
 	
 	for (int i=0; i<P; i++) 
 		tab[i]=malloc(N*sizeof(int));	
+
+	int sewer2x=rand()%N; //ajout des bouches d'egouts
+	int sewer2y=rand()%P; //ajout des bouches d'egouts
+
 	for (int i=0; i<P; i++){
 		for (int j=0; j<N; j++){
 			tab[i][j]=0;
-			aleat=rand()%10;
-			if (aleat==1 && nbr_sewer<N*P/20){
-				nbr_sewer++;
+			if ((i==sewery && j==sewerx) || (i==sewer2y && j==sewer2x)){
+			printf("%d %d \ncoucou\n",i,j);
 			tab[i][j]+=16;
 			}
 		}
