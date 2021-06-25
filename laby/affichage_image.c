@@ -179,13 +179,14 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
 }
 
 
-void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
+void afficherImageBrouillard2(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
 {
         int i1,j1,j;
         int * voisin = malloc(9*sizeof(int));
 	int x=pos_x/taille_cell;
 	int y=pos_y/taille_cell;
 
+	
 	for (j=0;j<9;j++)
 		voisin[j]=-1;
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -234,7 +235,54 @@ void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab
         		affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
 		}
         }
-        free(voisin);
+	free(voisin);
+	
+	SDL_Texture *texture_brouillard = load_texture_from_image("fog.png",renderer);
+    	if (texture_brouillard==NULL) exit(EXIT_FAILURE);
+        
+  	SDL_Rect source={0},window_dimensions = {0},destination = {0};
+	SDL_QueryTexture(texture_brouillard, NULL, NULL,&source.w, &source.h);
+  	SDL_GetWindowSize(window,&window_dimensions.w,&window_dimensions.h);
+  	destination.w = 101*taille_cell;
+  	destination.h = 91*taille_cell;
+  	destination.y = pos_y-45*taille_cell;
+  	destination.x = pos_x-50*taille_cell;
+  	SDL_RenderCopy(renderer,texture_brouillard,&source,&destination);
+
+	SDL_DestroyTexture(texture_brouillard);
+}
+
+
+void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
+{
+        int i1,j1,x,noeud=0;
+
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+        SDL_RenderClear(renderer);
+
+        for (int i=0;i<N;i++){
+                for (int j=0;j<P;j++){
+                        x=tab[j][i];
+                        i1=(noeud%P); //coordonee colonne du noeud
+                        j1=((int)noeud/P); // coordonee ligne du noeud
+
+  			affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
+                        noeud+=1;
+                }
+        }
+	SDL_Texture *texture_brouillard = load_texture_from_image("fog.png",renderer);
+    	if (texture_brouillard==NULL) exit(EXIT_FAILURE);
+        
+  	SDL_Rect source={0},window_dimensions = {0},destination = {0};
+	SDL_QueryTexture(texture_brouillard, NULL, NULL,&source.w, &source.h);
+  	SDL_GetWindowSize(window,&window_dimensions.w,&window_dimensions.h);
+  	destination.w = 101*taille_cell;
+  	destination.h = 91*taille_cell;
+  	destination.y = pos_y-45*taille_cell;
+  	destination.x = pos_x-50*taille_cell;
+  	SDL_RenderCopy(renderer,texture_brouillard,&source,&destination);
+
+	SDL_DestroyTexture(texture_brouillard);
 }
 
 

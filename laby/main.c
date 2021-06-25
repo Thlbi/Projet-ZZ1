@@ -127,6 +127,7 @@ int main (int argc, char** argv)
 	texture_fin = load_texture_from_image("roguelikeChar_transparent.png",renderer);
     	if (texture_fin==NULL) exit(EXIT_FAILURE);
 
+
 	//tab_parents=dijkstra(tab,graph->noeuds,ND_ARRIVEE);
 
 	SDL_Event event;
