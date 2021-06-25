@@ -458,7 +458,7 @@ int main (int argc, char** argv)
 			{
 				relancer=0;
 				affiche_carte=0;
-				affichage_txt(window, renderer);
+				affichage_txt_pause(window, renderer);
 			}
         	SDL_Delay(30);
         	SDL_RenderPresent(renderer);
