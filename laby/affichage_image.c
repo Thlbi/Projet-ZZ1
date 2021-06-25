@@ -178,26 +178,15 @@ void afficherImage(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taill
                 }
 }
 
-void point_minimap(SDL_Renderer * renderer, int taille_cell, int pos_x, int pos_y)
-{
-	SDL_Rect rectangle;
-	SDL_SetRenderDrawColor(renderer,255,0,0,255);
-	
-	rectangle.x=pos_x;
-	rectangle.y=pos_y;
-	rectangle.h=rectangle.w=taille_cell/2;
 
-	SDL_RenderFillRect(renderer, &rectangle);
-	SDL_SetRenderDrawColor(renderer,0,0,0,255);
-}
-
-void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
+void afficherImageBrouillard2(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
 {
         int i1,j1,j;
         int * voisin = malloc(9*sizeof(int));
 	int x=pos_x/taille_cell;
 	int y=pos_y/taille_cell;
 
+	
 	for (j=0;j<9;j++)
 		voisin[j]=-1;
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -218,7 +207,7 @@ void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab
 				voisin[5]=x+P*y-P-1;
 		}
 		if (x<P-1){
-			if (((tab[x][y] & FLAG_N) && (tab[x][y-1] & FLAG_E )) || ((tab[x][y] & FLAG_E) && (tab[x+1][y] & FLAG_N)))
+			if (((tab[x][y] & FLAG_N) && (tab[x+1][y-1] & FLAG_E )) || ((tab[x][y] & FLAG_E) && (tab[x][y-1] & FLAG_N)))
 				voisin[6]=x+P*y-P+1;
 		}
 	}
@@ -246,16 +235,54 @@ void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab
         		affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
 		}
         }
-        free(voisin);
-			SDL_Rect rectangle, window_dimensions={0};
-			SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
-			SDL_SetRenderDrawColor(renderer, 0,0,0,150);
-			SDL_GetWindowSize(window, &window_dimensions.w, &window_dimensions.h);
-			rectangle.x=0;
-			rectangle.y=0;
-			rectangle.w=window_dimensions.w; 
-			rectangle.h=window_dimensions.h; 
-			SDL_RenderFillRect(renderer,&rectangle);
+	free(voisin);
+	
+	SDL_Texture *texture_brouillard = load_texture_from_image("fog.png",renderer);
+    	if (texture_brouillard==NULL) exit(EXIT_FAILURE);
+        
+  	SDL_Rect source={0},window_dimensions = {0},destination = {0};
+	SDL_QueryTexture(texture_brouillard, NULL, NULL,&source.w, &source.h);
+  	SDL_GetWindowSize(window,&window_dimensions.w,&window_dimensions.h);
+  	destination.w = 101*taille_cell;
+  	destination.h = 91*taille_cell;
+  	destination.y = pos_y-45*taille_cell;
+  	destination.x = pos_x-50*taille_cell;
+  	SDL_RenderCopy(renderer,texture_brouillard,&source,&destination);
+
+	SDL_DestroyTexture(texture_brouillard);
+}
+
+
+void afficherImageBrouillard(SDL_Renderer *renderer,SDL_Window *window,int **tab,int taille_cell,SDL_Texture* texture, int pos_x, int pos_y)
+{
+        int i1,j1,x,noeud=0;
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+
+        for (int i=0;i<N;i++){
+                for (int j=0;j<P;j++){
+                        x=tab[j][i];
+                        i1=(noeud%P); //coordonee colonne du noeud
+                        j1=((int)noeud/P); // coordonee ligne du noeud
+
+  			affichage_texture(texture,window,renderer,x,i1,j1,taille_cell);
+                        noeud+=1;
+                }
+        }
+	SDL_Texture *texture_brouillard = load_texture_from_image("fog.png",renderer);
+    	if (texture_brouillard==NULL) exit(EXIT_FAILURE);
+        
+  	SDL_Rect source={0},window_dimensions = {0},destination = {0};
+	SDL_QueryTexture(texture_brouillard, NULL, NULL,&source.w, &source.h);
+  	SDL_GetWindowSize(window,&window_dimensions.w,&window_dimensions.h);
+  	destination.w = 101*taille_cell;
+  	destination.h = 91*taille_cell;
+  	destination.y = pos_y-45*taille_cell;
+  	destination.x = pos_x-50*taille_cell;
+  	SDL_RenderCopy(renderer,texture_brouillard,&source,&destination);
+
+	SDL_DestroyTexture(texture_brouillard);
 }
 
 
@@ -265,4 +292,16 @@ void peindreMap(SDL_Texture * texture, SDL_Window* window ,SDL_Renderer *rendere
         affichage_texture(texture,window, renderer, laby[noeuds%P][noeuds/P], noeuds%P, noeuds/P, taille_cell);
 }
 
+void point_minimap(SDL_Renderer * renderer, int taille_cell, int pos_x, int pos_y)
+{
+	SDL_Rect rectangle;
+	SDL_SetRenderDrawColor(renderer,255,0,0,255);
+	
+	rectangle.x=pos_x;
+	rectangle.y=pos_y;
+	rectangle.h=rectangle.w=taille_cell/2;
+
+	SDL_RenderFillRect(renderer, &rectangle);
+	SDL_SetRenderDrawColor(renderer,0,0,0,255);
+}
 
