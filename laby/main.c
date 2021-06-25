@@ -96,6 +96,35 @@ int main (int argc, char** argv)
 	SDL_Renderer *renderer;
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); /*  SDL_RENDERER_SOFTWARE */
 	if (renderer == 0) fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+
+       // Initialisation de SDL_Mixer
+    if (Mix_OpenAudio(96000, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) < 0)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Erreur initialisation SDL_mixer : %s", Mix_GetError());
+        SDL_Quit();
+        return -1; 
+    }   
+
+    Mix_Music* music_mama = Mix_LoadMUS("musique/mama.mp3"); // Charge notre musique
+
+    if (music_mama == NULL)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Erreur chargement de la musique : %s", Mix_GetError());
+        Mix_CloseAudio();
+        SDL_Quit();
+        return -1; 
+    }   
+    
+    Mix_Music* music_vie = Mix_LoadMUS("musique/vie.mp3"); // Charge notre musique
+
+    if (music_vie == NULL)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Erreur chargement de la musique : %s", Mix_GetError());
+        Mix_CloseAudio();
+        SDL_Quit();
+        return -1; 
+    }   
+
 	int running=1;
 	srand(time(0));
 	int noeuds=N*P;
@@ -115,7 +144,7 @@ int main (int argc, char** argv)
 	SDL_Texture * texture,*texture_fin,* texture_elve,* texture_elve_reverse;
 
 	texture_elve = load_texture_from_image("Elve_lign.png",renderer);
-    	if (texture_elve == NULL) end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer);
+    	if (texture_elve == NULL) fprintf(stderr, "Erreur de chargement de l'image : %s\n", SDL_GetError());//end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer);
 
     	texture_elve_reverse = load_texture_from_image("Elve_ligne_reverse.png",renderer);
     	if (texture_elve_reverse == NULL) end_sdl(0, "Echec du chargement de l'image dans la texture", window, renderer);
@@ -177,6 +206,7 @@ int main (int argc, char** argv)
 		minimap[iter]=0;
 	int taille_cell2=min((screen.w/3)/(P+2),(screen.h/3)/(N+2));
 
+	Mix_PlayMusic(music_mama,-1);
 	printf("l : relancer \np,SPACE : pause \ncroix : quitter \nm : afficher la carte complète du labyrinthe pendant 2 secondes\n");
 
 	while (running)
@@ -474,8 +504,10 @@ int main (int argc, char** argv)
 				affiche_carte=0;
 				affichage_txt_pause(window, renderer);
 			}
-			if (perdu)
+			if (perdu && !fin_mama)
 			{
+				Mix_HaltMusic();
+				Mix_PlayMusic(music_vie,-1);
 				affichage_txt_perdu(window,renderer);
 				temps++;
 				if (temps>50)
@@ -491,6 +523,9 @@ int main (int argc, char** argv)
 	SDL_DestroyTexture(texture_fin);
 	SDL_DestroyTexture(texture_fin2);
 	SDL_DestroyTexture(texture2);
+	Mix_FreeMusic(music_mama);
+	Mix_FreeMusic(music_vie);
+	Mix_CloseAudio();
 	free(minimap);	
 	free(graph->liste);
 	free(graph);
