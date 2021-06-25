@@ -65,7 +65,7 @@ int main ()
 
 
 	int largeur = width/5, longueur =height/5;
-   int running=1, pause=1, pos=0;
+	int running=1, pause=1, pos=0;
 	int posvaisseau=0, gen=1, nb_lignes=0, coli=0, efface=0, creation_met=0;
 
 	int met[longueur/HAUTEUR_MET][NB_MET];
@@ -121,7 +121,7 @@ int main ()
 					break;
 			break;
 			}
-      }
+		}
 	if (!pause)
 	{
 		gen+=1;
@@ -180,7 +180,7 @@ int main ()
 	SDL_DestroyTexture(texture_vaisseau3);
 	IMG_Quit();
 	TTF_Quit();
-   end_sdl(1, "Normal ending", window, renderer);
+	end_sdl(1, "Normal ending", window, renderer);
 	liberer(grille,largeur);
 	return 1;
 }
